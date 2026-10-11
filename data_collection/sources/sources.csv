@@ -1,0 +1,60 @@
+#,Category,Document,URL,Type,Filter / Notes
+1,CI/CD – GitHub Actions,GitHub Actions docs,https://docs.github.com/en/actions,Crawl,"Only paths under /en/actions/reference/, /en/actions/how-tos/, /en/actions/concepts/"
+2,CI/CD – GitHub Actions,Workflow syntax reference,https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax,Fetch,Core reference page
+3,CI/CD – GitHub Actions,GitHub Docs source (Markdown),https://github.com/github/docs/tree/main/content/actions,Fetch,Markdown alternative to crawling
+4,CI/CD – GitHub Actions,GitHub Changelog – Actions,https://github.blog/changelog/label/actions/,Feed,Release notes
+5,CI/CD – GitHub Actions,GitHub Changelog RSS,https://github.blog/changelog/feed/,Feed,"Keep ""actions"" items only"
+6,CI/CD – GitHub Actions,actions/checkout,https://github.com/actions/checkout,API,README to vector store; latest release to DynamoDB
+7,CI/CD – GitHub Actions,actions/setup-node,https://github.com/actions/setup-node,API,Same as above
+8,CI/CD – GitHub Actions,actions/cache,https://github.com/actions/cache,API,Same as above
+9,CI/CD – GitHub Actions,aws-actions/configure-aws-credentials,https://github.com/aws-actions/configure-aws-credentials,API,Same as above
+10,CI/CD – GitHub Actions,aws-actions/amazon-ecr-login,https://github.com/aws-actions/amazon-ecr-login,API,Same as above
+11,CI/CD – GitHub Actions,aws-actions/amazon-ecs-render-task-definition,https://github.com/aws-actions/amazon-ecs-render-task-definition,API,Same as above
+12,CI/CD – GitHub Actions,aws-actions/amazon-ecs-deploy-task-definition,https://github.com/aws-actions/amazon-ecs-deploy-task-definition,API,Same as above
+13,CI/CD – GitHub Actions,docker/setup-buildx-action,https://github.com/docker/setup-buildx-action,API,Same as above
+14,CI/CD – GitHub Actions,docker/build-push-action,https://github.com/docker/build-push-action,API,Same as above
+15,CI/CD – AWS,CodeBuild buildspec reference,https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html,Fetch,
+16,CI/CD – AWS,CodeBuild user guide,https://docs.aws.amazon.com/codebuild/latest/userguide/,Crawl,"Pages about buildspec, troubleshooting, tutorials"
+17,CI/CD – AWS,CodePipeline user guide,https://docs.aws.amazon.com/codepipeline/latest/userguide/,Crawl,"Pages about action reference, pipeline structure, tutorials"
+18,Containers,Dockerfile reference,https://docs.docker.com/reference/dockerfile/,Fetch,
+19,Containers,Docker build best practices,https://docs.docker.com/build/building/best-practices/,Fetch,
+20,Containers,Docker docs source (Markdown),https://github.com/docker/docs/tree/main/content,Fetch,Only reference/dockerfile and build/building folders
+21,Containers,Official Node Docker image,https://github.com/nodejs/docker-node,API,README
+22,Containers,Node Docker best practices,https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md,Fetch,
+23,IaC – CloudFormation,CloudFormation Template Reference,https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/,Crawl,"Only ECS, ECR, IAM, ELBv2, EC2 security groups, S3, CloudFront, Logs, CodePipeline, CodeBuild pages"
+24,IaC – CloudFormation,ECS resource index (example),https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_ECS.html,Fetch,"Replace .html with .md for Markdown; same pattern for AWS_ECR, AWS_IAM, AWS_S3, etc."
+25,IaC – CloudFormation,CloudFormation User Guide,https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/,Crawl,Intrinsic functions and template anatomy pages
+26,IaC – CDK,CDK v2 API reference,https://docs.aws.amazon.com/cdk/api/v2/,Crawl,"Only aws_ecs, aws_ecs_patterns, aws_ecr, aws_iam, aws_s3, aws_cloudfront modules"
+27,IaC – CDK,CDK module READMEs (Markdown),https://github.com/aws/aws-cdk/tree/main/packages/aws-cdk-lib,Fetch,"README.md in aws-ecs, aws-ecs-patterns, aws-ecr, etc."
+28,IaC – CDK,CDK releases,https://github.com/aws/aws-cdk/releases,API,Latest version to DynamoDB
+29,Deploy targets,ECS Developer Guide,https://docs.aws.amazon.com/AmazonECS/latest/developerguide/,Crawl,"Pages about Fargate, task definitions, services, troubleshooting, best practices"
+30,Deploy targets,ECS stopped-task error codes,https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stopped-task-error-codes.html,Fetch,
+31,Deploy targets,ECR User Guide,https://docs.aws.amazon.com/AmazonECR/latest/userguide/,Crawl,"Pages about image scanning, pushing images, lifecycle policies"
+32,Deploy targets (stretch),EKS User Guide,https://docs.aws.amazon.com/eks/latest/userguide/,Crawl,"Pages about cluster creation, autoscaling, Kubernetes versions"
+33,Deploy targets (stretch),Kubernetes Deployment,https://kubernetes.io/docs/concepts/workloads/controllers/deployment/,Fetch,
+34,Deploy targets (stretch),Kubernetes Service,https://kubernetes.io/docs/concepts/services-networking/service/,Fetch,
+35,Deploy targets (stretch),Kubernetes HPA,https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/,Fetch,
+36,Deploy targets (stretch),Kubernetes docs source (Markdown),https://github.com/kubernetes/website/tree/main/content/en/docs,Fetch,Matching files only
+37,Releases & versions,Node.js release index,https://nodejs.org/dist/index.json,API,Current LTS to DynamoDB
+38,Releases & versions,Node.js release schedule,https://raw.githubusercontent.com/nodejs/Release/main/schedule.json,API,End-of-life dates to DynamoDB
+39,Releases & versions,Node.js release blog,https://nodejs.org/en/blog/release,Crawl,Newest pages only
+40,Releases & versions,AWS What's New RSS,https://aws.amazon.com/about-aws/whats-new/recent/feed/,Feed,Keep items mentioning your services
+41,Releases & versions,Kubernetes releases,https://kubernetes.io/releases/,Fetch,Versions to DynamoDB
+42,Releases & versions,Kubernetes blog RSS,https://kubernetes.io/feed.xml,Feed,Release and deprecation posts only
+43,Releases & versions,EKS version calendar,https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html,Fetch,Versions to DynamoDB
+44,Security,Checkov – CloudFormation rules,https://www.checkov.io/5.Policy%20Index/cloudformation.html,Fetch,Rule ID to description lookup
+45,Security,Checkov – Dockerfile rules,https://www.checkov.io/5.Policy%20Index/dockerfile.html,Fetch,
+46,Security,Checkov – GitHub Actions rules,https://www.checkov.io/5.Policy%20Index/github_actions.html,Fetch,
+47,Security (stretch),Checkov – Kubernetes rules,https://www.checkov.io/5.Policy%20Index/kubernetes.html,Fetch,
+48,Security,Checkov docs source (Markdown),https://github.com/bridgecrewio/checkov/tree/main/docs,Fetch,
+49,Security,cfn-lint rules,https://github.com/aws-cloudformation/cfn-lint/blob/main/docs/rules.md,Fetch,
+50,Security,actionlint checks,https://github.com/rhysd/actionlint/blob/main/docs/checks.md,Fetch,
+51,Security,Trivy docs,https://trivy.dev/latest/docs/,Crawl,"Pages about vulnerability scanning, container images, filesystem"
+52,Security,cfn-guard rules registry,https://github.com/aws-cloudformation/aws-guard-rules-registry,Fetch,Rule files for your services
+53,Security,IAM security best practices,https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html,Fetch,
+54,Security,S3 security best practices,https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html,Fetch,
+55,Troubleshooting,CodeBuild troubleshooting,https://docs.aws.amazon.com/codebuild/latest/userguide/troubleshooting.html,Fetch,
+56,Troubleshooting,CloudFormation troubleshooting,https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html,Fetch,
+57,Troubleshooting,ECS troubleshooting,https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshooting.html,Fetch,
+58,Own content,Golden templates,(your S3 bucket),Upload,Hand-verified working examples per task type
+59,Own content,Guardrail policy,(your S3 bucket),Upload,Plain-language security rules

@@ -11,3 +11,8 @@ build/
 .idea/
 .vscode/
 *.log
+
+# InfraPilot data collection outputs (regenerable)
+data_collection/data/
+*.egg-info/
+.pytest_cache/

@@ -39,8 +39,7 @@ Source inputs: `InfraPilot Project Proposal.pdf` and the [document sources sheet
 ```
 infrapilot/
 ├── docs/                    # this plan, architecture notes, decisions
-├── sources/                 # sources.csv synced from the Google Sheet
-├── ingestion/               # fetchers (crawl/fetch/feed/api/upload), normalizer, version registry
+├── data_collection/         # sources (sheet snapshot + rules), fetchers, normalizer, chunker, version registry
 ├── rag/                     # retrieval backends (local + Bedrock KB), answer service, prompts
 ├── assistant/               # intent classifier, clarification/slot filling, artifact generators
 ├── templates/               # golden templates + guardrail policy (also ingested into the KB)
@@ -92,7 +91,7 @@ flowchart LR
 
 | # | Component | Responsibility | Main AWS services |
 |---|---|---|---|
-| C1 | **Source registry** | Turn the Google Sheet into `sources/sources.csv`: source id, type, URL, path filters, category | S3 (copy for Lambdas) |
+| C1 | **Source registry** | Turn the Google Sheet into `data_collection/sources/sources.csv`: source id, type, URL, path filters, category | S3 (copy for Lambdas) |
 | C2 | **Fetchers** | One per sheet *Type*: `Crawl`, `Fetch`, `Feed`, `API`, `Upload` | Lambda, Step Functions, Secrets Manager (GitHub token) |
 | C3 | **Normalizer** | HTML → Markdown, strip navigation, add a metadata sidecar, compute a content hash for change detection | Lambda |
 | C4 | **Raw doc store** | Versioned original + normalized docs | S3 |
@@ -183,7 +182,7 @@ Timeline assumes ~10 weeks starting the week of **2026-10-12**. Shift the dates 
 - Repo CI: `ruff`, `pytest`, `npm test` on PRs.
 
 **Pair A: Source registry + fetcher skeleton**
-- `scripts/sync_sources.py`: downloads the sheet as CSV (`/export?format=csv`) into `sources/sources.csv` and validates columns (`#, Category, Document, URL, Type, Filter / Notes`).
+- `infrapilot-data sync-sources`: downloads the sheet as CSV (`/export?format=csv`) into `data_collection/sources/sources.csv` and validates columns (`#, Category, Document, URL, Type, Filter / Notes`).
 - Parse the free-text *Filter / Notes* into structured rules (path allowlists, keyword filters, "latest release → DynamoDB"). Add a `filters` column to the sheet if that gets messy.
 - Define `NormalizedDoc` with pydantic and the fetcher base class.
 
@@ -207,8 +206,8 @@ Timeline assumes ~10 weeks starting the week of **2026-10-12**. Shift the dates 
 
 - **Normalizer:** HTML → clean Markdown (`trafilatura`), drop nav/footer, keep code blocks and tables, add the metadata sidecar, and compute a content hash. If the hash hasn't changed, skip the doc (cheaper re-ingestion).
 - **Version registry (local):** DynamoDB Local or LocalStack table `tool_versions` (`pk=tool`).
-- **CLI:** `infrapilot-ingest --source 2 --dry-run`, `--category Containers`, `--all`. It writes to `./data/normalized/` locally and to S3 later.
-- **Coverage gaps in the sheet.** The proposal includes features the sheet has no sources for. Add rows for:
+- **CLI:** `infrapilot-data fetch --source 2`, `--category Containers`, `--max-pages 3`, then `infrapilot-data process`. It writes to `data_collection/data/` locally and to S3 later. **Status: implemented**, see [`data_collection/README.md`](../data_collection/README.md); embedding model choice in [decision 001](decisions/001-embedding-model.md).
+- **Coverage gaps in the sheet** (proposed rows #60–81 are in `data_collection/sources/additional_sources.csv`). The proposal includes features the sheet has no sources for:
   - Lambda: Lambda Developer Guide (runtimes, deployment packages, Node.js handler), CloudFormation `AWS::Lambda::*`, the Lambda runtimes/deprecation table (into the version registry)
   - Static site: S3 static website hosting, CloudFront with an S3 origin (OAC), CloudFormation `AWS::CloudFront::*`
   - EKS autoscaling: Cluster Autoscaler or Karpenter docs, `eksctl` config file schema
@@ -435,6 +434,6 @@ Rough expectation with this discipline: **well under $30/month**, with the EKS t
 
 - [ ] Assign pairs (A: Knowledge & Generation, B: Platform & Delivery)
 - [ ] Pair B: Budgets + anomaly alerts, Identity Center users, Bedrock model access, CDK bootstrap, repo CI
-- [ ] Pair A: `sync_sources.py`, `NormalizedDoc` schema, Fetch-type fetcher + normalizer working on 5 sources
+- [x] Pair A: source sync, `NormalizedDoc` schema, fetchers for all source types, normalizer, chunker (`data_collection/`)
 - [ ] Pair B: pick the ~30-doc seed set, `LocalLanceRetriever`, first `infrapilot-ask` answer with citations
 - [ ] Both: write the first 30 eval questions; agree on contracts 1–5; add the missing sources to the sheet

@@ -1,0 +1,352 @@
+# Machine-readable collection rules for every row in sources.csv (the team sheet)
+# and additional_sources.csv (proposed additions). Keyed by the sheet's "#" column.
+#
+# The sheet stays the human-facing list; this file turns its free-text
+# "Filter / Notes" into rules the fetchers can run. Every enabled row needs an entry
+# here (tests/test_registry.py enforces it).
+#
+# Strategies (see infrapilot_data/fetchers/):
+#   page         one or more single pages; Markdown variant preferred when the site serves one
+#   sitemap      sitemap.xml filtered by include/exclude regexes on the URL
+#   md_links     follow relative .md links from seed pages (CloudFormation reference)
+#   html_crawl   bounded breadth-first crawl of HTML within a path prefix
+#   github_docs  docs.github.com page list + article API (rendered Markdown)
+#   github_repo  README to the corpus, latest release/tag to the version registry
+#   github_files files from a repo tree matched by glob
+#   feed         RSS/Atom with keyword filter and time window
+#   versions     structured version facts (Node index/schedule, endoflife.date)
+#   upload       team-authored files from data_collection/uploads/
+#   skip         intentionally not collected; skip_reason says why
+#
+# doc_type drives retrieval filters: reference | guide | release_note | rule |
+# troubleshooting | template | version
+
+defaults:
+  max_pages: 150
+  doc_type: reference
+
+sources:
+  # ---------------- CI/CD – GitHub Actions ----------------
+  "1":
+    strategy: github_docs
+    doc_type: guide
+    params:
+      prefixes: [/en/actions/reference/, /en/actions/how-tos/, /en/actions/concepts/]
+      max_pages: 260
+  "2":
+    strategy: github_docs
+    params:
+      pages: [/en/actions/reference/workflows-and-actions/workflow-syntax]
+  "3":
+    strategy: skip
+    skip_reason: >-
+      Covered by #1. The docs.github.com article API returns rendered Markdown, while the
+      repo source contains unrendered Liquid/reusable includes.
+  "4":
+    strategy: feed
+    doc_type: release_note
+    params: {url: "https://github.blog/changelog/label/actions/feed/", window_days: 180}
+  "5":
+    strategy: feed
+    doc_type: release_note
+    params:
+      url: "https://github.blog/changelog/feed/"
+      keywords: ["actions", "workflow", "runner", "github-hosted"]
+      window_days: 180
+  "6": {strategy: github_repo, params: {repo: actions/checkout}}
+  "7": {strategy: github_repo, params: {repo: actions/setup-node}}
+  "8": {strategy: github_repo, params: {repo: actions/cache}}
+  "9": {strategy: github_repo, params: {repo: aws-actions/configure-aws-credentials}}
+  "10": {strategy: github_repo, params: {repo: aws-actions/amazon-ecr-login}}
+  "11": {strategy: github_repo, params: {repo: aws-actions/amazon-ecs-render-task-definition}}
+  "12": {strategy: github_repo, params: {repo: aws-actions/amazon-ecs-deploy-task-definition}}
+  "13": {strategy: github_repo, params: {repo: docker/setup-buildx-action}}
+  "14": {strategy: github_repo, params: {repo: docker/build-push-action}}
+
+  # ---------------- CI/CD – AWS ----------------
+  "15":
+    strategy: page
+    params: {urls: ["https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html"]}
+  "16":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/codebuild/latest/userguide/sitemap.xml"
+      include: ['build-spec', 'buildspec', 'troubleshoot', 'getting-started', 'build-env-ref', 'sample-', 'test-report', 'caching']
+      max_pages: 90
+  "17":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/codepipeline/latest/userguide/sitemap.xml"
+      include: ['action-reference', 'reference-pipeline', 'structure', 'tutorials-', 'troubleshooting', 'concepts', 'pipelines-create', 'welcome']
+      max_pages: 80
+
+  # ---------------- Containers ----------------
+  "18": {strategy: page, params: {urls: ["https://docs.docker.com/reference/dockerfile/"]}}
+  "19": {strategy: page, params: {urls: ["https://docs.docker.com/build/building/best-practices/"]}}
+  "20":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.docker.com/sitemap.xml"
+      include: ['/build/building/']
+      max_pages: 30
+  "21": {strategy: github_repo, params: {repo: nodejs/docker-node, version_tool: null}}
+  "22":
+    strategy: page
+    params: {urls: ["https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md"]}
+
+  # ---------------- IaC – CloudFormation ----------------
+  "23":
+    strategy: md_links
+    params:
+      # Service index pages link to resource pages, which link to property pages.
+      seeds:
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_ECS.md"
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_ECR.md"
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_IAM.md"
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_ElasticLoadBalancingV2.md"
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_S3.md"
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_CloudFront.md"
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_Logs.md"
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_CodePipeline.md"
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_CodeBuild.md"
+        - "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ec2-securitygroup.md"
+      include: ['aws-(resource|properties)-(ecs|ecr|iam|elasticloadbalancingv2|s3-bucket|s3-bucketpolicy|cloudfront|logs|codepipeline|codebuild|ec2-securitygroup)']
+      exclude: ['s3express', 's3outposts', 's3tables', 's3vectors', 'storagelens', 'multiregionaccesspoint', 'accesspoint', 'accessgrant']
+      max_depth: 2
+      max_pages: 450
+  "24":
+    strategy: skip
+    skip_reason: "Example row; the .md pattern it describes is how #23 is collected."
+  "25":
+    strategy: sitemap
+    params:
+      max_pages: 100
+      sitemaps:
+        - sitemap: "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/sitemap.xml"
+          include: ['template-anatomy', 'template-formats', 'parameters', 'outputs', 'mappings', 'conditions', 'resources-section', 'template-guide', 'cfn-whatis', 'gettingstarted', 'best-practices', 'using-cfn-updating', 'stack-failure']
+        - sitemap: "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/sitemap.xml"
+          include: ['intrinsic-function-reference', 'pseudo-parameter', 'aws-attribute-']
+          exclude: ['foreach-example']
+
+  # ---------------- IaC – CDK ----------------
+  "26":
+    strategy: skip
+    skip_reason: >-
+      The generated HTML API reference is very large and repetitive. #27 (module READMEs)
+      carries the same usage docs as clean Markdown.
+  "27":
+    strategy: github_files
+    params:
+      repo: aws/aws-cdk
+      ref: main
+      globs:
+        - packages/aws-cdk-lib/aws-ecs/README.md
+        - packages/aws-cdk-lib/aws-ecs-patterns/README.md
+        - packages/aws-cdk-lib/aws-ecr/README.md
+        - packages/aws-cdk-lib/aws-ecr-assets/README.md
+        - packages/aws-cdk-lib/aws-iam/README.md
+        - packages/aws-cdk-lib/aws-s3/README.md
+        - packages/aws-cdk-lib/aws-s3-deployment/README.md
+        - packages/aws-cdk-lib/aws-cloudfront/README.md
+        - packages/aws-cdk-lib/aws-cloudfront-origins/README.md
+        - packages/aws-cdk-lib/aws-lambda/README.md
+        - packages/aws-cdk-lib/aws-lambda-nodejs/README.md
+        - packages/aws-cdk-lib/aws-logs/README.md
+        - packages/aws-cdk-lib/aws-elasticloadbalancingv2/README.md
+        - packages/aws-cdk-lib/aws-codebuild/README.md
+        - packages/aws-cdk-lib/aws-codepipeline/README.md
+        - packages/aws-cdk-lib/aws-codepipeline-actions/README.md
+        - packages/aws-cdk-lib/aws-eks/README.md
+        - packages/aws-cdk-lib/aws-ec2/README.md
+  "28": {strategy: github_repo, params: {repo: aws/aws-cdk, readme: false, version_tool: aws-cdk}}
+
+  # ---------------- Deploy targets ----------------
+  "29":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/sitemap.xml"
+      include: ['fargate', 'task_definition', 'task-definition', 'service', 'troubleshoot', 'best-practice', 'stopped', 'deployment', 'load-balanc', 'awsvpc', 'task-iam', 'getting-started', 'logging', 'cloudwatch-logs']
+      exclude: ['ec2-', 'windows', 'external', 'anywhere', 'gpu', 'inferentia', 'service-connect-envoy']
+      max_pages: 160
+  "30":
+    strategy: page
+    doc_type: troubleshooting
+    params: {urls: ["https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stopped-task-error-codes.html"]}
+  "31":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/AmazonECR/latest/userguide/sitemap.xml"
+      include: ['image-scanning', 'push', 'lifecycle', 'registry_auth', 'getting-started', 'repository-create', 'image-tag', 'troubleshoot']
+      max_pages: 40
+  "32":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/eks/latest/userguide/sitemap.xml"
+      include: ['create-cluster', 'autoscaling', 'kubernetes-versions', 'karpenter', 'automode', 'auto-mode', 'managed-node', 'horizontal-pod', 'metrics-server', 'troubleshoot', 'cluster-autoscaler', 'getting-started', 'quickstart', 'update-cluster', 'lbc', 'alb-ingress']
+      max_pages: 80
+  "33": {strategy: page, params: {urls: ["https://kubernetes.io/docs/concepts/workloads/controllers/deployment/"]}}
+  "34": {strategy: page, params: {urls: ["https://kubernetes.io/docs/concepts/services-networking/service/"]}}
+  "35": {strategy: page, params: {urls: ["https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/"]}}
+  "36":
+    strategy: skip
+    skip_reason: >-
+      Covered by #33-35. The Hugo source has shortcodes that render poorly, so the
+      rendered pages are used instead.
+
+  # ---------------- Releases & versions ----------------
+  "37":
+    # nodejs.org/dist/ is disallowed in robots.txt, so the same facts come from endoflife.date.
+    strategy: versions
+    doc_type: version
+    params: {kind: endoflife, product: nodejs}
+  "38": {strategy: versions, doc_type: version, params: {kind: node_schedule}}
+  "39":
+    strategy: skip
+    skip_reason: "Release posts are mostly commit lists (noisy for retrieval). Version facts come from #37/#38."
+  "40":
+    strategy: feed
+    doc_type: release_note
+    params:
+      url: "https://aws.amazon.com/about-aws/whats-new/recent/feed/"
+      keywords: ["Amazon ECS", "Fargate", "Amazon ECR", "AWS Lambda", "CloudFormation", "AWS CDK", "Cloud Development Kit", "CodeBuild", "CodePipeline", "Amazon EKS", "CloudFront", "Amazon S3"]
+      window_days: 120
+  "41": {strategy: page, doc_type: version, params: {urls: ["https://kubernetes.io/releases/"]}}
+  "42":
+    strategy: feed
+    doc_type: release_note
+    params:
+      url: "https://kubernetes.io/feed.xml"
+      keywords: ["release", "deprecat", "removal", "Kubernetes v1."]
+      window_days: 365
+  "43":
+    strategy: page
+    doc_type: version
+    params: {urls: ["https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html"]}
+
+  # ---------------- Security ----------------
+  "44": {strategy: page, doc_type: rule, params: {urls: ["https://www.checkov.io/5.Policy%20Index/cloudformation.html"]}}
+  "45": {strategy: page, doc_type: rule, params: {urls: ["https://www.checkov.io/5.Policy%20Index/dockerfile.html"]}}
+  "46": {strategy: page, doc_type: rule, params: {urls: ["https://www.checkov.io/5.Policy%20Index/github_actions.html"]}}
+  "47": {strategy: page, doc_type: rule, params: {urls: ["https://www.checkov.io/5.Policy%20Index/kubernetes.html"]}}
+  "48":
+    strategy: github_files
+    params:
+      repo: bridgecrewio/checkov
+      ref: main
+      globs: ["docs/1.Welcome/*.md", "docs/2.Basics/*.md", "docs/7.Scan Examples/*.md", "docs/8.Outputs/*.md"]
+      max_files: 80
+  "49": {strategy: page, doc_type: rule, params: {urls: ["https://github.com/aws-cloudformation/cfn-lint/blob/main/docs/rules.md"]}}
+  "50": {strategy: page, doc_type: rule, params: {urls: ["https://github.com/rhysd/actionlint/blob/main/docs/checks.md"]}}
+  "51":
+    strategy: html_crawl
+    params:
+      seeds: ["https://trivy.dev/latest/docs/"]
+      prefix: "https://trivy.dev/latest/docs/"
+      include: ['/scanner/vulnerability', '/scanner/misconfiguration', '/target/container_image', '/target/filesystem', '/coverage/language/nodejs', '/configuration/filtering', '/configuration/reporting', '/latest/docs/$']
+      max_depth: 3
+      max_pages: 40
+  "52":
+    strategy: github_files
+    doc_type: rule
+    params:
+      repo: aws-cloudformation/aws-guard-rules-registry
+      ref: main
+      globs:
+        - "rules/aws/amazon_s3/*.guard"
+        - "rules/aws/iam/*.guard"
+        - "rules/aws/amazon_ecs/*.guard"
+        - "rules/aws/aws_ecr/*.guard"
+        - "rules/aws/cloudfront/*.guard"
+        - "rules/aws/lambda/*.guard"
+        - "rules/aws/elastic_load_balancing_v2/*.guard"
+        - "rules/aws/codebuild/*.guard"
+        - "rules/aws/amazon_eks/*.guard"
+      max_files: 200
+  "53": {strategy: page, params: {urls: ["https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html"]}}
+  "54": {strategy: page, params: {urls: ["https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html"]}}
+
+  # ---------------- Troubleshooting ----------------
+  "55": {strategy: page, doc_type: troubleshooting, params: {urls: ["https://docs.aws.amazon.com/codebuild/latest/userguide/troubleshooting.html"]}}
+  "56": {strategy: page, doc_type: troubleshooting, params: {urls: ["https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html"]}}
+  "57": {strategy: page, doc_type: troubleshooting, params: {urls: ["https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshooting.html"]}}
+
+  # ---------------- Own content ----------------
+  "58": {strategy: upload, doc_type: template, params: {dir: uploads/golden_templates}}
+  "59": {strategy: upload, doc_type: rule, params: {dir: uploads/guardrails}}
+
+  # ================ Proposed additions (additional_sources.csv) ================
+  "60":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/lambda/latest/dg/sitemap.xml"
+      include: ['nodejs', 'runtimes', 'urls', 'configuration-', 'troubleshoot', 'getting-started', 'gettingstarted', 'images', 'lambda-intro', 'concepts', 'best-practices', 'deploy']
+      exclude: ['java', 'python', 'ruby', 'dotnet', 'csharp', 'golang', 'powershell', 'rust']
+      max_pages: 100
+  "61": {strategy: versions, doc_type: version, params: {kind: endoflife, product: aws-lambda}}
+  "62":
+    strategy: md_links
+    params:
+      seeds: ["https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_Lambda.md"]
+      include: ['aws-(resource|properties)-lambda-(function|permission|url|alias|version|layerversion|eventsourcemapping)']
+      max_depth: 2
+      max_pages: 80
+  "63":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/sitemap.xml"
+      include: ['WebsiteHosting', 'website', 'HostingWebsite', 'EnableWebsiteHosting', 'IndexDocument', 'CustomErrorDocument', 'WebsiteAccess']
+      max_pages: 20
+  "64":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/sitemap.xml"
+      include: ['restricting-access-to-s3', 'static-website', 'DefaultRootObject', 'Invalidation', 'distribution-web-values', 'origin-access', 'secure-static', 'GettingStarted']
+      max_pages: 25
+  "65":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/cdk/v2/guide/sitemap.xml"
+      include: ['best-practices', 'bootstrapping', 'deploy', 'cli', 'troubleshoot', 'getting-started', 'hello-world', 'work-with-cdk-python', 'work-with-cdk-typescript', 'constructs', 'stacks', 'apps', 'environments', 'assets', 'testing']
+      max_pages: 60
+  "66":
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/eks/latest/best-practices/sitemap.xml"
+      include: ['autoscal', 'karpenter', 'cas', 'cluster-autoscaler', 'scalab', 'security', 'iam', 'reliab']
+      max_pages: 30
+  "67":
+    strategy: sitemap
+    params:
+      sitemap: "https://karpenter.sh/sitemap.xml"
+      include: ['^https://karpenter\.sh/docs/(getting-started|concepts)/']
+      max_pages: 40
+  "68": {strategy: page, params: {urls: ["https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md"]}}
+  "69":
+    # eksctl docs moved from eksctl.io to the AWS docs site.
+    strategy: sitemap
+    params:
+      sitemap: "https://docs.aws.amazon.com/eks/latest/eksctl/sitemap.xml"
+      include: ['schema', 'creating-and-managing-clusters', 'nodegroup', 'autoscaling', 'iamserviceaccounts', 'pod-identity', 'auto-mode', 'cluster-upgrade', 'eksctl-karpenter', 'vpc-configuration', 'troubleshooting', 'what-is-eksctl']
+      max_pages: 30
+  "70":
+    strategy: github_files
+    doc_type: template
+    params:
+      repo: actions/starter-workflows
+      ref: main
+      globs: ["ci/node.js.yml", "ci/docker-image.yml", "ci/docker-publish.yml", "deployments/aws.yml", "pages/static.yml"]
+  "71": {strategy: github_repo, params: {repo: aws-actions/aws-cloudformation-github-deploy}}
+  "72": {strategy: github_repo, params: {repo: aws-actions/aws-lambda-deploy}}
+  "73": {strategy: github_repo, params: {repo: actions/upload-artifact}}
+  "74": {strategy: github_repo, params: {repo: docker/login-action}}
+  "75": {strategy: github_repo, params: {repo: docker/metadata-action}}
+  "76": {strategy: github_repo, params: {repo: aquasecurity/trivy-action}}
+  "77": {strategy: github_repo, doc_type: rule, params: {repo: hadolint/hadolint}}
+  "78":
+    strategy: page
+    params: {urls: ["https://docs.docker.com/build/building/multi-stage/", "https://docs.docker.com/build/concepts/context/"]}
+  "79": {strategy: page, params: {urls: ["https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html"]}}
+  "80":
+    strategy: versions
+    doc_type: version
+    params: {kind: endoflife, products: [kubernetes, amazon-eks]}
