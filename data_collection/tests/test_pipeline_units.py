@@ -141,3 +141,19 @@ def test_long_tables_repeat_header_and_bare_headings_merge_forward():
     assert len(chunks) > 3
     assert all("| Id | Policy |" in c.text for c in chunks)
     assert all(c.token_count >= 40 for c in chunks), "heading-only chunk survived"
+
+
+def test_markdown_escapes_removed_outside_code_and_table_pipes_kept():
+    from infrapilot_data.normalize import clean_markdown
+
+    out = clean_markdown("| CKV\\_GHA\\_1 | a \\| b |\n\n```\nkeep\\_this\n```\n")
+    assert "CKV_GHA_1" in out and "a \\| b" in out and "keep\\_this" in out
+
+
+def test_context_header_adds_source_name_when_title_lacks_it():
+    doc = make_doc("# AWS S3 Deployment Construct Library\n\n" + "Deploy files to a bucket. " * 20)
+    doc = doc.model_copy(update={"title": "AWS S3 Deployment Construct Library"})
+    text = chunk_document(doc, source_name="CDK module READMEs (Markdown)")[0].text
+    assert "Source: CDK module READMEs (Markdown)" in text
+    same = chunk_document(doc, source_name="AWS S3 Deployment Construct Library")[0].text
+    assert "Source:" not in same

@@ -154,6 +154,7 @@ def run_process(specs: list[SourceSpec]) -> dict:
             shutil.rmtree(path)
         path.mkdir(parents=True)
 
+    names = {s.id: s.name for s in specs}
     all_chunks: list[Chunk] = []
     for doc in kept:
         stats[doc.source_id]["docs"] += 1
@@ -162,7 +163,7 @@ def run_process(specs: list[SourceSpec]) -> dict:
         out.mkdir(exist_ok=True)
         (out / f"{doc.doc_id}.md").write_text(doc.body_markdown)
         _write_json(out / f"{doc.doc_id}.json", doc.model_dump(mode="json", exclude={"body_markdown"}))
-        chunks = chunk_document(doc)
+        chunks = chunk_document(doc, source_name=names.get(doc.source_id))
         stats[doc.source_id]["chunks"] += len(chunks)
         stats[doc.source_id]["chunk_tokens"] += sum(c.token_count for c in chunks)
         all_chunks.extend(chunks)

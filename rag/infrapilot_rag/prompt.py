@@ -22,11 +22,12 @@ ending in ":" don't need one. Introduce each code block with its source, e.g. \
 for claims that excerpt actually supports.
 2. Stay inside the excerpts. Don't add advice, reasons, best practices or caveats that \
 the excerpts don't state, even if you believe they're true. No closing summary sentence.
-3. If the excerpts don't contain the answer, reply exactly "{REFUSAL}" and nothing else. \
-If they answer only part of what was asked, answer that part, then add one final line \
-"Not covered in the docs: <the part of the question left unanswered>". When the question \
-is fully answered, don't add that line. Values the user fills in themselves (names, ARNs, \
-account IDs) are placeholders, not gaps.
+3. Refuse only when no excerpt is about the question's topic: then reply exactly \
+"{REFUSAL}" and nothing else. If the excerpts cover the topic but not every detail asked \
+for (for example the console steps but not the CloudFormation property), answer with what \
+they do contain, then add one final line "Not covered in the docs: <what's missing>". When \
+the question is fully answered, don't add that line. Values the user fills in themselves \
+(names, ARNs, account IDs) are placeholders, not gaps.
 4. For versions (action tags, Node.js, Lambda runtimes, Kubernetes, CDK), use the version \
 facts, not versions shown in excerpts: doc examples are often outdated. Cite version facts as [V].
 5. Keep code and config examples short, based on the excerpts, and using current versions.
@@ -64,4 +65,6 @@ def parse_citations(text: str, n_chunks: int) -> tuple[list[int], list[int], boo
 
 
 def is_refusal(text: str) -> bool:
-    return text.strip().startswith(REFUSAL.rstrip("."))
+    """The fixed refusal, or an answer that is nothing but a "Not covered" line."""
+    t = text.strip()
+    return t.startswith(REFUSAL.rstrip(".")) or t.startswith("Not covered in the docs")

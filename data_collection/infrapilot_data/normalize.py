@@ -31,6 +31,9 @@ WRAPPER_TAGS = re.compile(
     re.IGNORECASE,
 )
 BLANK_RUNS = re.compile(r"\n{3,}")
+# Markdown backslash escapes (`github\_actions`, `\*`) hide words from keyword search.
+# `\|` stays: it's a literal pipe inside a table cell.
+MD_ESCAPE = re.compile(r"\\([\\`*_{}\[\]()#+\-.!<>~])")
 H1 = re.compile(r"^#\s+(.+?)\s*#*\s*$", re.MULTILINE)
 LIST_ITEM = re.compile(r"^\s*(?:[-*+]|\d+\.)\s+")
 
@@ -63,6 +66,7 @@ def _clean_prose(text: str) -> str:
     text = HUGO.sub("", text)
     text = BR.sub(" ", text)
     text = WRAPPER_TAGS.sub("", text)
+    text = MD_ESCAPE.sub(r"\1", text)
     return text
 
 

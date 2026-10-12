@@ -53,6 +53,19 @@ def diversify(chunks: list[RetrievedChunk], k: int, max_per_doc: int) -> list[Re
     return out
 
 
+def best_passages(chunks: list[RetrievedChunk], k: int, max_per_doc: int) -> list[RetrievedChunk]:
+    """Let the (fused) ranking decide which pages get the k slots, then fill each page's
+    slots with that page's highest-scoring chunks. Keyword matches are good at finding the
+    right page; meaning scores are better at picking the passage within it."""
+    slots = diversify(chunks, k, max_per_doc)
+    by_doc: dict[str, list[RetrievedChunk]] = {}
+    for c in chunks:
+        by_doc.setdefault(c.metadata.get("doc_id", c.url), []).append(c)
+    for doc in by_doc:
+        by_doc[doc].sort(key=lambda c: c.score, reverse=True)
+    return [by_doc[c.metadata.get("doc_id", c.url)].pop(0) for c in slots]
+
+
 def rrf(*ranked: list[dict], k: int = 60) -> list[dict]:
     """Reciprocal rank fusion: score each row by sum(1 / (k + rank)) across the lists."""
     score: dict[str, float] = {}
@@ -133,6 +146,8 @@ class LocalLanceRetriever:
             )
             for r in rows
         ]
+        if self.hybrid:
+            return best_passages(hits, k, self.cfg.max_per_doc)
         return diversify(hits, k, self.cfg.max_per_doc)
 
 

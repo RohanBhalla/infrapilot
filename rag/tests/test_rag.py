@@ -269,3 +269,13 @@ def test_versions_added_for_actions_pinned_in_excerpts(versions):
     assert "actions/setup-node" not in {f["tool"] for f in versions.relevant(q)}
     ctx = "steps:\n  - uses: actions/setup-node@v4\n"
     assert "actions/setup-node" in {f["tool"] for f in versions.relevant(q, ctx)}
+
+
+def test_best_passages_keeps_page_slots_but_picks_best_chunks():
+    from infrapilot_rag.retriever import best_passages
+
+    def c(cid, doc, score):
+        return RetrievedChunk(chunk_id=cid, text="", url=doc, title="", score=score, metadata={"doc_id": doc})
+    fused = [c("a-low", "A", 0.40), c("b1", "B", 0.70), c("a-mid", "A", 0.50), c("a-best", "A", 0.90)]
+    out = [x.chunk_id for x in best_passages(fused, k=3, max_per_doc=2)]
+    assert out == ["a-best", "b1", "a-mid"]  # A keeps slots 1 and 3, filled with its best chunks

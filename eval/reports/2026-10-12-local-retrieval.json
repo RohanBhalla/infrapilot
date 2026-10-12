@@ -10,13 +10,13 @@
       "max_per_doc": 2,
       "min_score": 0.3
     },
-    "seconds": 3.2
+    "seconds": 2.5
   },
   "summary": {
     "questions": 79,
-    "hit@1": 0.6271186440677966,
+    "hit@1": 0.6440677966101694,
     "hit@5": 0.9491525423728814,
-    "mrr@10": 0.7526836158192091,
+    "mrr@10": 0.7614608555286522,
     "hit@5_by_category": {
       "CI/CD – AWS": [
         1.0,
@@ -61,17 +61,17 @@
       "rank": 1,
       "retrieved_urls": [
         "https://docs.github.com/en/actions/concepts/workflows-and-actions/dependency-caching",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching",
         "https://github.com/actions/setup-node#readme",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching",
+        "https://docs.github.com/en/actions/concepts/workflows-and-actions/dependency-caching",
         "https://github.com/actions/setup-node#readme",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
-        "https://docs.github.com/en/actions/concepts/workflows-and-actions/dependency-caching",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-s3.html",
-        "https://github.com/actions/cache#readme",
+        "https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts",
         "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manage-caches"
       ],
-      "top_score": 0.7326
+      "top_score": 0.7427
     },
     {
       "id": "gha-branch-filter",
@@ -91,7 +91,7 @@
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency"
       ],
-      "top_score": 0.7713
+      "top_score": 0.7614
     },
     {
       "id": "gha-matrix",
@@ -101,17 +101,17 @@
       "rank": 1,
       "retrieved_urls": [
         "https://github.com/actions/setup-node#readme",
+        "https://endoflife.date/nodejs",
         "https://raw.githubusercontent.com/nodejs/Release/main/schedule.json",
         "https://github.com/actions/starter-workflows/blob/main/ci/node.js.yml",
-        "https://endoflife.date/nodejs",
-        "https://github.blog/changelog/2026-09-23-node-20-is-no-longer-available-in-github-actions",
         "https://github.com/actions/setup-node#readme",
+        "https://github.blog/changelog/2026-09-23-node-20-is-no-longer-available-in-github-actions",
         "https://docs.aws.amazon.com/lambda/latest/dg/lambda-managed-instances-nodejs-runtime.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax"
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"
       ],
-      "top_score": 0.5304
+      "top_score": 0.5584
     },
     {
       "id": "gha-job-outputs",
@@ -125,31 +125,31 @@
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/pass-job-outputs",
         "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows",
         "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/contexts"
       ],
-      "top_score": 0.4993
+      "top_score": 0.4609
     },
     {
       "id": "gha-oidc-aws",
       "kind": "answer",
       "category": "CI/CD – GitHub Actions",
       "question": "How do I configure OIDC so GitHub Actions can deploy to AWS without long-lived access keys?",
-      "rank": 2,
+      "rank": 4,
       "retrieved_urls": [
         "https://github.com/aws-actions/aws-lambda-deploy#readme",
-        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws",
         "https://docs.github.com/en/actions/reference/security/secure-use",
+        "https://docs.github.com/en/actions/concepts/security/openid-connect",
+        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws",
         "https://github.com/aws-actions/configure-aws-credentials#readme",
         "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-cloud-providers",
         "https://github.com/aws-actions/configure-aws-credentials#readme",
         "https://docs.github.com/en/actions/concepts/security/openid-connect",
-        "https://docs.github.com/en/actions/concepts/security/openid-connect",
-        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-google-cloud-platform",
-        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-octopus-deploy"
+        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-octopus-deploy",
+        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws"
       ],
       "top_score": 0.7231
     },
@@ -165,13 +165,13 @@
         "https://docs.github.com/en/actions/concepts/security/secrets",
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
-        "https://docs.github.com/en/actions/concepts/security/secrets",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://docs.github.com/en/actions/concepts/security/secrets",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands",
-        "https://docs.github.com/en/actions/reference/security/secure-use",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands"
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands",
+        "https://docs.github.com/en/actions/reference/security/secure-use"
       ],
-      "top_score": 0.6864
+      "top_score": 0.6811
     },
     {
       "id": "gha-concurrency",
@@ -188,22 +188,22 @@
         "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/cancel-a-workflow-run",
         "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
         "https://github.com/actions/starter-workflows/blob/main/pages/static.yml",
-        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/create-custom-protection-rules",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-cancellation"
+        "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/create-custom-protection-rules"
       ],
-      "top_score": 0.5783
+      "top_score": 0.5759
     },
     {
       "id": "gha-env-approval",
       "kind": "answer",
       "category": "CI/CD – GitHub Actions",
       "question": "How do I require a manual approval before a job deploys to production?",
-      "rank": 3,
+      "rank": 4,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-cloudformation-action.html",
         "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
-        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments",
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow",
+        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments",
         "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",
         "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/approve-runs-from-forks",
@@ -211,7 +211,7 @@
         "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works.html"
       ],
-      "top_score": 0.5662
+      "top_score": 0.5759
     },
     {
       "id": "gha-token-perms",
@@ -223,15 +223,15 @@
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
         "https://docs.github.com/en/actions/how-tos/administer/control-workflow-execution",
-        "https://docs.github.com/en/actions/concepts/security/github_token",
         "https://docs.github.com/en/actions/concepts/security/compromised-runners",
+        "https://docs.github.com/en/actions/concepts/security/github_token",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations",
         "https://docs.github.com/en/actions/reference/security/secure-use",
         "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-hashicorp-vault",
         "https://docs.github.com/en/actions/how-tos/administer/control-workflow-execution",
-        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-google-cloud-platform"
+        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-azure"
       ],
-      "top_score": 0.6756
+      "top_score": 0.7086
     },
     {
       "id": "gha-troubleshoot",
@@ -242,16 +242,16 @@
       "retrieved_urls": [
         "https://docs.github.com/en/actions/how-tos/troubleshoot-workflows",
         "https://docs.github.com/en/actions/how-tos/troubleshoot-workflows",
-        "https://docs.github.com/en/actions/reference/limits",
-        "https://docs.github.com/en/actions/how-tos/get-support",
         "https://docs.github.com/en/actions/how-tos/monitor-workflows",
+        "https://docs.github.com/en/actions/reference/limits",
+        "https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/customize-containers",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/action-runner-troubleshoot-webhook.html",
         "https://docs.github.com/en/actions/how-tos/get-support",
-        "https://docs.github.com/en/actions/how-tos/create-and-publish-actions/release-and-maintain-actions",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/troubleshooting.html",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
+        "https://docs.github.com/en/actions/how-tos/monitor-workflows/use-workflow-run-logs"
       ],
-      "top_score": 0.7612
+      "top_score": 0.7742
     },
     {
       "id": "gha-ecr-push",
@@ -262,13 +262,13 @@
       "retrieved_urls": [
         "https://github.com/aws-actions/amazon-ecr-login#readme",
         "https://github.com/aws-actions/amazon-ecr-login#readme",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ecr-build-publish.html",
         "https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/amazon-elastic-container-service",
-        "https://github.com/actions/starter-workflows/blob/main/deployments/aws.yml",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-docker-hub.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ecr-build-publish.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-docker-hub.html",
         "https://github.com/aws-actions/aws-lambda-deploy#readme",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-docker-hub.html",
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html",
+        "https://github.com/actions/starter-workflows/blob/main/deployments/aws.yml",
         "https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html"
       ],
       "top_score": 0.7602
@@ -283,15 +283,15 @@
         "https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/amazon-elastic-container-service",
         "https://github.com/actions/starter-workflows/blob/main/deployments/aws.yml",
         "https://github.com/aws-actions/amazon-ecs-deploy-task-definition#readme",
-        "https://github.com/actions/starter-workflows/blob/main/deployments/aws.yml",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-ECS.html",
         "https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/amazon-elastic-container-service",
+        "https://github.com/actions/starter-workflows/blob/main/deployments/aws.yml",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-ECS.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ecs-ecr-codedeploy.html"
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ecs-ecr-codedeploy.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html"
       ],
-      "top_score": 0.7236
+      "top_score": 0.742
     },
     {
       "id": "gha-cfn-deploy",
@@ -303,15 +303,15 @@
         "https://github.com/aws-actions/aws-cloudformation-github-deploy#readme",
         "https://github.com/aws-actions/aws-cloudformation-github-deploy#readme",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-StackSets.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CloudFormation.html",
+        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CloudFormation.html",
         "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-stackset-deployment.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-stackset-deployment.html"
       ],
-      "top_score": 0.6652
+      "top_score": 0.6794
     },
     {
       "id": "gha-image-tags",
@@ -323,15 +323,15 @@
         "https://github.com/docker/metadata-action#readme",
         "https://github.com/docker/metadata-action#readme",
         "https://github.com/actions/starter-workflows/blob/main/ci/docker-publish.yml",
-        "https://github.com/actions/starter-workflows/blob/main/ci/docker-publish.yml",
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/find-and-customize-actions",
         "https://github.com/aws-actions/amazon-ecr-login#readme",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
         "https://github.com/aws-actions/amazon-ecr-login#readme",
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/find-and-customize-actions",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
+        "https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/google-kubernetes-engine"
       ],
-      "top_score": 0.6448
+      "top_score": 0.6908
     },
     {
       "id": "cb-buildspec-phases",
@@ -341,37 +341,37 @@
       "rank": 1,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite-buildspec.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-overview.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite-buildspec.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-gitlab-runners.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-overview.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-lambda-react-nodejs.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-cmd.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-codepipeline.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md"
       ],
-      "top_score": 0.7076
+      "top_score": 0.7369
     },
     {
       "id": "cb-caching",
       "kind": "answer",
       "category": "CI/CD – AWS",
       "question": "What caching options does CodeBuild support to speed up builds?",
-      "rank": 3,
+      "rank": 2,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-s3.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-local.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-codebuild-project-projectcache.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-local.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-s3.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html"
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-local.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/build-caching.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/specify-caching-local.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/specify-caching-local.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-codebuild-project-projectcache.html"
       ],
-      "top_score": 0.7264
+      "top_score": 0.724
     },
     {
       "id": "cb-docker",
@@ -383,35 +383,35 @@
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-custom-image.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-server.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-windows-docker-custom-image.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-overview.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-server.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-overview.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-overview.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-build-badges.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-section.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md"
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-custom-image.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-ecr.html"
       ],
-      "top_score": 0.7387
+      "top_score": 0.8061
     },
     {
       "id": "cp-github-source",
       "kind": "answer",
       "category": "CI/CD – AWS",
       "question": "How do I start a CodePipeline pipeline from a GitHub repository?",
-      "rank": 3,
+      "rank": 5,
       "retrieved_urls": [
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-simple-codecommit.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ec2-deploy.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-simple-codecommit.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-github-tags.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-github-tags.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-github-gitclone.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-simple-codecommit.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ecr-build-publish.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-github-featurebranches.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md"
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-commands.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-serverlessrepo-auto-publish.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-simple-codecommit.html"
       ],
-      "top_score": 0.7694
+      "top_score": 0.7189
     },
     {
       "id": "cp-artifacts",
@@ -425,13 +425,13 @@
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-codepipeline.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline/README.md",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-four-stage-pipeline.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline/README.md"
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline/README.md",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-simple-codecommit.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-S3Deploy.html"
       ],
-      "top_score": 0.7029
+      "top_score": 0.7043
     },
     {
       "id": "cb-env-vars",
@@ -443,15 +443,15 @@
         "https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version-github.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version-github.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version-github-ref.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeCommit.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-codebuild-project-projectsourceversion.html"
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version.html"
       ],
-      "top_score": 0.6892
+      "top_score": 0.7139
     },
     {
       "id": "cfn-rollback-failed",
@@ -464,14 +464,14 @@
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-failure-options.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-failure-options.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-monitor-stack.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-failure-options.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/rollback-automode.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/rollback-automode.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-rollback.html"
       ],
-      "top_score": 0.895
+      "top_score": 0.8926
     },
     {
       "id": "cfn-retain",
@@ -480,78 +480,78 @@
       "question": "How do I keep an S3 bucket when its CloudFormation stack is deleted?",
       "rank": 4,
       "retrieved_urls": [
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-s3-bucket.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/gettingstarted.walkthrough.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-s3-bucket.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-attribute-deletionpolicy.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-attribute-deletionpolicy.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
         "https://docs.aws.amazon.com/cdk/v2/guide/troubleshooting.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/troubleshooting.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3-deployment/README.md"
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-s3-bucket.html"
       ],
-      "top_score": 0.7681
+      "top_score": 0.7714
     },
     {
       "id": "cfn-sub",
       "kind": "answer",
       "category": "IaC – CloudFormation",
       "question": "How do I build a string from parameters and resource attributes in a CloudFormation template?",
-      "rank": 8,
+      "rank": 7,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-sub.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-sub.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-attribute-condition.html"
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-policy.html"
       ],
-      "top_score": 0.5973
+      "top_score": 0.5944
     },
     {
       "id": "cfn-changeset",
       "kind": "answer",
       "category": "IaC – CloudFormation",
       "question": "How do I preview the changes an update will make to a CloudFormation stack before applying it?",
-      "rank": 2,
+      "rank": 1,
       "retrieved_urls": [
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-get-template.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-view.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-view.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-execute.html"
       ],
-      "top_score": 0.7249
+      "top_score": 0.7239
     },
     {
       "id": "cfn-export",
       "kind": "answer",
       "category": "IaC – CloudFormation",
       "question": "How do I share a value from one CloudFormation stack with another stack?",
-      "rank": 3,
+      "rank": 4,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ec2/README.md",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-importvalue.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-create.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-importvalue.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-importvalue.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
         "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html"
       ],
-      "top_score": 0.8266
+      "top_score": 0.8257
     },
     {
       "id": "cfn-allowed-values",
@@ -562,16 +562,16 @@
       "retrieved_urls": [
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-select.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
-        "https://github.com/aws-cloudformation/cfn-lint/blob/main/docs/rules.md",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-join.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-rules.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-join.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-cloudfront-distributiontenant.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-select.html"
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-rules.html"
       ],
-      "top_score": 0.544
+      "top_score": 0.5843
     },
     {
       "id": "cfn-lambda",
@@ -587,11 +587,11 @@
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-vpcconfig.html",
         "https://www.checkov.io/5.Policy%20Index/cloudformation.html",
         "https://github.com/aws-cloudformation/cfn-lint/blob/main/docs/rules.md",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-code.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/configuration-self-managed-storage.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-code.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-tracing.html"
       ],
-      "top_score": 0.6328
+      "top_score": 0.6756
     },
     {
       "id": "cfn-cloudfront-root",
@@ -604,14 +604,14 @@
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DefaultRootObject.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DefaultRootObject.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/IndexDocumentSupport.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-cloudfront-distribution-distributionconfig.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/IndexDocumentSupport.html",
         "https://github.com/aws-cloudformation/aws-guard-rules-registry/blob/main/rules/aws/cloudfront/cloudfront_default_root_object_configured.guard"
       ],
-      "top_score": 0.6102
+      "top_score": 0.5814
     },
     {
       "id": "cdk-bootstrap",
@@ -627,11 +627,11 @@
         "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-env.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-bootstrap.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/hello-world.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-troubleshoot.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-bootstrap.html"
       ],
-      "top_score": 0.7587
+      "top_score": 0.7654
     },
     {
       "id": "cdk-construct-levels",
@@ -645,33 +645,33 @@
         "https://docs.aws.amazon.com/cdk/v2/guide/best-practices.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
         "https://docs.aws.amazon.com/cdk/v2/guide/work-with-cdk-python.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/apps.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr/README.md",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
         "https://docs.aws.amazon.com/cdk/v2/guide/apps.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md"
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md",
+        "https://docs.aws.amazon.com/cdk/v2/guide/apps.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md"
       ],
-      "top_score": 0.7528
+      "top_score": 0.7569
     },
     {
       "id": "cdk-nodejs-function",
       "kind": "answer",
       "category": "IaC – CDK",
       "question": "How do I deploy a TypeScript Lambda function with the CDK so it gets bundled automatically?",
-      "rank": 4,
+      "rank": 3,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/cdk/v2/guide/testing.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/durable-getting-started-iac.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda-nodejs/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda-nodejs/README.md",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda/README.md",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda-nodejs/README.md",
-        "https://docs.aws.amazon.com/cdk/v2/guide/work-with-cdk-typescript.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda-nodejs/README.md",
         "https://docs.aws.amazon.com/lambda/latest/dg/durable-getting-started-iac.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/work-with-cdk-typescript.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/hello-world.html"
       ],
-      "top_score": 0.6395
+      "top_score": 0.6546
     },
     {
       "id": "cdk-s3-deploy",
@@ -680,18 +680,18 @@
       "question": "How do I upload a static website's files to an S3 bucket with the CDK?",
       "rank": null,
       "retrieved_urls": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-s3deploy.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/IndexDocumentSupport.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-s3deploy.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-amplify.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/static-website-tutorials.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html"
       ],
-      "top_score": 0.6902
+      "top_score": 0.6838
     },
     {
       "id": "cdk-fargate-alb",
@@ -703,15 +703,15 @@
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs-patterns/README.md",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs-patterns/README.md",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md",
-        "https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-elasticloadbalancingv2/README.md",
+        "https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-elasticloadbalancingv2/README.md",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/README.md",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-cloudfront-origins/README.md",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/operating-at-scale-service-quotas-best-practice.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md"
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/operating-at-scale-service-quotas-best-practice.html"
       ],
-      "top_score": 0.6728
+      "top_score": 0.6233
     },
     {
       "id": "cdk-deploy-troubleshoot",
@@ -723,15 +723,15 @@
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-deploy.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/troubleshooting.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/deploy-troubleshoot.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-troubleshoot.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/deploy.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-deploy.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-troubleshoot.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/deploy.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-troubleshoot.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/tenant-isolation-troubleshooting.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-notices.html"
+        "https://docs.aws.amazon.com/cdk/v2/guide/deploy.html"
       ],
-      "top_score": 0.488
+      "top_score": 0.5359
     },
     {
       "id": "cdk-drift",
@@ -744,14 +744,14 @@
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-drift.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-deploy.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-diff.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/stacks.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-rollback.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-deploy.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-import.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-diff.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd.html"
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-import.html"
       ],
-      "top_score": 0.7122
+      "top_score": 0.7059
     },
     {
       "id": "ecs-cannot-pull",
@@ -765,13 +765,13 @@
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-throttle-logic.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stopped-task-error-codes.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-event-messages-list.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshoot-service-load-balancers.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-troubleshooting.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshoot-service-load-balancers.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/resolve-stopped-errors.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshooting.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stopped-task-errors.html"
       ],
-      "top_score": 0.747
+      "top_score": 0.7535
     },
     {
       "id": "ecs-circuit-breaker",
@@ -786,12 +786,12 @@
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs-patterns/README.md",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshooting-deployment-controller-migration.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-failure-detection.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-ecs-service-deploymentconfiguration.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployment-property.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-ecs-service-deploymentconfiguration.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deploy-linear-service.html"
       ],
-      "top_score": 0.688
+      "top_score": 0.6813
     },
     {
       "id": "ecs-blue-green",
@@ -801,17 +801,17 @@
       "rank": 1,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-blue-green.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deploy-blue-green-service.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deploy-blue-green-service.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/blue-green-deployment-implementation.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deploy-blue-green-service.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/blue-green-deployment-how-it-works.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-linear.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/blue-green-deployment-how-it-works.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-blue-green.html"
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-blue-green.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/blue-green-deployment-how-it-works.html"
       ],
-      "top_score": 0.857
+      "top_score": 0.8509
     },
     {
       "id": "ecs-fargate-cpu-mem",
@@ -829,49 +829,49 @@
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters-managed-instances.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters_ec2.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-tasks-services.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html"
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-definition-template.html"
       ],
-      "top_score": 0.7872
+      "top_score": 0.7895
     },
     {
       "id": "ecs-awsvpc",
       "kind": "answer",
       "category": "Deploy targets",
       "question": "What does the awsvpc network mode do for ECS tasks?",
-      "rank": 4,
+      "rank": 3,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters-managed-instances.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/managed-instances-awsvpc-mode.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters_ec2.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/interconnecting-services.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ecs-taskdefinition.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/interconnecting-services.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/operating-at-scale-service-quotas-best-practice.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md"
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/managed-instances-awsvpc-mode.html"
       ],
-      "top_score": 0.7491
+      "top_score": 0.7568
     },
     {
       "id": "ecr-lifecycle",
       "kind": "answer",
       "category": "Deploy targets",
       "question": "How do I automatically expire untagged images in an ECR repository?",
-      "rank": 2,
+      "rank": 1,
       "retrieved_urls": [
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_examples.html",
         "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
         "https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_examples.html",
-        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_examples.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr/README.md",
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning-enhanced.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr/README.md",
-        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html",
-        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-tag-mutability.html",
         "https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning-troubleshooting.html",
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_parameters.html",
         "https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-tag-mutability.html",
-        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_parameters.html"
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-tag-mutability.html"
       ],
-      "top_score": 0.6894
+      "top_score": 0.6864
     },
     {
       "id": "lambda-url-auth",
@@ -883,15 +883,15 @@
         "https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/urls-invocation.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-url.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/urls-invocation.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/urls-webhook-tutorial.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-url.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/urls-configuration.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-permission.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/furls-http-invoke-decision.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/urls-webhook-tutorial.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/urls-configuration.html"
       ],
-      "top_score": 0.6834
+      "top_score": 0.7019
     },
     {
       "id": "lambda-node-handler",
@@ -904,14 +904,14 @@
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/lambda-managed-instances-nodejs-runtime.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-code.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/troubleshooting-invocation.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html"
+        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html"
       ],
-      "top_score": 0.7877
+      "top_score": 0.7562
     },
     {
       "id": "lambda-env-vars",
@@ -923,15 +923,15 @@
         "https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-environment.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-lambda-boto3-python.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-environment.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-lambda-boto3-python.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-modify.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-modify.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars-encryption.html"
+        "https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars-encryption.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-modify.html"
       ],
-      "top_score": 0.8931
+      "top_score": 0.8921
     },
     {
       "id": "lambda-zip",
@@ -943,15 +943,15 @@
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-zip.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-zip.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/troubleshooting-execution.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-layers.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-layers.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-zip.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-layers.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-layers.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html"
       ],
-      "top_score": 0.9152
+      "top_score": 0.9074
     },
     {
       "id": "lambda-container",
@@ -965,13 +965,13 @@
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
         "https://github.com/aws-actions/aws-lambda-deploy#readme",
+        "https://github.com/aws-actions/aws-lambda-deploy#readme",
         "https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-zip.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-open-source.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/durable-supported-runtimes.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-code.html"
+        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
       ],
-      "top_score": 0.836
+      "top_score": 0.8465
     },
     {
       "id": "s3-static-site",
@@ -981,57 +981,57 @@
       "rank": 1,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/static-website-tutorials.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-amplify.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/static-website-tutorials.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-amplify.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html"
       ],
-      "top_score": 0.8998
+      "top_score": 0.9083
     },
     {
       "id": "cf-oac",
       "kind": "answer",
       "category": "Deploy targets",
       "question": "How do I keep my S3 bucket private while serving it through CloudFront?",
-      "rank": 1,
+      "rank": 2,
       "retrieved_urls": [
-        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3-mrap.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html",
-        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3-mrap.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DefaultRootObject.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html"
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html"
       ],
-      "top_score": 0.5282
+      "top_score": 0.5572
     },
     {
       "id": "cf-invalidate",
       "kind": "answer",
       "category": "Deploy targets",
       "question": "How do I make CloudFront serve updated files after I redeploy my site?",
-      "rank": 5,
+      "rank": 4,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/getting-started-secure-static-website-cloudformation-template.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/getting-started-secure-static-website-cloudformation-template.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-cloudfront/README.md",
-        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-cloudfront-distributiontenant-managedcertificaterequest.html"
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-cloudfront-distributiontenant-managedcertificaterequest.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html"
       ],
-      "top_score": 0.4706
+      "top_score": 0.5002
     },
     {
       "id": "eks-karpenter",
@@ -1041,17 +1041,17 @@
       "rank": 1,
       "retrieved_urls": [
         "https://docs.aws.amazon.com/eks/latest/userguide/autoscaling.html",
+        "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html",
+        "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/autoscaling.html",
-        "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html",
-        "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html",
         "https://karpenter.sh/docs/getting-started/migrating-from-cas/",
         "https://karpenter.sh/docs/getting-started/migrating-from-cas/",
         "https://docs.aws.amazon.com/eks/latest/userguide/ml-inference-autoscaling.html",
-        "https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md",
-        "https://docs.aws.amazon.com/eks/latest/userguide/horizontal-pod-autoscaler.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-standard.html"
+        "https://docs.aws.amazon.com/eks/latest/best-practices/cas.html",
+        "https://docs.aws.amazon.com/eks/latest/best-practices/cas.html",
+        "https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md"
       ],
-      "top_score": 0.8444
+      "top_score": 0.8597
     },
     {
       "id": "eks-hpa",
@@ -1063,15 +1063,15 @@
         "https://docs.aws.amazon.com/eks/latest/userguide/horizontal-pod-autoscaler.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/ml-inference-autoscaling.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/horizontal-pod-autoscaler.html",
+        "https://docs.aws.amazon.com/eks/latest/best-practices/cas.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/autoscaling.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/coredns-autoscaling.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/ml-inference-autoscaling.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/ml-inference-autoscaling-hpa-keda.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/coredns-autoscaling.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/autoscaling.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/coredns-autoscaling.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/fargate-getting-started.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-standard.html"
+        "https://docs.aws.amazon.com/eks/latest/userguide/fargate-getting-started.html"
       ],
-      "top_score": 0.6728
+      "top_score": 0.6924
     },
     {
       "id": "eks-eksctl",
@@ -1083,15 +1083,15 @@
         "https://docs.aws.amazon.com/eks/latest/eksctl/creating-and-managing-clusters.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/automode-get-started-eksctl.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/automode-get-started-eksctl.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/quickstart.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/eks-provisioned-control-plane-getting-started.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html",
-        "https://docs.aws.amazon.com/eks/latest/eksctl/auto-mode.html"
+        "https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html"
       ],
-      "top_score": 0.8836
+      "top_score": 0.8962
     },
     {
       "id": "eks-node-group",
@@ -1103,35 +1103,35 @@
         "https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html",
         "https://docs.aws.amazon.com/eks/latest/eksctl/nodegroup-managed.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/README.md",
         "https://docs.aws.amazon.com/eks/latest/eksctl/nodegroups.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html",
-        "https://docs.aws.amazon.com/eks/latest/eksctl/nodegroup-managed.html"
+        "https://docs.aws.amazon.com/eks/latest/eksctl/nodegroup-managed.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/delete-managed-node-group.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html"
       ],
-      "top_score": 0.8961
+      "top_score": 0.9137
     },
     {
       "id": "docker-multistage",
       "kind": "answer",
       "category": "Containers",
       "question": "How do multi-stage Docker builds keep the final image small?",
-      "rank": 3,
+      "rank": 2,
       "retrieved_urls": [
         "https://docs.docker.com/build/building/best-practices/",
+        "https://docs.docker.com/build/building/multi-stage/",
         "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
         "https://docs.docker.com/build/building/multi-stage/",
-        "https://docs.docker.com/build/building/multi-stage/",
         "https://docs.docker.com/build/building/best-practices/",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/capacity-availability-best-practice.html",
         "https://docs.docker.com/build/building/multi-platform/",
         "https://docs.docker.com/build/building/export/",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html",
-        "https://kubernetes.io/blog/2026/07/14/custom-metrics-exporter-kubernetes/",
-        "https://docs.docker.com/reference/dockerfile/"
+        "https://kubernetes.io/blog/2026/07/14/custom-metrics-exporter-kubernetes/"
       ],
-      "top_score": 0.738
+      "top_score": 0.7383
     },
     {
       "id": "docker-context",
@@ -1144,14 +1144,14 @@
         "https://docs.docker.com/build/concepts/context/",
         "https://docs.docker.com/reference/dockerfile/",
         "https://docs.docker.com/reference/dockerfile/",
+        "https://docs.docker.com/build/building/best-practices/",
         "https://github.com/docker/build-push-action#readme",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr-assets/README.md",
-        "https://docs.docker.com/build/building/best-practices/",
         "https://github.com/docker/setup-buildx-action#readme",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr-assets/README.md",
-        "https://github.com/docker/build-push-action#readme"
+        "https://github.com/docker/build-push-action#readme",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr-assets/README.md"
       ],
-      "top_score": 0.5776
+      "top_score": 0.7099
     },
     {
       "id": "docker-node-nonroot",
@@ -1164,14 +1164,14 @@
         "https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md",
         "https://github.com/nodejs/docker-node#readme",
         "https://github.com/nodejs/docker-node#readme",
-        "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
         "https://docs.docker.com/build/building/best-practices/",
+        "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html",
-        "https://trivy.dev/latest/docs/guide/target/container_image/",
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters_ec2.html"
+        "https://trivy.dev/latest/docs/guide/target/container_image/",
+        "https://docs.aws.amazon.com/eks/latest/best-practices/pod-security.html"
       ],
-      "top_score": 0.7677
+      "top_score": 0.7577
     },
     {
       "id": "iam-least-priv",
@@ -1182,16 +1182,16 @@
       "retrieved_urls": [
         "https://docs.aws.amazon.com/cdk/v2/guide/best-practices-security.html",
         "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/security-best-practices.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html",
         "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/best-practices-security.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/security-best-practices.html",
         "https://docs.aws.amazon.com/eks/latest/best-practices/security.html",
-        "https://docs.aws.amazon.com/eks/latest/best-practices/security.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/concepts-basics.html"
+        "https://docs.aws.amazon.com/lambda/latest/dg/concepts-basics.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/best-practices-security.html"
       ],
-      "top_score": 0.7625
+      "top_score": 0.7594
     },
     {
       "id": "sec-hadolint",
@@ -1205,13 +1205,12 @@
         "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
         "https://docs.docker.com/build/concepts/context/",
         "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
-        "https://docs.docker.com/build/building/best-practices/",
-        "https://trivy.dev/latest/docs/guide/scanner/misconfiguration/custom/debug/",
-        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Dockerfile.md",
         "https://docs.docker.com/reference/dockerfile/",
-        "https://trivy.dev/latest/docs/guide/scanner/misconfiguration/custom/debug/"
+        "https://docs.docker.com/build/concepts/context/",
+        "https://docs.docker.com/build/building/best-practices/",
+        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Dockerfile.md"
       ],
-      "top_score": 0.8805
+      "top_score": 0.8858
     },
     {
       "id": "sec-checkov-gha",
@@ -1221,17 +1220,17 @@
       "rank": null,
       "retrieved_urls": [
         "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
-        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Argo Workflows.md",
-        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Github.md",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
         "https://docs.github.com/en/actions/how-tos/write-workflows",
         "https://github.com/bridgecrewio/checkov/blob/main/docs/1.Welcome/What is Checkov.md",
+        "https://github.com/bridgecrewio/checkov/blob/main/docs/8.Outputs/GitLab SAST.md",
+        "https://github.com/rhysd/actionlint/blob/main/docs/checks.md",
+        "https://docs.github.com/en/actions/how-tos/manage-runners/larger-runners/use-custom-images",
         "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Sca.md",
-        "https://github.com/bridgecrewio/checkov/blob/main/docs/2.Basics/CLI Command Reference.md",
-        "https://github.com/bridgecrewio/checkov/blob/main/docs/1.Welcome/What is Checkov.md",
-        "https://github.com/bridgecrewio/checkov/blob/main/docs/2.Basics/CLI Command Reference.md"
+        "https://docs.github.com/en/actions/how-tos/troubleshoot-workflows",
+        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Argo Workflows.md"
       ],
-      "top_score": 0.581
+      "top_score": 0.5856
     },
     {
       "id": "ver-checkout",

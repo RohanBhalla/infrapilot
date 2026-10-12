@@ -147,23 +147,28 @@ def _pack(blocks: list[str], cfg: ChunkingConfig) -> list[str]:
     return texts
 
 
-def context_header(doc: NormalizedDoc, path: list[str]) -> str:
+def context_header(doc: NormalizedDoc, path: list[str], source_name: str | None = None) -> str:
     trail = [p for p in path if p != doc.title]
     lines = [f"Document: {doc.title}"]
+    # The sheet's name for the source often carries the product the page title leaves out
+    # ("CDK module READMEs", "Checkov – GitHub Actions rules").
+    if source_name and source_name.lower() not in doc.title.lower():
+        lines.append(f"Source: {source_name}")
     if trail:
         lines.append(f"Section: {' > '.join(trail)}")
     lines.append(f"Category: {doc.category}")
     return "\n".join(lines)
 
 
-def chunk_document(doc: NormalizedDoc, cfg: ChunkingConfig | None = None) -> list[Chunk]:
+def chunk_document(doc: NormalizedDoc, cfg: ChunkingConfig | None = None,
+                   source_name: str | None = None) -> list[Chunk]:
     cfg = cfg or SETTINGS.chunking
     chunks: list[Chunk] = []
     for section in _merge_small(_sections(doc.body_markdown), cfg):
         for body in _pack(section.blocks, cfg):
             if count_tokens(body) < 8:
                 continue
-            text = f"{context_header(doc, section.path)}\n\n{body}"
+            text = f"{context_header(doc, section.path, source_name)}\n\n{body}"
             idx = len(chunks)
             chunks.append(Chunk(
                 chunk_id=f"{doc.doc_id}-c{idx:03d}",

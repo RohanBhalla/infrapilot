@@ -1,13 +1,13 @@
 # RAG eval: 2026-10-12 · local · retrieval only
 
-Judge: off · retrieval {'k': 6, 'candidates': 30, 'max_per_doc': 2, 'min_score': 0.3} · 3.2 s
+Judge: off · retrieval {'k': 6, 'candidates': 30, 'max_per_doc': 2, 'min_score': 0.3} · 2.5 s
 
 | Metric | Value | Target |
 |---|---:|---:|
 | questions | 79 |  |
-| hit@1 | 0.627 |  |
+| hit@1 | 0.644 |  |
 | hit@5 | 0.949 ✅ | 0.800 |
-| mrr@10 | 0.753 |  |
+| mrr@10 | 0.761 |  |
 
 ## hit@5 by category
 
@@ -26,6 +26,6 @@ Judge: off · retrieval {'k': 6, 'candidates': 30, 'max_per_doc': 2, 'min_score'
 
 | Question | Problem |
 |---|---|
-| cfn-sub | retrieval miss (rank 8) |
+| cfn-sub | retrieval miss (rank 7) |
 | cdk-s3-deploy | retrieval miss (rank None) |
 | sec-checkov-gha | retrieval miss (rank None) |
