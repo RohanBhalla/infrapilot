@@ -35,11 +35,14 @@ def evaluate_one(q: dict, svc, judge_llm=None, retrieval_only: bool = False) -> 
     if q["kind"] == "answer":
         hits = svc.retriever.retrieve(q["question"], None, RETRIEVAL_K)
         rank = M.ranks([h.url for h in hits], q["expected_urls"])
-        r |= {"rank": rank, "retrieved_urls": [h.url for h in hits], "top_score": hits[0].score if hits else None}
+        r |= {"rank": rank, "retrieved_urls": [h.url for h in hits], "top_score": hits[0].score if hits else None,
+              "search_cost_usd": getattr(svc.retriever, "query_cost_usd", 0.0)}
     if retrieval_only:
         return r
 
-    ans = svc.ask(q["question"])
+    # Reuse the search above (one rerank call per question, not two). best_passages fills
+    # slots in order, so the first k of the k=10 list equal a k-sized search.
+    ans = svc.ask(q["question"], retrieved=hits[:CONFIG.k]) if q["kind"] == "answer" else svc.ask(q["question"])
     r |= {"answer": ans.text, "refused": ans.refused, "latency_ms": ans.latency_ms,
           "input_tokens": ans.input_tokens, "output_tokens": ans.output_tokens, "cost_usd": ans.cost_usd,
           "cited_urls": [c.url for c in ans.citations], "invalid_citations": ans.invalid_citations,
@@ -115,12 +118,13 @@ def summarize(rows: list[dict]) -> dict:
             "latency_p50_ms": M.percentile(lat, 50),
             "latency_p95_ms": M.percentile(lat, 95),
             "cost_per_answer_usd": M.mean([r["cost_usd"] for r in rows if "cost_usd" in r and r["input_tokens"]]),
-            "total_cost_usd": sum(r.get("cost_usd", 0) + r.get("judge_cost_usd", 0) for r in rows),
         }
         judged = [r["judge"] for r in answered if r.get("judge")]
         if judged:
             s["judge_faithfulness"] = M.mean([j["faithfulness"] for j in judged])
             s["judge_correctness"] = M.mean([j["correctness"] for j in judged])
+    s["total_cost_usd"] = sum(r.get("cost_usd", 0) + r.get("judge_cost_usd", 0) + r.get("search_cost_usd", 0)
+                              for r in rows)
     by_cat: dict[str, list] = {}
     for r in ans:
         by_cat.setdefault(r["category"], []).append(r["rank"] is not None and r["rank"] <= 5)
@@ -138,7 +142,8 @@ def run(svc, *, model: str, backend: str, judge_llm=None, retrieval_only=False, 
     meta = {"date": date.today().isoformat(), "backend": backend,
             "model": None if retrieval_only else model, "judge": getattr(judge_llm, "model_id", None),
             "retrieval": {"k": CONFIG.k, "candidates": CONFIG.candidates, "max_per_doc": CONFIG.max_per_doc,
-                          "min_score": CONFIG.min_score},
+                          "min_score": CONFIG.min_score, "hybrid": getattr(svc.retriever, "hybrid", None),
+                          "rerank": getattr(getattr(svc.retriever, "reranker", None), "model_id", None)},
             "seconds": round(time.monotonic() - started, 1)}
     name = "-".join(x for x in [meta["date"], backend, "retrieval" if retrieval_only else model, tag] if x)
     REPORTS.mkdir(exist_ok=True)

@@ -16,6 +16,7 @@ from pathlib import PurePosixPath
 from typing import Protocol
 
 from .config import CONFIG, RagConfig
+from . import reranker as rr
 from .embedder import Embedder
 from .models import FILTER_FIELDS, Filters, RetrievedChunk
 
@@ -94,13 +95,16 @@ class LocalLanceRetriever:
     META = ("doc_id", "source_id", "category", "doc_type", "heading_path", "chunk_index")
 
     def __init__(self, embedder: Embedder | None = None, cfg: RagConfig = CONFIG,
-                 vectors_dir=None, table: str | None = None, hybrid: bool | None = None):
+                 vectors_dir=None, table: str | None = None, hybrid: bool | None = None,
+                 reranker: rr.Reranker | None = None):
         import lancedb
 
         from .embedder import TitanEmbedder
 
         self.cfg = cfg
         self.embedder = embedder or TitanEmbedder(cfg)
+        self.reranker = reranker
+        self.query_cost_usd = reranker.cost_per_query if reranker else 0.0
         db = lancedb.connect(str(vectors_dir or cfg.vectors_dir))
         self.table = db.open_table(table or cfg.table)
         self.hybrid = cfg.hybrid if hybrid is None else hybrid
@@ -146,7 +150,9 @@ class LocalLanceRetriever:
             )
             for r in rows
         ]
-        if self.hybrid:
+        if self.reranker:
+            hits = rr.apply(self.reranker, query, hits[:self.cfg.rerank_candidates])
+        if self.hybrid or self.reranker:
             return best_passages(hits, k, self.cfg.max_per_doc)
         return diversify(hits, k, self.cfg.max_per_doc)
 
@@ -165,10 +171,13 @@ def kb_filter(filters: Filters) -> dict | None:
 class BedrockKBRetriever:
     """Phase 2 backend. Written against the Retrieve API but not yet run against a live KB."""
 
-    def __init__(self, kb_id: str | None = None, cfg: RagConfig = CONFIG):
+    def __init__(self, kb_id: str | None = None, cfg: RagConfig = CONFIG,
+                 reranker: rr.Reranker | None = None):
         import boto3
 
         self.cfg = cfg
+        self.reranker = reranker
+        self.query_cost_usd = reranker.cost_per_query if reranker else 0.0
         self.kb_id = kb_id or cfg.kb_id
         if not self.kb_id:
             raise ValueError("set INFRAPILOT_KB_ID or pass kb_id")
@@ -193,4 +202,6 @@ class BedrockKBRetriever:
                 title=meta.get("title", ""), score=round(r.get("score", 0.0), 4), metadata=meta,
             ))
         hits.sort(key=lambda c: c.score, reverse=True)
+        if self.reranker:
+            return best_passages(rr.apply(self.reranker, query, hits), k, self.cfg.max_per_doc)
         return diversify(hits, k, self.cfg.max_per_doc)

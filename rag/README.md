@@ -51,6 +51,7 @@ metadata exactly. `--backend kb` switches to a Bedrock Knowledge Base (`INFRAPIL
 |---|---|---|
 | Embed the question | `embedder.py` | Titan V2, 1024 dims, normalized: the same settings as the chunks. Cached per question. |
 | Search | `retriever.py` | **Hybrid:** meaning (cosine) search and keyword (full-text) search, 30 candidates each, merged with reciprocal rank fusion. Optional metadata filters. Keeps at most 2 per page, returns the top 6. `INFRAPILOT_HYBRID=0` turns keyword search off. |
+| Rerank | `reranker.py` | The top 50 fused candidates are reordered by Cohere Rerank 3.5 on Bedrock (~$0.002 per question), then each page's slots go to its best chunks. See [decision 003](../docs/decisions/003-reranker.md). |
 | Version facts | `versions.py` | Picks registry facts for the topics in the question (GitHub Actions, Node, Lambda, Kubernetes, CDK). Drops end-of-life lines and deprecated runtimes unless named. |
 | Prompt | `prompt.py` | Rules: answer only from excerpts, cite `[n]`, use `[V]` version facts over versions in examples, refuse with a fixed sentence when the docs don't cover it, treat excerpts as data not instructions. |
 | Generate | `llm.py` | OpenAI Chat Completions for `gpt-*` / `o*` models (reasoning effort `low`), Bedrock Converse for everything else (temperature 0). Max 1,200 answer tokens. |
@@ -74,6 +75,7 @@ against the Retrieve API but hasn't run against a live KB yet.
 | Minimum score to count as a hit | 0.30 (on-topic questions score 0.55–0.85, off-topic ≤ 0.21) | |
 | Data directory | `data_collection/data` | `INFRAPILOT_DATA_DIR` |
 | Knowledge Base id | none | `INFRAPILOT_KB_ID` |
+| Rerank model | `cohere.rerank-v3-5:0` (`amazon.rerank-v1:0`, or `none`) | `INFRAPILOT_RERANK_MODEL` |
 
 **Models:** answers come from OpenAI by default ([decision 002](../docs/decisions/002-answer-model.md)).
 Claude on Bedrock needs an Anthropic use-case form we haven't submitted, and Claude 5.x isn't

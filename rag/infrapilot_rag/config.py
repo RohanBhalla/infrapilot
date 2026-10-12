@@ -53,6 +53,13 @@ PRICES = {
 }
 
 
+# USD per rerank query (one query reranks up to 100 chunks). Estimates: check Bedrock pricing.
+RERANK_PRICES = {
+    "cohere.rerank-v3-5:0": 0.002,
+    "amazon.rerank-v1:0": 0.001,
+}
+
+
 def is_openai(model_id: str) -> bool:
     return model_id.startswith(("gpt-", "o1", "o3", "o4", "chatgpt-"))
 
@@ -72,6 +79,9 @@ class RagConfig:
     max_per_doc: int = 2      # so one long page can't fill every slot
     hybrid: bool = os.environ.get("INFRAPILOT_HYBRID", "1") != "0"  # vector + keyword search
     rrf_k: int = 60           # reciprocal rank fusion constant (the standard default)
+    # Rerank the top fused candidates with a Bedrock rerank model; "none" turns it off.
+    rerank_model: str = os.environ.get("INFRAPILOT_RERANK_MODEL", "cohere.rerank-v3-5:0")
+    rerank_candidates: int = 50
     min_score: float = 0.30   # cosine; on-topic questions score 0.55-0.85, off-topic <= 0.21
     max_tokens: int = 1200
     reasoning_effort: str = os.environ.get("INFRAPILOT_REASONING_EFFORT", "low")  # gpt-5 family

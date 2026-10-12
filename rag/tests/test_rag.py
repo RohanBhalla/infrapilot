@@ -279,3 +279,45 @@ def test_best_passages_keeps_page_slots_but_picks_best_chunks():
     fused = [c("a-low", "A", 0.40), c("b1", "B", 0.70), c("a-mid", "A", 0.50), c("a-best", "A", 0.90)]
     out = [x.chunk_id for x in best_passages(fused, k=3, max_per_doc=2)]
     assert out == ["a-best", "b1", "a-mid"]  # A keeps slots 1 and 3, filled with its best chunks
+
+
+class ReverseReranker:
+    model_id, cost_per_query = "fake-rerank", 0.002
+
+    def __init__(self):
+        self.calls = 0
+
+    def rerank(self, query, chunks):
+        self.calls += 1
+        return list(reversed(chunks))
+
+
+class BrokenReranker(ReverseReranker):
+    def rerank(self, query, chunks):
+        raise RuntimeError("throttled")
+
+
+def test_reranker_reorders_candidates(tmp_path):
+    _table(tmp_path, FakeEmbedder())
+    cfg = replace(CONFIG, max_per_doc=5)
+    plain = LocalLanceRetriever(embedder=FakeEmbedder(), cfg=cfg, vectors_dir=tmp_path)
+    rr = ReverseReranker()
+    ranked = LocalLanceRetriever(embedder=FakeEmbedder(), cfg=cfg, vectors_dir=tmp_path, reranker=rr)
+    q = "cache npm dependencies workflow"
+    assert ranked.retrieve(q, k=5)[0].chunk_id != plain.retrieve(q, k=5)[0].chunk_id
+    assert rr.calls == 1 and ranked.query_cost_usd == 0.002
+
+
+def test_rerank_failure_falls_back_to_search_order(tmp_path):
+    _table(tmp_path, FakeEmbedder())
+    cfg = replace(CONFIG, max_per_doc=5)
+    plain = LocalLanceRetriever(embedder=FakeEmbedder(), cfg=cfg, vectors_dir=tmp_path)
+    broken = LocalLanceRetriever(embedder=FakeEmbedder(), cfg=cfg, vectors_dir=tmp_path, reranker=BrokenReranker())
+    q = "ECS task stopped"
+    assert [c.chunk_id for c in broken.retrieve(q, k=3)] == [c.chunk_id for c in plain.retrieve(q, k=3)]
+
+
+def test_answer_cost_includes_rerank(retriever, versions):
+    retriever.query_cost_usd = 0.002
+    ans = AnswerService(retriever, FakeLLM("Use setup-node [1]."), versions).ask("cache npm dependencies")
+    assert ans.cost_usd == pytest.approx(0.002)  # FakeLLM's model has no price

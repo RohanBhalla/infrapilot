@@ -1,7 +1,7 @@
 """infrapilot-eval: run the RAG eval or validate the question set.
 
   infrapilot-eval check                      # free: questions vs. corpus and version registry
-  infrapilot-eval run --retrieval-only       # ~free: hit@5 / MRR only (question embeddings)
+  infrapilot-eval run --retrieval-only       # ~$0.12 with reranking (free with INFRAPILOT_RERANK_MODEL=none)
   infrapilot-eval run                        # full run with the default answer model (~$0.25)
   infrapilot-eval run --model gpt-5.6-luna --judge --tag luna
   infrapilot-eval rescore eval/reports/<report>.json   # free: re-grade after fixing labels
@@ -90,13 +90,16 @@ def main(argv: list[str] | None = None) -> None:
 
     from infrapilot_rag.answer import AnswerService
     from infrapilot_rag.llm import make_chat
+    from infrapilot_rag.reranker import make_reranker
     from infrapilot_rag.retriever import BedrockKBRetriever, LocalLanceRetriever
     from infrapilot_rag.versions import VersionRegistry
 
     from .run import run
 
     try:
-        retriever = BedrockKBRetriever() if args.backend == "kb" else LocalLanceRetriever()
+        reranker = make_reranker()
+        retriever = (BedrockKBRetriever(reranker=reranker) if args.backend == "kb"
+                     else LocalLanceRetriever(reranker=reranker))
         llm = make_chat(args.model)
         judge_llm = make_chat(args.judge_model) if args.judge else None
     except (RuntimeError, ValueError) as exc:

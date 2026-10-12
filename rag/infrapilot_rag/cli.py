@@ -16,10 +16,13 @@ from .config import CONFIG, MODELS
 def build_service(backend: str, model: str | None):
     from .answer import AnswerService
     from .llm import make_chat
+    from .reranker import make_reranker
     from .retriever import BedrockKBRetriever, LocalLanceRetriever
     from .versions import VersionRegistry
 
-    retriever = BedrockKBRetriever() if backend == "kb" else LocalLanceRetriever()
+    reranker = make_reranker()
+    retriever = (BedrockKBRetriever(reranker=reranker) if backend == "kb"
+                 else LocalLanceRetriever(reranker=reranker))
     llm = make_chat(model)
     return AnswerService(retriever, llm, VersionRegistry())
 
