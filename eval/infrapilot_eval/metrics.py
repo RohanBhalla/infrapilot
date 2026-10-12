@@ -82,8 +82,11 @@ def expected_version(fact: dict, field: str) -> tuple[str, re.Pattern]:
         v = fact["latest"].lstrip("v")
         return v, re.compile(rf"(?<![\d.])v?{re.escape(v)}(?![\d])")
     if field == "runtime_id":
+        # nodejs24.x also matches "Node.js 24"; python3.14 also matches "Python 3.14"
         v = fact["tool"].removeprefix("lambda-runtime-")
-        return v, re.compile(re.escape(v), re.I)
+        m = re.fullmatch(r"([a-z]+?)(?:js)?(\d[\d.]*?)(?:\.x)?", v)
+        alt = rf"|{m.group(1)}(?:\.?js)?\s*{re.escape(m.group(2))}(?:\.x)?(?![\d])" if m else ""
+        return v, re.compile(re.escape(v) + alt, re.I)
     if field == "status":
         v = extra["status"]
         return v, re.compile(r"\bdeprecat" if v == "deprecated" else r"\bsupported\b", re.I)

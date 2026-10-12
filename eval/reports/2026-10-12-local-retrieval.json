@@ -10,17 +10,16 @@
       "max_per_doc": 2,
       "min_score": 0.3
     },
-    "seconds": 3.3,
-    "rescored": true
+    "seconds": 3.2
   },
   "summary": {
     "questions": 79,
-    "hit@1": 0.6610169491525424,
-    "hit@5": 0.8813559322033898,
-    "mrr@10": 0.749455205811138,
+    "hit@1": 0.6271186440677966,
+    "hit@5": 0.9491525423728814,
+    "mrr@10": 0.7526836158192091,
     "hit@5_by_category": {
       "CI/CD – AWS": [
-        0.8333333333333334,
+        1.0,
         6
       ],
       "CI/CD – GitHub Actions": [
@@ -32,7 +31,7 @@
         3
       ],
       "Deploy targets": [
-        0.9285714285714286,
+        1.0,
         14
       ],
       "Deploy targets (stretch)": [
@@ -40,11 +39,11 @@
         4
       ],
       "IaC – CDK": [
-        0.7142857142857143,
+        0.8571428571428571,
         7
       ],
       "IaC – CloudFormation": [
-        0.75,
+        0.875,
         8
       ],
       "Security": [
@@ -60,14 +59,19 @@
       "category": "CI/CD – GitHub Actions",
       "question": "How do I cache npm dependencies in a GitHub Actions workflow?",
       "rank": 1,
-      "top_urls": [
-        "https://github.com/actions/setup-node#readme",
+      "retrieved_urls": [
         "https://docs.github.com/en/actions/concepts/workflows-and-actions/dependency-caching",
+        "https://github.com/actions/setup-node#readme",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching",
-        "https://github.com/actions/setup-node#readme"
+        "https://github.com/actions/setup-node#readme",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://docs.github.com/en/actions/concepts/workflows-and-actions/dependency-caching",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-s3.html",
+        "https://github.com/actions/cache#readme",
+        "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manage-caches"
       ],
-      "top_score": 0.7358
+      "top_score": 0.7326
     },
     {
       "id": "gha-branch-filter",
@@ -75,12 +79,17 @@
       "category": "CI/CD – GitHub Actions",
       "question": "How do I make a workflow run only on pushes to the main branch?",
       "rank": 1,
-      "top_urls": [
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
+      "retrieved_urls": [
         "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow",
-        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow"
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
+        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
+        "https://docs.github.com/en/actions/how-tos/troubleshoot-workflows",
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency"
       ],
       "top_score": 0.7713
     },
@@ -90,59 +99,79 @@
       "category": "CI/CD – GitHub Actions",
       "question": "How do I run the same job against Node.js 20, 22 and 24?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://github.com/actions/setup-node#readme",
+        "https://raw.githubusercontent.com/nodejs/Release/main/schedule.json",
+        "https://github.com/actions/starter-workflows/blob/main/ci/node.js.yml",
         "https://endoflife.date/nodejs",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax",
+        "https://github.blog/changelog/2026-09-23-node-20-is-no-longer-available-in-github-actions",
         "https://github.com/actions/setup-node#readme",
-        "https://github.com/actions/starter-workflows/blob/main/ci/node.js.yml"
+        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-managed-instances-nodejs-runtime.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax"
       ],
-      "top_score": 0.5584
+      "top_score": 0.5304
     },
     {
       "id": "gha-job-outputs",
       "kind": "answer",
       "category": "CI/CD – GitHub Actions",
       "question": "How do I pass a value computed in one job to a later job?",
-      "rank": 1,
-      "top_urls": [
-        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/pass-job-outputs",
-        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/pass-job-outputs",
+      "rank": 2,
+      "retrieved_urls": [
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-variables",
-        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/run-job-variations",
-        "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows"
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/pass-job-outputs",
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/pass-job-outputs",
+        "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows",
+        "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/contexts"
       ],
-      "top_score": 0.5753
+      "top_score": 0.4993
     },
     {
       "id": "gha-oidc-aws",
       "kind": "answer",
       "category": "CI/CD – GitHub Actions",
       "question": "How do I configure OIDC so GitHub Actions can deploy to AWS without long-lived access keys?",
-      "rank": 1,
-      "top_urls": [
-        "https://github.com/aws-actions/configure-aws-credentials#readme",
+      "rank": 2,
+      "retrieved_urls": [
         "https://github.com/aws-actions/aws-lambda-deploy#readme",
         "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws",
+        "https://docs.github.com/en/actions/reference/security/secure-use",
         "https://github.com/aws-actions/configure-aws-credentials#readme",
-        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws"
+        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-cloud-providers",
+        "https://github.com/aws-actions/configure-aws-credentials#readme",
+        "https://docs.github.com/en/actions/concepts/security/openid-connect",
+        "https://docs.github.com/en/actions/concepts/security/openid-connect",
+        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-google-cloud-platform",
+        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-octopus-deploy"
       ],
-      "top_score": 0.7317
+      "top_score": 0.7231
     },
     {
       "id": "gha-secrets",
       "kind": "answer",
       "category": "CI/CD – GitHub Actions",
       "question": "How do I use a repository secret inside a workflow step?",
-      "rank": 3,
-      "top_urls": [
-        "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows",
-        "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows",
+      "rank": 1,
+      "retrieved_urls": [
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets",
+        "https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows",
+        "https://docs.github.com/en/actions/concepts/security/secrets",
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://docs.github.com/en/actions/concepts/security/secrets",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands",
         "https://docs.github.com/en/actions/reference/security/secure-use",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax"
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands"
       ],
-      "top_score": 0.7012
+      "top_score": 0.6864
     },
     {
       "id": "gha-concurrency",
@@ -150,27 +179,37 @@
       "category": "CI/CD – GitHub Actions",
       "question": "How can I cancel an in-progress deployment run when a newer commit is pushed?",
       "rank": 1,
-      "top_urls": [
-        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+      "retrieved_urls": [
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
-        "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/cancel-a-workflow-run"
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
+        "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/cancel-a-workflow-run",
+        "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/",
+        "https://github.com/actions/starter-workflows/blob/main/pages/static.yml",
+        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/create-custom-protection-rules",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-cancellation"
       ],
-      "top_score": 0.5991
+      "top_score": 0.5783
     },
     {
       "id": "gha-env-approval",
       "kind": "answer",
       "category": "CI/CD – GitHub Actions",
       "question": "How do I require a manual approval before a job deploys to production?",
-      "rank": 2,
-      "top_urls": [
+      "rank": 3,
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-cloudformation-action.html",
+        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
         "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments",
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow",
         "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",
+        "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/approve-runs-from-forks",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
-        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments"
+        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts-how-it-works.html"
       ],
       "top_score": 0.5662
     },
@@ -180,14 +219,19 @@
       "category": "CI/CD – GitHub Actions",
       "question": "How do I restrict what the GITHUB_TOKEN is allowed to do in a workflow?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
         "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
-        "https://docs.github.com/en/actions/concepts/security/github_token",
         "https://docs.github.com/en/actions/how-tos/administer/control-workflow-execution",
-        "https://docs.github.com/en/actions/concepts/security/secrets"
+        "https://docs.github.com/en/actions/concepts/security/github_token",
+        "https://docs.github.com/en/actions/concepts/security/compromised-runners",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations",
+        "https://docs.github.com/en/actions/reference/security/secure-use",
+        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-hashicorp-vault",
+        "https://docs.github.com/en/actions/how-tos/administer/control-workflow-execution",
+        "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-google-cloud-platform"
       ],
-      "top_score": 0.7008
+      "top_score": 0.6756
     },
     {
       "id": "gha-troubleshoot",
@@ -195,12 +239,17 @@
       "category": "CI/CD – GitHub Actions",
       "question": "My GitHub Actions workflow isn't behaving as expected. How do I troubleshoot it?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.github.com/en/actions/how-tos/troubleshoot-workflows",
         "https://docs.github.com/en/actions/how-tos/troubleshoot-workflows",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/action-runner-troubleshoot-webhook.html",
+        "https://docs.github.com/en/actions/reference/limits",
+        "https://docs.github.com/en/actions/how-tos/get-support",
         "https://docs.github.com/en/actions/how-tos/monitor-workflows",
-        "https://docs.github.com/en/actions/reference/limits"
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/action-runner-troubleshoot-webhook.html",
+        "https://docs.github.com/en/actions/how-tos/get-support",
+        "https://docs.github.com/en/actions/how-tos/create-and-publish-actions/release-and-maintain-actions",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/troubleshooting.html",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
       ],
       "top_score": 0.7612
     },
@@ -210,12 +259,17 @@
       "category": "CI/CD – GitHub Actions",
       "question": "How do I build a Docker image in GitHub Actions and push it to Amazon ECR?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://github.com/aws-actions/amazon-ecr-login#readme",
         "https://github.com/aws-actions/amazon-ecr-login#readme",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ecr-build-publish.html",
+        "https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/amazon-elastic-container-service",
+        "https://github.com/actions/starter-workflows/blob/main/deployments/aws.yml",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-docker-hub.html",
-        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-docker-hub.html"
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-docker-hub.html",
+        "https://github.com/aws-actions/aws-lambda-deploy#readme",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html",
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html"
       ],
       "top_score": 0.7602
     },
@@ -224,13 +278,18 @@
       "kind": "answer",
       "category": "CI/CD – GitHub Actions",
       "question": "How do I deploy a new image to an ECS service from GitHub Actions?",
-      "rank": 5,
-      "top_urls": [
-        "https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/amazon-elastic-container-service",
+      "rank": 3,
+      "retrieved_urls": [
         "https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/amazon-elastic-container-service",
         "https://github.com/actions/starter-workflows/blob/main/deployments/aws.yml",
+        "https://github.com/aws-actions/amazon-ecs-deploy-task-definition#readme",
         "https://github.com/actions/starter-workflows/blob/main/deployments/aws.yml",
-        "https://github.com/aws-actions/amazon-ecs-deploy-task-definition#readme"
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-ECS.html",
+        "https://docs.github.com/en/actions/how-tos/deploy/deploy-to-third-party-platforms/amazon-elastic-container-service",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ecs-ecr-codedeploy.html"
       ],
       "top_score": 0.7236
     },
@@ -240,14 +299,19 @@
       "category": "CI/CD – GitHub Actions",
       "question": "How do I deploy a CloudFormation stack from a GitHub Actions workflow?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://github.com/aws-actions/aws-cloudformation-github-deploy#readme",
         "https://github.com/aws-actions/aws-cloudformation-github-deploy#readme",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-StackSets.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CloudFormation.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CloudFormation.html",
+        "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-stackset-deployment.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-stackset-deployment.html"
       ],
-      "top_score": 0.6794
+      "top_score": 0.6652
     },
     {
       "id": "gha-image-tags",
@@ -255,14 +319,19 @@
       "category": "CI/CD – GitHub Actions",
       "question": "How do I tag Docker images with the git SHA and semver tags in GitHub Actions?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://github.com/docker/metadata-action#readme",
         "https://github.com/docker/metadata-action#readme",
         "https://github.com/actions/starter-workflows/blob/main/ci/docker-publish.yml",
+        "https://github.com/actions/starter-workflows/blob/main/ci/docker-publish.yml",
         "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/find-and-customize-actions",
-        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/find-and-customize-actions"
+        "https://github.com/aws-actions/amazon-ecr-login#readme",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+        "https://github.com/aws-actions/amazon-ecr-login#readme",
+        "https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/find-and-customize-actions",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
       ],
-      "top_score": 0.6908
+      "top_score": 0.6448
     },
     {
       "id": "cb-buildspec-phases",
@@ -270,14 +339,19 @@
       "category": "CI/CD – AWS",
       "question": "What phases can a CodeBuild buildspec file define?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite-buildspec.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-overview.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-gitlab-runners.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-overview.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-runner-buildkite-buildspec.html"
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-lambda-react-nodejs.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-codepipeline.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md"
       ],
-      "top_score": 0.7313
+      "top_score": 0.7076
     },
     {
       "id": "cb-caching",
@@ -285,14 +359,19 @@
       "category": "CI/CD – AWS",
       "question": "What caching options does CodeBuild support to speed up builds?",
       "rank": 3,
-      "top_urls": [
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/build-caching.html",
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-local.html"
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-s3.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-local.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-codebuild-project-projectcache.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-local.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/caching-s3.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html"
       ],
-      "top_score": 0.8005
+      "top_score": 0.7264
     },
     {
       "id": "cb-docker",
@@ -300,27 +379,37 @@
       "category": "CI/CD – AWS",
       "question": "How do I build Docker images inside a CodeBuild project?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-custom-image.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-server.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-custom-image.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-server.html"
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-windows-docker-custom-image.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-server.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-overview.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started-overview.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-build-badges.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker-section.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codebuild/README.md"
       ],
-      "top_score": 0.7772
+      "top_score": 0.7387
     },
     {
       "id": "cp-github-source",
       "kind": "answer",
       "category": "CI/CD – AWS",
       "question": "How do I start a CodePipeline pipeline from a GitHub repository?",
-      "rank": null,
-      "top_urls": [
+      "rank": 3,
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-simple-codecommit.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-simple-codecommit.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ec2-deploy.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-github-tags.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-github-gitclone.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html"
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-simple-codecommit.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-ecr-build-publish.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-github-featurebranches.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md"
       ],
       "top_score": 0.7694
     },
@@ -329,15 +418,20 @@
       "kind": "answer",
       "category": "CI/CD – AWS",
       "question": "How are artifacts passed between stages in CodePipeline?",
-      "rank": 2,
-      "top_urls": [
+      "rank": 1,
+      "retrieved_urls": [
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome-introducing-artifacts.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome-introducing-artifacts.html",
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome-introducing-artifacts.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome-introducing-artifacts.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-codepipeline.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-create.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline/README.md",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html"
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-four-stage-pipeline.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline/README.md"
       ],
-      "top_score": 0.7453
+      "top_score": 0.7029
     },
     {
       "id": "cb-env-vars",
@@ -345,14 +439,19 @@
       "category": "CI/CD – AWS",
       "question": "Which CodeBuild environment variable gives the commit ID being built?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
         "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version-github.html",
-        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeCommit.html"
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version-github-ref.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeCommit.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/action-reference-CodeBuild.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-codebuild-project-projectsourceversion.html"
       ],
-      "top_score": 0.6955
+      "top_score": 0.6892
     },
     {
       "id": "cfn-rollback-failed",
@@ -360,12 +459,17 @@
       "category": "IaC – CloudFormation",
       "question": "What does UPDATE_ROLLBACK_FAILED mean in CloudFormation and how do I fix it?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-failure-options.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-failure-options.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-monitor-stack.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-monitor-stack.html"
+        "https://docs.aws.amazon.com/eks/latest/userguide/rollback-automode.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-rollback.html"
       ],
       "top_score": 0.895
     },
@@ -374,13 +478,18 @@
       "kind": "answer",
       "category": "IaC – CloudFormation",
       "question": "How do I keep an S3 bucket when its CloudFormation stack is deleted?",
-      "rank": 8,
-      "top_urls": [
+      "rank": 4,
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-s3-bucket.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/gettingstarted.walkthrough.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-attribute-deletionpolicy.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-attribute-deletionpolicy.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/troubleshooting.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-s3-bucket.html"
+        "https://docs.aws.amazon.com/cdk/v2/guide/troubleshooting.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3-deployment/README.md"
       ],
       "top_score": 0.7681
     },
@@ -389,30 +498,40 @@
       "kind": "answer",
       "category": "IaC – CloudFormation",
       "question": "How do I build a string from parameters and resource attributes in a CloudFormation template?",
-      "rank": null,
-      "top_urls": [
+      "rank": 8,
+      "retrieved_urls": [
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html"
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-formats.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-sub.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-sub.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-attribute-condition.html"
       ],
-      "top_score": 0.6747
+      "top_score": 0.5973
     },
     {
       "id": "cfn-changeset",
       "kind": "answer",
       "category": "IaC – CloudFormation",
       "question": "How do I preview the changes an update will make to a CloudFormation stack before applying it?",
-      "rank": 1,
-      "top_urls": [
+      "rank": 2,
+      "retrieved_urls": [
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-get-template.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-view.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-view.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html"
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-execute.html"
       ],
-      "top_score": 0.747
+      "top_score": 0.7249
     },
     {
       "id": "cfn-export",
@@ -420,11 +539,16 @@
       "category": "IaC – CloudFormation",
       "question": "How do I share a value from one CloudFormation stack with another stack?",
       "rank": 3,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ec2/README.md",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-importvalue.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-create.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-importvalue.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-direct.html"
       ],
       "top_score": 0.8266
@@ -434,15 +558,20 @@
       "kind": "answer",
       "category": "IaC – CloudFormation",
       "question": "How do I restrict a CloudFormation parameter to a fixed list of values?",
-      "rank": 2,
-      "top_urls": [
+      "rank": 1,
+      "retrieved_urls": [
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets-samples.html",
+        "https://github.com/aws-cloudformation/cfn-lint/blob/main/docs/rules.md",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-join.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-rules.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-cloudfront-distributiontenant.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/intrinsic-function-reference-select.html"
       ],
-      "top_score": 0.6697
+      "top_score": 0.544
     },
     {
       "id": "cfn-lambda",
@@ -450,27 +579,37 @@
       "category": "IaC – CloudFormation",
       "question": "Which properties does an AWS::Lambda::Function resource need?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-function.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/concepts-basics.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-function.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda/README.md",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-vpcconfig.html",
+        "https://www.checkov.io/5.Policy%20Index/cloudformation.html",
+        "https://github.com/aws-cloudformation/cfn-lint/blob/main/docs/rules.md",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-code.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-permission.html",
-        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-permission.html"
+        "https://docs.aws.amazon.com/lambda/latest/dg/configuration-self-managed-storage.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-tracing.html"
       ],
-      "top_score": 0.6973
+      "top_score": 0.6328
     },
     {
       "id": "cfn-cloudfront-root",
       "kind": "answer",
       "category": "IaC – CloudFormation",
       "question": "How do I set index.html as the default page of a CloudFront distribution in CloudFormation?",
-      "rank": 3,
-      "top_urls": [
+      "rank": 2,
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DefaultRootObject.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DefaultRootObject.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/IndexDocumentSupport.html",
-        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DefaultRootObject.html"
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-cloudfront-distribution-distributionconfig.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/IndexDocumentSupport.html",
+        "https://github.com/aws-cloudformation/aws-guard-rules-registry/blob/main/rules/aws/cloudfront/cloudfront_default_root_object_configured.guard"
       ],
       "top_score": 0.6102
     },
@@ -479,15 +618,20 @@
       "kind": "answer",
       "category": "IaC – CDK",
       "question": "What is CDK bootstrapping and how do I bootstrap an account?",
-      "rank": 1,
-      "top_urls": [
-        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html",
+      "rank": 2,
+      "retrieved_urls": [
+        "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-env.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-customizing.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-customizing.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-env.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-bootstrap.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-env.html"
+        "https://docs.aws.amazon.com/cdk/v2/guide/hello-world.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-troubleshoot.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-bootstrap.html"
       ],
-      "top_score": 0.7852
+      "top_score": 0.7587
     },
     {
       "id": "cdk-construct-levels",
@@ -495,12 +639,17 @@
       "category": "IaC – CDK",
       "question": "What are L1, L2 and L3 constructs in the AWS CDK?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/cdk/v2/guide/constructs.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/constructs.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/best-practices.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
+        "https://docs.aws.amazon.com/cdk/v2/guide/work-with-cdk-python.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/apps.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/apps.html"
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-s3/README.md",
+        "https://docs.aws.amazon.com/cdk/v2/guide/apps.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md"
       ],
       "top_score": 0.7528
     },
@@ -509,15 +658,20 @@
       "kind": "answer",
       "category": "IaC – CDK",
       "question": "How do I deploy a TypeScript Lambda function with the CDK so it gets bundled automatically?",
-      "rank": 7,
-      "top_urls": [
-        "https://docs.aws.amazon.com/cdk/v2/guide/hello-world.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/hello-world.html",
+      "rank": 4,
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/cdk/v2/guide/testing.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/durable-getting-started-iac.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda-nodejs/README.md",
         "https://docs.aws.amazon.com/cdk/v2/guide/work-with-cdk-typescript.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/durable-getting-started-iac.html"
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda-nodejs/README.md",
+        "https://docs.aws.amazon.com/lambda/latest/dg/durable-getting-started-iac.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/hello-world.html"
       ],
-      "top_score": 0.6569
+      "top_score": 0.6395
     },
     {
       "id": "cdk-s3-deploy",
@@ -525,12 +679,17 @@
       "category": "IaC – CDK",
       "question": "How do I upload a static website's files to an S3 bucket with the CDK?",
       "rank": null,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-s3deploy.html",
-        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-disable-artifact-encryption.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html"
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html",
+        "https://docs.aws.amazon.com/codepipeline/latest/userguide/tutorials-s3deploy.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-amplify.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/static-website-tutorials.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html"
       ],
       "top_score": 0.6902
     },
@@ -540,11 +699,16 @@
       "category": "IaC – CDK",
       "question": "How do I create a Fargate service behind an Application Load Balancer with the CDK?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs-patterns/README.md",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs-patterns/README.md",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md",
+        "https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-elasticloadbalancingv2/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-elasticloadbalancingv2/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-cloudfront-origins/README.md",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/operating-at-scale-service-quotas-best-practice.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md"
       ],
       "top_score": 0.6728
@@ -554,15 +718,20 @@
       "kind": "answer",
       "category": "IaC – CDK",
       "question": "My cdk deploy is failing. What are common causes and fixes?",
-      "rank": 1,
-      "top_urls": [
-        "https://docs.aws.amazon.com/cdk/v2/guide/troubleshooting.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-troubleshoot.html",
+      "rank": 2,
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-deploy.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/troubleshooting.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/deploy-troubleshoot.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-troubleshoot.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-deploy.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-troubleshoot.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/deploy.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/tenant-isolation-troubleshooting.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-notices.html"
       ],
-      "top_score": 0.5909
+      "top_score": 0.488
     },
     {
       "id": "cdk-drift",
@@ -570,12 +739,17 @@
       "category": "IaC – CDK",
       "question": "How do I check whether deployed CDK resources have drifted from the stack definition?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-drift.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-drift.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-deploy.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-diff.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-rollback.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
-        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-diff.html"
+        "https://docs.aws.amazon.com/cdk/v2/guide/cli.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-import.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd-diff.html",
+        "https://docs.aws.amazon.com/cdk/v2/guide/ref-cli-cmd.html"
       ],
       "top_score": 0.7122
     },
@@ -585,12 +759,17 @@
       "category": "Deploy targets",
       "question": "My ECS task stopped with CannotPullContainerError. What should I check?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stopped-tasks-error-messages-updates.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stopped-task-errors.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-throttle-logic.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stopped-task-error-codes.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-event-messages-list.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-event-messages-list.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshoot-service-load-balancers.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-troubleshooting.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshoot-service-load-balancers.html"
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/resolve-stopped-errors.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshooting.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/stopped-task-errors.html"
       ],
       "top_score": 0.747
     },
@@ -600,12 +779,17 @@
       "category": "Deploy targets",
       "question": "How does the ECS deployment circuit breaker work?",
       "rank": 1,
-      "top_urls": [
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-circuit-breaker.html",
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-circuit-breaker.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-circuit-breaker.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs-patterns/README.md",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshooting-deployment-controller-migration.html"
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshooting-deployment-controller-migration.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-failure-detection.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-ecs-service-deploymentconfiguration.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployment-property.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deploy-linear-service.html"
       ],
       "top_score": 0.688
     },
@@ -615,11 +799,16 @@
       "category": "Deploy targets",
       "question": "How do blue/green deployments work for Amazon ECS services?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-blue-green.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deploy-blue-green-service.html",
         "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deploy-blue-green-service.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/blue-green-deployment-implementation.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deploy-blue-green-service.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/blue-green-deployment-how-it-works.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-linear.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/blue-green-deployment-how-it-works.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-blue-green.html"
       ],
       "top_score": 0.857
@@ -630,12 +819,17 @@
       "category": "Deploy targets",
       "question": "How do I set CPU and memory for a Fargate task definition?",
       "rank": 3,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-tasks-services.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-task-size-best-practice.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-tasks-services.html"
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-work.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters-managed-instances.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters_ec2.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-tasks-services.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/getting-started-fargate.html"
       ],
       "top_score": 0.7872
     },
@@ -644,13 +838,18 @@
       "kind": "answer",
       "category": "Deploy targets",
       "question": "What does the awsvpc network mode do for ECS tasks?",
-      "rank": 3,
-      "top_urls": [
+      "rank": 4,
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters-managed-instances.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/managed-instances-awsvpc-mode.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters_ec2.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html",
         "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html",
-        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/interconnecting-services.html"
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/interconnecting-services.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ecs-taskdefinition.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service_definition_parameters.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/operating-at-scale-service-quotas-best-practice.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecs/README.md"
       ],
       "top_score": 0.7491
     },
@@ -660,12 +859,17 @@
       "category": "Deploy targets",
       "question": "How do I automatically expire untagged images in an ECR repository?",
       "rank": 2,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
         "https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_examples.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr/README.md",
         "https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_examples.html",
-        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-tag-mutability.html"
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr/README.md",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr/README.md",
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html",
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-tag-mutability.html",
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning-troubleshooting.html",
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-tag-mutability.html",
+        "https://docs.aws.amazon.com/AmazonECR/latest/userguide/lifecycle_policy_parameters.html"
       ],
       "top_score": 0.6894
     },
@@ -675,14 +879,19 @@
       "category": "Deploy targets",
       "question": "What auth types can a Lambda function URL use?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/furls-http-invoke-decision.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/urls-invocation.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/urls-invocation.html"
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-url.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/urls-invocation.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/urls-configuration.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-lambda-permission.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/furls-http-invoke-decision.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/urls-webhook-tutorial.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/urls-configuration.html"
       ],
-      "top_score": 0.6936
+      "top_score": 0.6834
     },
     {
       "id": "lambda-node-handler",
@@ -690,12 +899,17 @@
       "category": "Deploy targets",
       "question": "How do I write a Node.js Lambda handler?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html"
+        "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-managed-instances-nodejs-runtime.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-code.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/troubleshooting-invocation.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html"
       ],
       "top_score": 0.7877
     },
@@ -705,12 +919,17 @@
       "category": "Deploy targets",
       "question": "How do I set environment variables for a Lambda function?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-environment.html",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-lambda-boto3-python.html",
         "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-environment.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html"
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-lambda-boto3-python.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-modify.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-modify.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars-encryption.html"
       ],
       "top_score": 0.8931
     },
@@ -720,12 +939,17 @@
       "category": "Deploy targets",
       "question": "How do I deploy a Node.js Lambda function as a .zip file archive?",
       "rank": 1,
-      "top_urls": [
-        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html",
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-zip.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-zip.html",
-        "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html"
+        "https://docs.aws.amazon.com/lambda/latest/dg/troubleshooting-execution.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-layers.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-layers.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html"
       ],
       "top_score": 0.9152
     },
@@ -735,14 +959,19 @@
       "category": "Deploy targets",
       "question": "How do I deploy a Lambda function from a container image?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/lambda/latest/dg/images-create.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/images-create.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
         "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
-        "https://github.com/aws-actions/aws-lambda-deploy#readme"
+        "https://github.com/aws-actions/aws-lambda-deploy#readme",
+        "https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-zip.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/runtimes-open-source.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html",
+        "https://docs.aws.amazon.com/lambda/latest/dg/durable-supported-runtimes.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-lambda-function-code.html"
       ],
-      "top_score": 0.8558
+      "top_score": 0.836
     },
     {
       "id": "s3-static-site",
@@ -750,12 +979,17 @@
       "category": "Deploy targets",
       "question": "How do I host a static website on Amazon S3?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/EnableWebsiteHosting.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html"
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/static-website-tutorials.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-amplify.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html"
       ],
       "top_score": 0.8998
     },
@@ -765,29 +999,39 @@
       "category": "Deploy targets",
       "question": "How do I keep my S3 bucket private while serving it through CloudFront?",
       "rank": 1,
-      "top_urls": [
-        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html",
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html",
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3-mrap.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3-mrap.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DefaultRootObject.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
         "https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html"
       ],
-      "top_score": 0.5501
+      "top_score": 0.5282
     },
     {
       "id": "cf-invalidate",
       "kind": "answer",
       "category": "Deploy targets",
       "question": "How do I make CloudFront serve updated files after I redeploy my site?",
-      "rank": null,
-      "top_urls": [
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
-        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
+      "rank": 5,
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/getting-started-secure-static-website-cloudformation-template.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md"
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/getting-started-secure-static-website-cloudformation-template.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-cloudfront-walkthrough.html",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-cloudfront/README.md",
+        "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.SimpleDistribution.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-codepipeline-actions/README.md",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-cloudfront-distributiontenant-managedcertificaterequest.html"
       ],
-      "top_score": 0.5129
+      "top_score": 0.4706
     },
     {
       "id": "eks-karpenter",
@@ -795,12 +1039,17 @@
       "category": "Deploy targets (stretch)",
       "question": "Should I use Karpenter or Cluster Autoscaler to scale nodes on EKS?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/eks/latest/userguide/autoscaling.html",
-        "https://karpenter.sh/docs/getting-started/migrating-from-cas/",
-        "https://karpenter.sh/docs/getting-started/migrating-from-cas/",
+        "https://docs.aws.amazon.com/eks/latest/userguide/autoscaling.html",
         "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html",
-        "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html"
+        "https://docs.aws.amazon.com/eks/latest/best-practices/karpenter.html",
+        "https://karpenter.sh/docs/getting-started/migrating-from-cas/",
+        "https://karpenter.sh/docs/getting-started/migrating-from-cas/",
+        "https://docs.aws.amazon.com/eks/latest/userguide/ml-inference-autoscaling.html",
+        "https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md",
+        "https://docs.aws.amazon.com/eks/latest/userguide/horizontal-pod-autoscaler.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-standard.html"
       ],
       "top_score": 0.8444
     },
@@ -810,12 +1059,17 @@
       "category": "Deploy targets (stretch)",
       "question": "How do I autoscale pods based on CPU in EKS?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/eks/latest/userguide/horizontal-pod-autoscaler.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/ml-inference-autoscaling.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/horizontal-pod-autoscaler.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/autoscaling.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/ml-inference-autoscaling.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/coredns-autoscaling.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/autoscaling.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/coredns-autoscaling.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/ml-inference-autoscaling.html"
+        "https://docs.aws.amazon.com/eks/latest/userguide/fargate-getting-started.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-standard.html"
       ],
       "top_score": 0.6728
     },
@@ -824,15 +1078,20 @@
       "kind": "answer",
       "category": "Deploy targets (stretch)",
       "question": "How do I create an EKS cluster with eksctl?",
-      "rank": 2,
-      "top_urls": [
-        "https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html",
+      "rank": 1,
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/eks/latest/eksctl/creating-and-managing-clusters.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/automode-get-started-eksctl.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/automode-get-started-eksctl.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html",
-        "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html"
+        "https://docs.aws.amazon.com/eks/latest/userguide/eks-provisioned-control-plane-getting-started.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html",
+        "https://docs.aws.amazon.com/eks/latest/eksctl/auto-mode.html"
       ],
-      "top_score": 0.8858
+      "top_score": 0.8836
     },
     {
       "id": "eks-node-group",
@@ -840,27 +1099,37 @@
       "category": "Deploy targets (stretch)",
       "question": "How do I add a managed node group to an EKS cluster?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html",
-        "https://docs.aws.amazon.com/eks/latest/eksctl/nodegroup-managed.html",
         "https://docs.aws.amazon.com/eks/latest/userguide/create-managed-node-group.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/update-managed-node-group.html",
         "https://docs.aws.amazon.com/eks/latest/eksctl/nodegroup-managed.html",
-        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/README.md"
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-eks/README.md",
+        "https://docs.aws.amazon.com/eks/latest/eksctl/nodegroups.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html",
+        "https://docs.aws.amazon.com/eks/latest/eksctl/nodegroup-managed.html"
       ],
-      "top_score": 0.9069
+      "top_score": 0.8961
     },
     {
       "id": "docker-multistage",
       "kind": "answer",
       "category": "Containers",
       "question": "How do multi-stage Docker builds keep the final image small?",
-      "rank": 4,
-      "top_urls": [
+      "rank": 3,
+      "retrieved_urls": [
         "https://docs.docker.com/build/building/best-practices/",
         "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
-        "https://docs.docker.com/build/building/best-practices/",
         "https://docs.docker.com/build/building/multi-stage/",
-        "https://docs.docker.com/build/building/multi-stage/"
+        "https://docs.docker.com/build/building/multi-stage/",
+        "https://docs.docker.com/build/building/best-practices/",
+        "https://docs.docker.com/build/building/multi-platform/",
+        "https://docs.docker.com/build/building/export/",
+        "https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html",
+        "https://kubernetes.io/blog/2026/07/14/custom-metrics-exporter-kubernetes/",
+        "https://docs.docker.com/reference/dockerfile/"
       ],
       "top_score": 0.738
     },
@@ -870,14 +1139,19 @@
       "category": "Containers",
       "question": "How do I keep files out of the Docker build context?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://docs.docker.com/build/concepts/context/",
         "https://docs.docker.com/build/concepts/context/",
         "https://docs.docker.com/reference/dockerfile/",
+        "https://docs.docker.com/reference/dockerfile/",
+        "https://github.com/docker/build-push-action#readme",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr-assets/README.md",
         "https://docs.docker.com/build/building/best-practices/",
-        "https://docs.docker.com/reference/dockerfile/"
+        "https://github.com/docker/setup-buildx-action#readme",
+        "https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-ecr-assets/README.md",
+        "https://github.com/docker/build-push-action#readme"
       ],
-      "top_score": 0.6906
+      "top_score": 0.5776
     },
     {
       "id": "docker-node-nonroot",
@@ -885,12 +1159,17 @@
       "category": "Containers",
       "question": "How do I run a Node.js app as a non-root user in a Docker container?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md",
+        "https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md",
+        "https://github.com/nodejs/docker-node#readme",
+        "https://github.com/nodejs/docker-node#readme",
         "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
-        "https://docs.aws.amazon.com/eks/latest/best-practices/pod-security.html",
         "https://docs.docker.com/build/building/best-practices/",
-        "https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md"
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html",
+        "https://trivy.dev/latest/docs/guide/target/container_image/",
+        "https://docs.aws.amazon.com/lambda/latest/dg/nodejs-image.html",
+        "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters_ec2.html"
       ],
       "top_score": 0.7677
     },
@@ -899,15 +1178,20 @@
       "kind": "answer",
       "category": "Security",
       "question": "What are AWS's recommended IAM security best practices?",
-      "rank": 1,
-      "top_urls": [
+      "rank": 2,
+      "retrieved_urls": [
+        "https://docs.aws.amazon.com/cdk/v2/guide/best-practices-security.html",
         "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+        "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/security-best-practices.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html",
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html",
         "https://docs.aws.amazon.com/cdk/v2/guide/best-practices-security.html",
         "https://docs.aws.amazon.com/eks/latest/best-practices/security.html",
         "https://docs.aws.amazon.com/eks/latest/best-practices/security.html",
-        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html"
+        "https://docs.aws.amazon.com/lambda/latest/dg/concepts-basics.html"
       ],
-      "top_score": 0.8529
+      "top_score": 0.7625
     },
     {
       "id": "sec-hadolint",
@@ -915,12 +1199,17 @@
       "category": "Security",
       "question": "How do I lint a Dockerfile with hadolint?",
       "rank": 1,
-      "top_urls": [
+      "retrieved_urls": [
         "https://github.com/hadolint/hadolint#readme",
         "https://github.com/hadolint/hadolint#readme",
         "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
+        "https://docs.docker.com/build/concepts/context/",
+        "https://docs.aws.amazon.com/eks/latest/best-practices/image-security.html",
+        "https://docs.docker.com/build/building/best-practices/",
         "https://trivy.dev/latest/docs/guide/scanner/misconfiguration/custom/debug/",
-        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Dockerfile.md"
+        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Dockerfile.md",
+        "https://docs.docker.com/reference/dockerfile/",
+        "https://trivy.dev/latest/docs/guide/scanner/misconfiguration/custom/debug/"
       ],
       "top_score": 0.8805
     },
@@ -930,14 +1219,19 @@
       "category": "Security",
       "question": "What does Checkov check in GitHub Actions workflows?",
       "rank": null,
-      "top_urls": [
-        "https://github.com/bridgecrewio/checkov/blob/main/docs/1.Welcome/What is Checkov.md",
+      "retrieved_urls": [
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
+        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Argo Workflows.md",
         "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Github.md",
-        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Sca.md",
+        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows",
+        "https://docs.github.com/en/actions/how-tos/write-workflows",
         "https://github.com/bridgecrewio/checkov/blob/main/docs/1.Welcome/What is Checkov.md",
-        "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows"
+        "https://github.com/bridgecrewio/checkov/blob/main/docs/7.Scan Examples/Sca.md",
+        "https://github.com/bridgecrewio/checkov/blob/main/docs/2.Basics/CLI Command Reference.md",
+        "https://github.com/bridgecrewio/checkov/blob/main/docs/1.Welcome/What is Checkov.md",
+        "https://github.com/bridgecrewio/checkov/blob/main/docs/2.Basics/CLI Command Reference.md"
       ],
-      "top_score": 0.6379
+      "top_score": 0.581
     },
     {
       "id": "ver-checkout",

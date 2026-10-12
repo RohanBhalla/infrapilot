@@ -67,7 +67,8 @@ def retriever(tmp_path):
              "title": title, "url": f"https://example.com/{cid}", "heading_path": title,
              "chunk_index": 0, "content_hash": cid, "text": text, "vector": emb.embed(text)}
             for cid, doc, cat, dt, title, text in CORPUS]
-    lancedb.connect(str(tmp_path)).create_table("chunks", data=rows)
+    table = lancedb.connect(str(tmp_path)).create_table("chunks", data=rows)
+    table.create_fts_index("text")
     return LocalLanceRetriever(embedder=emb, cfg=replace(CONFIG, max_per_doc=2), vectors_dir=tmp_path)
 
 
@@ -120,10 +121,55 @@ def test_filter_translation_escapes_and_combines():
         {"equals": {"key": "category", "value": "x"}}, {"in": {"key": "doc_type", "value": ["a", "b"]}}]}
 
 
-def test_diversify_keeps_score_order():
+def test_diversify_keeps_given_order():
+    # Input order is the ranking (fused for hybrid search), so diversify must not re-sort.
     cs = [RetrievedChunk(chunk_id=str(i), text="", url="u", title="t", score=s, metadata={"doc_id": d})
           for i, (s, d) in enumerate([(0.5, "a"), (0.9, "a"), (0.7, "b"), (0.8, "a")])]
-    assert [c.chunk_id for c in diversify(cs, k=3, max_per_doc=2)] == ["1", "3", "2"]
+    assert [c.chunk_id for c in diversify(cs, k=3, max_per_doc=2)] == ["0", "1", "2"]
+
+
+class NoiseEmbedder:
+    """Meaningless but deterministic vectors: vector search ranks chunks arbitrarily."""
+
+    def embed(self, text: str) -> list[float]:
+        h = hashlib.sha256(text.encode()).digest()
+        v = [b - 127.5 for b in (h * 4)[:DIMS]]
+        n = math.sqrt(sum(x * x for x in v))
+        return [x / n for x in v]
+
+
+def _table(tmp_path, emb, fts=True):
+    rows = [{"chunk_id": cid, "doc_id": doc, "source_id": "1", "category": cat, "doc_type": dt,
+             "title": title, "url": f"https://example.com/{cid}", "heading_path": title,
+             "chunk_index": 0, "content_hash": cid, "text": text, "vector": emb.embed(text)}
+            for cid, doc, cat, dt, title, text in CORPUS]
+    table = lancedb.connect(str(tmp_path)).create_table("chunks", data=rows)
+    if fts:
+        table.create_fts_index("text")
+
+
+def test_keyword_search_finds_exact_term_vector_search_misses(tmp_path):
+    emb = NoiseEmbedder()
+    _table(tmp_path, emb)
+    cfg = replace(CONFIG, max_per_doc=5)
+    hybrid = LocalLanceRetriever(embedder=emb, cfg=cfg, vectors_dir=tmp_path, hybrid=True)
+    top = hybrid.retrieve("CannotPullContainerError", k=3)[0]
+    assert top.chunk_id == "ecs-trouble" and "keyword" in top.metadata["match"]
+    # The score stays the meaning (cosine) score, so the min_score cut-off still means the same.
+    assert top.score == round(sum(a * b for a, b in zip(emb.embed("CannotPullContainerError"),
+                                                         emb.embed(CORPUS[3][5]))), 4)
+
+
+def test_keyword_query_strips_query_syntax():
+    from infrapilot_rag.retriever import keyword_query
+
+    assert keyword_query('What does "Fn::Sub" do?') == "What does Fn Sub do"
+
+
+def test_missing_text_index_falls_back_to_vector(tmp_path):
+    _table(tmp_path, FakeEmbedder(), fts=False)
+    r = LocalLanceRetriever(embedder=FakeEmbedder(), vectors_dir=tmp_path, hybrid=True)
+    assert r.hybrid is False and r.retrieve("ECS task stopped", k=2)
 
 
 # ---- versions --------------------------------------------------------------------
@@ -216,3 +262,10 @@ def test_dotenv_strips_inline_comments(tmp_path, monkeypatch):
     _load_dotenv(env)
     import os
     assert (os.environ["A_MODEL"], os.environ["A_QUOTED"], os.environ["A_PLAIN"]) == ("gpt-5-mini", "x # y", "v")
+
+
+def test_versions_added_for_actions_pinned_in_excerpts(versions):
+    q = "How do I run the same job against several Node versions?"
+    assert "actions/setup-node" not in {f["tool"] for f in versions.relevant(q)}
+    ctx = "steps:\n  - uses: actions/setup-node@v4\n"
+    assert "actions/setup-node" in {f["tool"] for f in versions.relevant(q, ctx)}

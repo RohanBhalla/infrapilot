@@ -56,7 +56,8 @@ def evaluate_one(q: dict, svc, judge_llm=None, retrieval_only: bool = False) -> 
         r["expected_version"] = value
         r["version_ok"] = (not ans.refused) and bool(pattern.search(ans.text))
     if judge_llm and q["kind"] == "answer" and not ans.refused:
-        user = build_user_message(q["question"], ans.chunks, svc.versions.relevant(q["question"]))
+        facts = svc.versions.relevant(q["question"], "\n".join(c.text for c in ans.chunks))
+        user = build_user_message(q["question"], ans.chunks, facts)
         j = judge(judge_llm, q["question"], user, ans.text)
         u = j.pop("usage")
         r["judge"] = j

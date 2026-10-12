@@ -69,6 +69,16 @@ def _rows(chunks: list[Chunk], vectors: dict[str, list[float]]) -> list[dict]:
     ]
 
 
+def build_text_index(table) -> None:
+    """Full-text (keyword) index on chunk text, for hybrid search in the RAG service.
+    Overwriting the table drops it, so it's rebuilt after every embed run (~1 s)."""
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)  # newer API isn't stable in lancedb 0.40
+        table.create_fts_index("text", replace=True)
+
+
 def run_embed(limit: int | None = None, workers: int = 4, batch_size: int = 500) -> dict:
     """Embed new/changed chunks, saving the table after every batch so a crash loses little."""
     import lancedb
@@ -110,6 +120,7 @@ def run_embed(limit: int | None = None, workers: int = 4, batch_size: int = 500)
     rows = _rows(chunks, existing)
     if not todo:
         db.create_table(TABLE, data=rows, mode="overwrite")  # drop vectors for removed chunks
+    build_text_index(db.open_table(TABLE))
     return {**estimate(todo), "embedded_now": len(todo) - len(failed), "failed": failed[:20],
             "failed_count": len(failed), "table_rows": len(rows),
             "seconds": round(time.monotonic() - started, 1)}

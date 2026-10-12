@@ -21,7 +21,7 @@ class AnswerService:
         started = time.monotonic()
         chunks = [c for c in self.retriever.retrieve(question, filters, k)
                   if c.score >= self.cfg.min_score]
-        facts = self.versions.relevant(question)
+        facts = self.versions.relevant(question, "\n".join(c.text for c in chunks))
         if not chunks and not facts:
             # Nothing relevant: refuse without paying for an LLM call.
             return Answer(question=question, text=REFUSAL, refused=True,

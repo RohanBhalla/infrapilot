@@ -70,6 +70,8 @@ class RagConfig:
     k: int = 6                # chunks put in the prompt
     candidates: int = 30      # chunks pulled from the index before diversifying
     max_per_doc: int = 2      # so one long page can't fill every slot
+    hybrid: bool = os.environ.get("INFRAPILOT_HYBRID", "1") != "0"  # vector + keyword search
+    rrf_k: int = 60           # reciprocal rank fusion constant (the standard default)
     min_score: float = 0.30   # cosine; on-topic questions score 0.55-0.85, off-topic <= 0.21
     max_tokens: int = 1200
     reasoning_effort: str = os.environ.get("INFRAPILOT_REASONING_EFFORT", "low")  # gpt-5 family

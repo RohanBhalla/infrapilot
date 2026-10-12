@@ -25,6 +25,9 @@ TOPICS: dict[str, tuple[re.Pattern, tuple[str, ...]]] = {
 }
 
 
+PIN = re.compile(r"([\w.-]+/[\w.-]+)@v\d+")
+
+
 class VersionRegistry:
     def __init__(self, path: Path = CONFIG.versions_path, today: date | None = None):
         self.facts: dict[str, dict] = json.loads(Path(path).read_text()) if Path(path).exists() else {}
@@ -39,8 +42,11 @@ class VersionRegistry:
             return fact.get("extra", {}).get("status") == "supported"
         return not (fact.get("eol") and fact["eol"] < self.today and not fact.get("latest"))
 
-    def relevant(self, question: str) -> list[dict]:
+    def relevant(self, question: str, context: str = "") -> list[dict]:
+        """Facts for the topics and tools in the question, plus any action pinned in the
+        retrieved excerpts (`context`): doc examples are where outdated pins come from."""
         q = question.lower()
+        pinned = {m.lower() for m in PIN.findall(context)}
         picked = []
         for tool, fact in self.facts.items():
             short = tool.rsplit("/", 1)[-1].removeprefix("lambda-runtime-")
@@ -51,7 +57,7 @@ class VersionRegistry:
                 rf"(?<![\w-]){re.escape(short)}(?![\w-])", q) is not None
             topical = any(pat.search(question) and tool.startswith(prefixes)
                           for pat, prefixes in TOPICS.values())
-            if named or (topical and self._current(fact)):
+            if named or tool.lower() in pinned or (topical and self._current(fact)):
                 picked.append(fact)
         return picked
 

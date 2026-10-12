@@ -1,19 +1,25 @@
 """The Retriever contract (plan, contract 2) and its two backends.
 
 - LocalLanceRetriever: the LanceDB index built by `infrapilot-data embed`. Free, offline
-  apart from the query embedding. Used for development and evals.
+  apart from the query embedding. Used for development and evals. Hybrid by default: meaning
+  (vector) search plus keyword (full-text) search, merged with reciprocal rank fusion, so exact
+  names like `Fn::Sub` or `CannotPullContainerError` aren't missed.
 - BedrockKBRetriever: a Bedrock Knowledge Base on S3 Vectors (Phase 2). Same contract,
   so the answer service doesn't change when we switch.
 """
 
 from __future__ import annotations
 
+import logging
+import re
 from pathlib import PurePosixPath
 from typing import Protocol
 
 from .config import CONFIG, RagConfig
 from .embedder import Embedder
 from .models import FILTER_FIELDS, Filters, RetrievedChunk
+
+log = logging.getLogger(__name__)
 
 
 class Retriever(Protocol):
@@ -34,9 +40,9 @@ def check_filters(filters: Filters | None) -> Filters:
 
 
 def diversify(chunks: list[RetrievedChunk], k: int, max_per_doc: int) -> list[RetrievedChunk]:
-    """Keep the best-scoring chunks, at most max_per_doc from any one document."""
+    """Keep chunks in the given (best-first) order, at most max_per_doc from any one document."""
     out, per_doc = [], {}
-    for c in sorted(chunks, key=lambda c: c.score, reverse=True):
+    for c in chunks:
         doc = c.metadata.get("doc_id", c.url)
         if per_doc.get(doc, 0) >= max_per_doc:
             continue
@@ -45,6 +51,22 @@ def diversify(chunks: list[RetrievedChunk], k: int, max_per_doc: int) -> list[Re
         if len(out) == k:
             break
     return out
+
+
+def rrf(*ranked: list[dict], k: int = 60) -> list[dict]:
+    """Reciprocal rank fusion: score each row by sum(1 / (k + rank)) across the lists."""
+    score: dict[str, float] = {}
+    rows: dict[str, dict] = {}
+    for lst in ranked:
+        for i, r in enumerate(lst, 1):
+            score[r["chunk_id"]] = score.get(r["chunk_id"], 0.0) + 1 / (k + i)
+            rows.setdefault(r["chunk_id"], r)
+    return [rows[c] for c in sorted(score, key=score.get, reverse=True)]
+
+
+def keyword_query(text: str) -> str:
+    """Strip characters the full-text query parser treats as syntax (`Fn::Sub` -> `Fn Sub`)."""
+    return " ".join(re.sub(r"[^\w\s.-]", " ", text).split())
 
 
 def lance_where(filters: Filters) -> str | None:
@@ -59,7 +81,7 @@ class LocalLanceRetriever:
     META = ("doc_id", "source_id", "category", "doc_type", "heading_path", "chunk_index")
 
     def __init__(self, embedder: Embedder | None = None, cfg: RagConfig = CONFIG,
-                 vectors_dir=None, table: str | None = None):
+                 vectors_dir=None, table: str | None = None, hybrid: bool | None = None):
         import lancedb
 
         from .embedder import TitanEmbedder
@@ -68,23 +90,48 @@ class LocalLanceRetriever:
         self.embedder = embedder or TitanEmbedder(cfg)
         db = lancedb.connect(str(vectors_dir or cfg.vectors_dir))
         self.table = db.open_table(table or cfg.table)
+        self.hybrid = cfg.hybrid if hybrid is None else hybrid
+        if self.hybrid and not any(i.index_type == "FTS" for i in self.table.list_indices()):
+            log.warning("no full-text index on the chunks table; using vector search only. "
+                        "Rebuild it with `infrapilot-data embed --run`.")
+            self.hybrid = False
 
     def retrieve(self, query: str, filters: Filters | None = None,
                  k: int | None = None) -> list[RetrievedChunk]:
         k = k or self.cfg.k
-        q = (self.table.search(self.embedder.embed(query))
-             .distance_type("cosine")
-             .limit(max(self.cfg.candidates, k)))
+        n = max(self.cfg.candidates, k)
         where = lance_where(check_filters(filters))
+        qvec = self.embedder.embed(query)
+
+        vq = self.table.search(qvec).distance_type("cosine").limit(n)
         if where:
-            q = q.where(where, prefilter=True)
+            vq = vq.where(where, prefilter=True)
+        vector_rows = vq.to_list()
+        for r in vector_rows:
+            r["_cosine"] = 1 - r["_distance"]
+
+        rows, keyword_ids = vector_rows, set()
+        terms = keyword_query(query) if self.hybrid else ""
+        if terms:
+            kq = self.table.search(terms, query_type="fts").limit(n)
+            if where:
+                kq = kq.where(where, prefilter=True)
+            keyword_rows = kq.to_list()
+            keyword_ids = {r["chunk_id"] for r in keyword_rows}
+            for r in keyword_rows:  # vectors are normalized, so the dot product is the cosine
+                r["_cosine"] = sum(a * b for a, b in zip(qvec, r["vector"]))
+            rows = rrf(vector_rows, keyword_rows, k=self.cfg.rrf_k)
+
+        vector_ids = {r["chunk_id"] for r in vector_rows}
         hits = [
             RetrievedChunk(
                 chunk_id=r["chunk_id"], text=r["text"], url=r["url"], title=r["title"],
-                score=round(1 - r["_distance"], 4),
-                metadata={m: r[m] for m in self.META if m in r},
+                score=round(r["_cosine"], 4),  # meaning similarity, used by the min_score cut-off
+                metadata={**{m: r[m] for m in self.META if m in r},
+                          "match": "+".join(x for x, ids in (("vector", vector_ids), ("keyword", keyword_ids))
+                                            if r["chunk_id"] in ids)},
             )
-            for r in q.to_list()
+            for r in rows
         ]
         return diversify(hits, k, self.cfg.max_per_doc)
 
@@ -130,4 +177,5 @@ class BedrockKBRetriever:
                 text=r["content"]["text"], url=meta.get("url", uri),
                 title=meta.get("title", ""), score=round(r.get("score", 0.0), 4), metadata=meta,
             ))
+        hits.sort(key=lambda c: c.score, reverse=True)
         return diversify(hits, k, self.cfg.max_per_doc)

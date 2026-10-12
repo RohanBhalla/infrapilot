@@ -40,3 +40,10 @@ def test_expected_version_patterns():
 
 def test_percentile():
     assert M.percentile([100, 200, 300, 400], 50) == 250
+
+
+def test_runtime_id_accepts_readable_names():
+    _, pat = M.expected_version({"tool": "lambda-runtime-nodejs24.x", "extra": {}}, "runtime_id")
+    assert pat.search("Choose Node.js 24.x") and pat.search("use nodejs24.x") and not pat.search("Node.js 22")
+    _, pat = M.expected_version({"tool": "lambda-runtime-python3.14", "extra": {}}, "runtime_id")
+    assert pat.search("Python 3.14") and not pat.search("Python 3.1 ")
