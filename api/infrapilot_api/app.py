@@ -11,6 +11,7 @@ import time
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 from .followups import standalone_question
 from .schemas import Message, MessageIn, MessageOut, Session, SessionCreated
@@ -56,6 +57,10 @@ def create_app(service=None, store: SessionStore | None = None, rewriter=None) -
         if s is None:
             raise HTTPException(404, "session not found")
         return s
+
+    @app.get("/", include_in_schema=False)
+    def root() -> RedirectResponse:
+        return RedirectResponse("/docs")
 
     @app.get("/health")
     def health() -> dict:

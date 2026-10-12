@@ -126,3 +126,9 @@ def test_openapi_lists_endpoints(setup):
     client, *_ = setup
     paths = client.get("/openapi.json").json()["paths"]
     assert {"/health", "/sessions", "/sessions/{session_id}", "/sessions/{session_id}/messages"} <= set(paths)
+
+
+def test_root_redirects_to_docs(setup):
+    client, *_ = setup
+    r = client.get("/", follow_redirects=False)
+    assert r.status_code == 307 and r.headers["location"] == "/docs"
