@@ -37,7 +37,7 @@ cd data_collection
 ```bash
 infrapilot-ask "How do I cache npm dependencies in GitHub Actions?"
 infrapilot-ask "Why is my ECS task stuck in PENDING?" --category Troubleshooting --show-context
-infrapilot-ask "..." --model nova-pro        # gpt-5-mini (default) | gpt-5 | gpt-4.1-mini | nova-pro | nova-lite | any model id
+infrapilot-ask "..." --model nova-pro        # gpt-5.4-mini (default) | gpt-5.6-luna | gpt-5-mini | gpt-5 | gpt-4.1-mini | nova-pro | nova-lite | any model id
 infrapilot-ask "..." --retrieve-only         # search results only, no LLM call, no cost
 infrapilot-ask "..." --json                  # full Answer object (for evals and the API)
 ```
@@ -67,7 +67,7 @@ against the Retrieve API but hasn't run against a live KB yet.
 
 | Setting | Default | Env |
 |---|---|---|
-| Answer model | `gpt-5-mini` (OpenAI) | `INFRAPILOT_ANSWER_MODEL` |
+| Answer model | `gpt-5.4-mini` (OpenAI) | `INFRAPILOT_ANSWER_MODEL` |
 | OpenAI key | none | `OPENAI_API_KEY` |
 | Reasoning effort (gpt-5 family) | `low` | `INFRAPILOT_REASONING_EFFORT` |
 | Chunks in prompt / candidates / max per page | 6 / 30 / 2 | |

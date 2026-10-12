@@ -32,6 +32,8 @@ DATA_DIR = Path(os.environ.get("INFRAPILOT_DATA_DIR", REPO_ROOT / "data_collecti
 # the repo's .env). Nova runs on Bedrock with our AWS credentials, no key needed.
 # Embeddings stay on Titan V2 either way: only the answer-writing model changes.
 MODELS = {
+    "gpt-5.4-mini": "gpt-5.4-mini",
+    "gpt-5.6-luna": "gpt-5.6-luna",
     "gpt-5-mini": "gpt-5-mini",
     "gpt-5": "gpt-5",
     "gpt-4.1-mini": "gpt-4.1-mini",
@@ -44,6 +46,8 @@ PRICES = {
     "gpt-5-mini": (0.25, 2.0),
     "gpt-5": (1.25, 10.0),
     "gpt-4.1-mini": (0.4, 1.6),
+    "gpt-5.4-mini": (0.75, 4.5),
+    "gpt-5.6-luna": (0.2, 1.2),
     MODELS["nova-pro"]: (0.8, 3.2),
     MODELS["nova-lite"]: (0.06, 0.24),
 }
@@ -61,7 +65,7 @@ class RagConfig:
     region: str = os.environ.get("AWS_REGION", "us-east-1")
     embed_model_id: str = "amazon.titan-embed-text-v2:0"
     dimensions: int = 1024
-    answer_model_id: str = os.environ.get("INFRAPILOT_ANSWER_MODEL", MODELS["gpt-5-mini"])
+    answer_model_id: str = os.environ.get("INFRAPILOT_ANSWER_MODEL", MODELS["gpt-5.4-mini"])
     kb_id: str | None = os.environ.get("INFRAPILOT_KB_ID")
     k: int = 6                # chunks put in the prompt
     candidates: int = 30      # chunks pulled from the index before diversifying

@@ -5,7 +5,7 @@
 
 ## Decision
 
-Generate answers with an **OpenAI model through the OpenAI API**, default `gpt-5-mini`
+Generate answers with an **OpenAI model through the OpenAI API**, default `gpt-5.4-mini`
 (reasoning effort `low`), with the key in `OPENAI_API_KEY`. Keep **Amazon Nova Pro on
 Bedrock** as the no-key fallback. Embeddings and retrieval don't change: Titan V2 + LanceDB
 now, Bedrock Knowledge Base + S3 Vectors later ([001](001-embedding-model.md)).
@@ -21,6 +21,21 @@ now, Bedrock Knowledge Base + S3 Vectors later ([001](001-embedding-model.md)).
   answer just receives the retrieved text, so it can come from any provider.
 - **Cheap:** gpt-5-mini is about $0.25 / $2.00 per 1M input/output tokens, so ~$0.001–0.003
   per answer at our ~3k-token prompts.
+
+## Model comparison (2026-10-12)
+
+Same 10 questions and retrieved context for every model (8 answerable, 2 not in the docs):
+
+| Model | Citation coverage | Refusals | Outdated pins | Time/answer | Cost/answer |
+|---|---:|---:|---:|---:|---:|
+| **gpt-5.4-mini** | **1.00** | 2/2 | 0 | **2.3 s** | ~$0.003 |
+| gpt-5-mini | 0.96 | 2/2 | 0 | 6.6 s | ~$0.002 |
+| gpt-5.6-luna | 0.94 | 2/2 | 0 | 3.5 s | **~$0.001** |
+| nova-pro (Bedrock) | 0.86 | 2/2 | 0 | 2.8 s | ~$0.003 |
+| gpt-4.1-mini | 0.80 | 2/2 | 0 | 3.0 s | ~$0.0015 |
+
+gpt-5.4-mini is the default. gpt-5.6-luna is the cheaper option and was better at flagging
+missing information. Re-check with the full eval set (Feature 1.3).
 
 ## Consequences
 
