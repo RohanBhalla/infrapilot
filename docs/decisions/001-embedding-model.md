@@ -1,13 +1,14 @@
 # 001: Embedding model and credits
 
-- **Status:** proposed (confirm with the Phase 1 retrieval eval)
+- **Status:** accepted (2026-10-11); revisit if the Phase 1 retrieval eval misses targets
 - **Date:** 2026-10-09
 
 ## Decision
 
 Use **Amazon Titan Text Embeddings V2** (`amazon.titan-embed-text-v2:0`) on Amazon Bedrock,
 1024 dimensions, normalized vectors. Use it both locally (LanceDB) and in the cloud
-(Bedrock Knowledge Base on S3 Vectors). No OpenAI or Gemini credits are needed.
+(Bedrock Knowledge Base on S3 Vectors). No OpenAI or Gemini credits are needed for embeddings.
+The answer-writing model is a separate choice: see [002](002-answer-model.md).
 
 ## Why
 
@@ -15,6 +16,7 @@ Use **Amazon Titan Text Embeddings V2** (`amazon.titan-embed-text-v2:0`) on Amaz
 |---|---:|---|
 | **Titan Text Embeddings V2 (Bedrock)** | **$0.02** | First-party AWS model. Native Bedrock KB embedding model. 256/512/1024 dims, 8K-token input. |
 | Cohere Embed v4 (Bedrock) | $0.12 | 6x the price. Multimodal, which we don't need. Billed as a third-party model. |
+| Cohere Embed English v3 (Bedrock) | not checked | Supported by Bedrock KB (1024 dims). The fallback if Titan V2 underperforms. Billed as a third-party model. |
 | OpenAI text-embedding-3-small | $0.02 ($0.01 batch) | Same price, but a second vendor and key, data leaves AWS, and Bedrock KB can't use it, so we'd run our own vector pipeline. |
 | Gemini embedding-001 | $0.15 | 7.5x the price; also outside AWS. |
 
@@ -49,8 +51,14 @@ always-on minimum of roughly $350/month (2 OCUs).
 ## Revisit if
 
 - The retrieval eval misses targets (hit@5 < 0.8) after chunking/prompt tuning. Then A/B
-  test Cohere Embed v4 or Amazon Rerank (about $1 per 1,000 queries) on the same eval set.
+  test Cohere Embed English v3 or Amazon Rerank (about $1 per 1,000 queries) on the same eval set.
   The pipeline only needs `EmbeddingConfig.model_id` changed and a re-embed.
+
+**Knowledge Base constraint:** Bedrock KBs embed documents and queries themselves, so only
+models on the KB's supported list work: Titan V1/V2, Cohere Embed English/Multilingual v3,
+and multimodal Titan/Cohere v3/Nova. **Cohere Embed v4 and outside models (OpenAI, Gemini)
+are not usable with a KB.** Using one means skipping the KB and querying S3 Vectors directly
+([supported models](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-supported.html)).
 - Corpus grows past ~10M chunks. Then consider 512 dims to halve vector storage.
 
 ## Sources

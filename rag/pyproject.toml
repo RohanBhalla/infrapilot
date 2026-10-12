@@ -1,0 +1,28 @@
+[project]
+name = "infrapilot-rag"
+version = "0.1.0"
+description = "InfraPilot retrieval and answer service (RAG over the collected docs)"
+requires-python = ">=3.12"
+dependencies = [
+  "boto3>=1.35",
+  "lancedb>=0.13",
+  "openai>=1.60",
+  "pyarrow>=16",
+  "pydantic>=2.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+infrapilot-ask = "infrapilot_rag.cli:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["infrapilot_rag*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

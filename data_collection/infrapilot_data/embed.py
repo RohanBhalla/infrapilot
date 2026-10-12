@@ -57,7 +57,20 @@ class TitanEmbedder:
         return json.loads(resp["body"].read())["embedding"]
 
 
-def run_embed(limit: int | None = None, workers: int = 4) -> dict:
+def _rows(chunks: list[Chunk], vectors: dict[str, list[float]]) -> list[dict]:
+    return [
+        {
+            "chunk_id": c.chunk_id, "doc_id": c.doc_id, "source_id": c.source_id,
+            "category": c.category, "doc_type": c.doc_type, "title": c.title, "url": c.url,
+            "heading_path": " > ".join(c.heading_path), "chunk_index": c.chunk_index,
+            "content_hash": c.content_hash, "text": c.text, "vector": vectors[c.content_hash],
+        }
+        for c in chunks if c.content_hash in vectors
+    ]
+
+
+def run_embed(limit: int | None = None, workers: int = 4, batch_size: int = 500) -> dict:
+    """Embed new/changed chunks, saving the table after every batch so a crash loses little."""
     import lancedb
 
     chunks = load_chunks()
@@ -73,22 +86,32 @@ def run_embed(limit: int | None = None, workers: int = 4) -> dict:
     log.info("%d chunks total, %d cached, embedding %d", len(chunks), len(existing), len(todo))
 
     embedder = TitanEmbedder()
-    started = time.monotonic()
-    with ThreadPoolExecutor(max_workers=workers) as pool:
-        for c, vec in zip(todo, pool.map(lambda c: embedder.embed(c.text), todo)):
-            existing[c.content_hash] = vec
 
-    rows = [
-        {
-            "chunk_id": c.chunk_id, "doc_id": c.doc_id, "source_id": c.source_id,
-            "category": c.category, "doc_type": c.doc_type, "title": c.title, "url": c.url,
-            "heading_path": " > ".join(c.heading_path), "content_hash": c.content_hash,
-            "text": c.text, "vector": existing[c.content_hash],
-        }
-        for c in chunks if c.content_hash in existing
-    ]
-    db.create_table(TABLE, data=rows, mode="overwrite")
-    return {**estimate(todo), "embedded_now": len(todo), "table_rows": len(rows),
+    def embed_one(c: Chunk) -> list[float] | None:
+        try:
+            return embedder.embed(c.text)
+        except Exception as exc:
+            log.warning("embed failed for %s: %s", c.chunk_id, exc)
+            return None
+
+    started, failed = time.monotonic(), []
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for i in range(0, len(todo), batch_size):
+            batch = todo[i:i + batch_size]
+            for c, vec in zip(batch, pool.map(embed_one, batch)):
+                if vec is None:
+                    failed.append(c.chunk_id)
+                else:
+                    existing[c.content_hash] = vec
+            db.create_table(TABLE, data=_rows(chunks, existing), mode="overwrite")
+            log.info("embedded %d/%d (%.0fs)", min(i + batch_size, len(todo)), len(todo),
+                     time.monotonic() - started)
+
+    rows = _rows(chunks, existing)
+    if not todo:
+        db.create_table(TABLE, data=rows, mode="overwrite")  # drop vectors for removed chunks
+    return {**estimate(todo), "embedded_now": len(todo) - len(failed), "failed": failed[:20],
+            "failed_count": len(failed), "table_rows": len(rows),
             "seconds": round(time.monotonic() - started, 1)}
 
 

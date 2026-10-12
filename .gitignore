@@ -16,3 +16,4 @@ build/
 data_collection/data/
 *.egg-info/
 .pytest_cache/
+!.env.example
