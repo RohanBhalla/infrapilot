@@ -1,0 +1,16 @@
+[project]
+name = "infrapilot-eval"
+version = "0.1.0"
+description = "InfraPilot evaluation harness"
+requires-python = ">=3.12"
+dependencies = ["infrapilot-rag"]
+
+[project.scripts]
+infrapilot-eval = "infrapilot_eval.cli:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["infrapilot_eval*"]

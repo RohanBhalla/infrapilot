@@ -241,6 +241,10 @@ Timeline assumes ~10 weeks starting the week of **2026-10-12**. Shift the dates 
 
 **Phase 1 targets:** hit@5 ≥ 0.8, citation accuracy ≥ 0.9, version correctness = 1.0, refusal accuracy ≥ 0.8.
 
+**Status: implemented** in [`eval/`](../eval/README.md): 79 questions (59 answer, 10 version, 10 refusal). Baseline
+(2026-10-12, local LanceDB + gpt-5.4-mini): hit@5 0.88 ✅, citation accuracy 0.89 ❌, version correctness 1.00 ✅,
+refusal accuracy 1.00 ✅, 3 false refusals, ~$0.003/answer. Most failures are retrieval misses in CloudFormation and CDK.
+
 **AWS used in Phase 1:** Bedrock only (embeddings + LLM). Everything else is local (LanceDB, LocalStack/DynamoDB Local, files on disk).
 
 ---
