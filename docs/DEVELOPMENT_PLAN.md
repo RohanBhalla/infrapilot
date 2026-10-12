@@ -207,7 +207,7 @@ Timeline assumes ~10 weeks starting the week of **2026-10-12**. Shift the dates 
 - **Normalizer:** HTML → clean Markdown (`trafilatura`), drop nav/footer, keep code blocks and tables, add the metadata sidecar, and compute a content hash. If the hash hasn't changed, skip the doc (cheaper re-ingestion).
 - **Version registry (local):** DynamoDB Local or LocalStack table `tool_versions` (`pk=tool`).
 - **CLI:** `infrapilot-data fetch --source 2`, `--category Containers`, `--max-pages 3`, then `infrapilot-data process`. It writes to `data_collection/data/` locally and to S3 later. **Status: implemented**, see [`data_collection/README.md`](../data_collection/README.md); embedding model choice in [decision 001](decisions/001-embedding-model.md).
-- **Coverage gaps in the sheet** (proposed rows #60–81 are in `data_collection/sources/additional_sources.csv`). The proposal includes features the sheet has no sources for:
+- **Coverage gaps in the sheet** (filled by rows #60–80, now in the sheet). The proposal includes features the original sheet had no sources for:
   - Lambda: Lambda Developer Guide (runtimes, deployment packages, Node.js handler), CloudFormation `AWS::Lambda::*`, the Lambda runtimes/deprecation table (into the version registry)
   - Static site: S3 static website hosting, CloudFront with an S3 origin (OAC), CloudFormation `AWS::CloudFront::*`
   - EKS autoscaling: Cluster Autoscaler or Karpenter docs, `eksctl` config file schema

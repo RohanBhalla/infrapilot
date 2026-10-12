@@ -218,7 +218,7 @@ def build_report(specs: list[SourceSpec], process_stats: dict | None = None) -> 
         f, p = fetch_log.get(s.id, {}), process_stats.get(s.id, {})
         drops = {k: v for k, v in p.items() if k.startswith("drop_")}
         row = {
-            "id": s.id, "name": s.name, "category": s.category, "origin": s.origin,
+            "id": s.id, "name": s.name, "category": s.category,
             "strategy": s.strategy, "skip_reason": s.skip_reason,
             "fetched": f.get("docs", 0), "fetch_errors": f.get("error_count", 0),
             "capped": f.get("skipped_count", 0), "kept_docs": p.get("docs", 0),

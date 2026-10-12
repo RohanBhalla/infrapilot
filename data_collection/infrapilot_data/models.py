@@ -28,7 +28,6 @@ class SourceSpec(BaseModel):
     url: str
     sheet_type: str
     notes: str = ""
-    origin: Literal["sheet", "additional"] = "sheet"
     strategy: str
     doc_type: DocType = "reference"
     params: dict[str, Any] = Field(default_factory=dict)

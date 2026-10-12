@@ -11,7 +11,7 @@ from . import pipeline, registry
 
 
 def _select(args) -> list:
-    specs = registry.load_sources(include_additional=not args.sheet_only)
+    specs = registry.load_sources()
     ids = args.source.split(",") if getattr(args, "source", None) else None
     return registry.select(specs, ids=ids, category=getattr(args, "category", None),
                            strategy=getattr(args, "strategy", None))
@@ -23,10 +23,10 @@ def cmd_sync_sources(args) -> None:
 
 
 def cmd_list(args) -> None:
-    specs = registry.load_sources(include_additional=not args.sheet_only)
+    specs = registry.load_sources()
     for s in specs:
         flag = f"SKIP: {s.skip_reason}" if not s.enabled else s.strategy
-        print(f"{s.id:>3}  {s.origin:<10} {s.category[:28]:<28} {s.name[:48]:<48} {flag}")
+        print(f"{s.id:>3}  {s.category[:28]:<28} {s.name[:48]:<48} {flag}")
 
 
 def cmd_fetch(args) -> None:
@@ -38,7 +38,7 @@ def cmd_fetch(args) -> None:
 
 
 def cmd_process(args) -> None:
-    specs = registry.load_sources(include_additional=not args.sheet_only)
+    specs = registry.load_sources()
     stats = pipeline.run_process(specs)
     pipeline.save_process_stats(stats)
     report = pipeline.build_report(specs, stats)
@@ -46,7 +46,7 @@ def cmd_process(args) -> None:
 
 
 def cmd_report(args) -> None:
-    specs = registry.load_sources(include_additional=not args.sheet_only)
+    specs = registry.load_sources()
     report = pipeline.build_report(specs)
     print(json.dumps({"totals": report["totals"], "embedding_estimate": report["embedding_estimate"]}, indent=2))
     print(f"Full report: {pipeline.P.reports / 'report.md'}")
@@ -77,8 +77,6 @@ def cmd_search(args) -> None:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="infrapilot-data", description=__doc__)
     parser.add_argument("-v", "--verbose", action="store_true")
-    parser.add_argument("--sheet-only", action="store_true",
-                        help="ignore additional_sources.csv (team sheet rows only)")
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("sync-sources", help="download the Google Sheet into sources/sources.csv")

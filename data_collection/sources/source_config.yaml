@@ -1,5 +1,5 @@
-# Machine-readable collection rules for every row in sources.csv (the team sheet)
-# and additional_sources.csv (proposed additions). Keyed by the sheet's "#" column.
+# Machine-readable collection rules for every row in sources.csv (the team sheet).
+# Keyed by the sheet's "#" column.
 #
 # The sheet stays the human-facing list; this file turns its free-text
 # "Filter / Notes" into rules the fetchers can run. Every enabled row needs an entry
@@ -274,7 +274,7 @@ sources:
   "58": {strategy: upload, doc_type: template, params: {dir: uploads/golden_templates}}
   "59": {strategy: upload, doc_type: rule, params: {dir: uploads/guardrails}}
 
-  # ================ Proposed additions (additional_sources.csv) ================
+  # ================ Gap-filling additions (#60-80) ================
   "60":
     strategy: sitemap
     params:

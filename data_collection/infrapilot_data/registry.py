@@ -1,4 +1,4 @@
-"""Source registry: the team sheet (sources.csv) + proposed additions + collection rules."""
+"""Source registry: the team sheet (sources.csv) + per-source collection rules."""
 
 from __future__ import annotations
 
@@ -34,17 +34,13 @@ def _read_rows(path: Path) -> list[dict[str, str]]:
         return [r for r in csv.DictReader(f) if r.get("#", "").strip()]
 
 
-def load_sources(sources_dir: Path | None = None, include_additional: bool = True) -> list[SourceSpec]:
+def load_sources(sources_dir: Path | None = None) -> list[SourceSpec]:
     sources_dir = sources_dir or SETTINGS.paths.sources_dir
     config = yaml.safe_load((sources_dir / "source_config.yaml").read_text())
     defaults, rules = config.get("defaults", {}), config.get("sources", {})
 
-    rows = [(r, "sheet") for r in _read_rows(sources_dir / "sources.csv")]
-    if include_additional:
-        rows += [(r, "additional") for r in _read_rows(sources_dir / "additional_sources.csv")]
-
     specs: list[SourceSpec] = []
-    for row, origin in rows:
+    for row in _read_rows(sources_dir / "sources.csv"):
         sid = row["#"].strip()
         rule = rules.get(sid)
         if rule is None:
@@ -58,7 +54,6 @@ def load_sources(sources_dir: Path | None = None, include_additional: bool = Tru
                 url=row["URL"].strip(),
                 sheet_type=row["Type"].strip(),
                 notes=(row.get("Filter / Notes") or "").strip(),
-                origin=origin,
                 strategy=rule["strategy"],
                 doc_type=rule.get("doc_type", defaults.get("doc_type", "reference")),
                 params=params,

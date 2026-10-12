@@ -58,3 +58,24 @@
 57,Troubleshooting,ECS troubleshooting,https://docs.aws.amazon.com/AmazonECS/latest/developerguide/troubleshooting.html,Fetch,
 58,Own content,Golden templates,(your S3 bucket),Upload,Hand-verified working examples per task type
 59,Own content,Guardrail policy,(your S3 bucket),Upload,Plain-language security rules
+60,Deploy targets,Lambda Developer Guide,https://docs.aws.amazon.com/lambda/latest/dg/,Crawl,"Node.js runtime, handlers, deployment packages, container images, function URLs, configuration, troubleshooting"
+61,Releases & versions,Lambda runtimes and deprecation dates,https://endoflife.date/api/aws-lambda.json,API,Supported runtimes and EOL dates to version registry
+62,IaC – CloudFormation,CloudFormation AWS::Lambda resources,https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/AWS_Lambda.md,Crawl,Resource + property pages (added as a seed of #23)
+63,Deploy targets,S3 static website hosting,https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html,Crawl,Website hosting pages only
+64,Deploy targets,CloudFront with S3 origin (OAC),https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/,Crawl,"OAC, static website getting started, default root object, invalidation"
+65,IaC – CDK,CDK v2 Developer Guide,https://docs.aws.amazon.com/cdk/v2/guide/,Crawl,"Best practices, bootstrapping, deploy, CLI, troubleshooting, Python/TypeScript"
+66,Deploy targets (stretch),EKS Best Practices Guide,https://docs.aws.amazon.com/eks/latest/best-practices/,Crawl,"Autoscaling, Karpenter, Cluster Autoscaler, security"
+67,Deploy targets (stretch),Karpenter docs,https://karpenter.sh/docs/,Crawl,Getting started + concepts
+68,Deploy targets (stretch),Cluster Autoscaler on AWS,https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md,Fetch,
+69,Deploy targets (stretch),eksctl docs,https://docs.aws.amazon.com/eks/latest/eksctl/what-is-eksctl.html,Crawl,"Config file schema, cluster/nodegroup management, autoscaling"
+70,CI/CD – GitHub Actions,GitHub starter workflows,https://github.com/actions/starter-workflows,Fetch,"Node.js CI, Docker image, AWS ECS deploy workflow examples"
+71,CI/CD – GitHub Actions,aws-actions/aws-cloudformation-github-deploy,https://github.com/aws-actions/aws-cloudformation-github-deploy,API,README to vector store; latest release to version registry
+72,CI/CD – GitHub Actions,aws-actions/aws-lambda-deploy,https://github.com/aws-actions/aws-lambda-deploy,API,Same as above
+73,CI/CD – GitHub Actions,actions/upload-artifact,https://github.com/actions/upload-artifact,API,Same as above
+74,CI/CD – GitHub Actions,docker/login-action,https://github.com/docker/login-action,API,Same as above
+75,CI/CD – GitHub Actions,docker/metadata-action,https://github.com/docker/metadata-action,API,Same as above
+76,Security,aquasecurity/trivy-action,https://github.com/aquasecurity/trivy-action,API,Same as above
+77,Security,hadolint rules,https://github.com/hadolint/hadolint,API,README rule table (DL/SC codes); latest release to version registry
+78,Containers,Docker multi-stage builds and build context,https://docs.docker.com/build/building/multi-stage/,Fetch,Also /build/concepts/context/ (.dockerignore)
+79,Security,IAM OIDC identity providers (GitHub Actions to AWS),https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html,Fetch,
+80,Releases & versions,"endoflife.date (Kubernetes, EKS)",https://endoflife.date/api/kubernetes.json,API,Kubernetes and EKS support windows (Node.js via #37)

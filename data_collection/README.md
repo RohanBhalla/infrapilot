@@ -51,7 +51,6 @@ Embeddings are cached by chunk content hash, so re-runs only embed changed chunk
 | File | What it is |
 |---|---|
 | `sources/sources.csv` | Snapshot of the team's Google Sheet. Refresh with `infrapilot-data sync-sources`. |
-| `sources/additional_sources.csv` | Proposed additions (#60+) that fill gaps in the sheet. Copy them into the sheet once agreed. |
 | `sources/source_config.yaml` | The machine-readable version of each row's "Filter / Notes": strategy, URL filters, page caps, doc type. |
 | `uploads/` | Team-authored golden templates (#58) and guardrail policy (#59). |
 
