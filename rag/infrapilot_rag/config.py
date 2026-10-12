@@ -17,7 +17,12 @@ def _load_dotenv(path: Path) -> None:
         line = line.strip()
         if line and not line.startswith("#") and "=" in line:
             key, value = line.split("=", 1)
-            os.environ.setdefault(key.strip().removeprefix("export "), value.strip().strip("\"'"))
+            value = value.strip()
+            if value[:1] in "\"'" and value[:1] and value.count(value[0]) >= 2:
+                value = value[1:value.index(value[0], 1)]   # quoted: keep as is
+            else:
+                value = value.split(" #", 1)[0].strip()      # unquoted: drop inline comment
+            os.environ.setdefault(key.strip().removeprefix("export "), value)
 
 
 _load_dotenv(REPO_ROOT / ".env")

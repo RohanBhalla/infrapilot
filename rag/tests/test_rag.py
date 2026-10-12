@@ -204,3 +204,15 @@ def test_missing_openai_key_is_a_clear_error(monkeypatch):
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     with pytest.raises(RuntimeError, match="OPENAI_API_KEY"):
         make_chat("gpt-5-mini")
+
+
+def test_dotenv_strips_inline_comments(tmp_path, monkeypatch):
+    from infrapilot_rag.config import _load_dotenv
+
+    env = tmp_path / ".env"
+    env.write_text('A_MODEL=gpt-5-mini   # or gpt-5\nA_QUOTED="x # y"\nexport A_PLAIN=v\n')
+    for k in ("A_MODEL", "A_QUOTED", "A_PLAIN"):
+        monkeypatch.delenv(k, raising=False)
+    _load_dotenv(env)
+    import os
+    assert (os.environ["A_MODEL"], os.environ["A_QUOTED"], os.environ["A_PLAIN"]) == ("gpt-5-mini", "x # y", "v")
