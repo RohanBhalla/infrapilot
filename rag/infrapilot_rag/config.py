@@ -79,8 +79,9 @@ class RagConfig:
     max_per_doc: int = 2      # so one long page can't fill every slot
     hybrid: bool = os.environ.get("INFRAPILOT_HYBRID", "1") != "0"  # vector + keyword search
     rrf_k: int = 60           # reciprocal rank fusion constant (the standard default)
-    # Rerank the top fused candidates with a Bedrock rerank model; "none" turns it off.
-    rerank_model: str = os.environ.get("INFRAPILOT_RERANK_MODEL", "cohere.rerank-v3-5:0")
+    # Optional: rerank the top fused candidates with a Bedrock rerank model. Off by default to
+    # avoid per-query cost (decision 003). Cohere is billed via AWS Marketplace.
+    rerank_model: str = os.environ.get("INFRAPILOT_RERANK_MODEL", "none")
     rerank_candidates: int = 50
     min_score: float = 0.30   # cosine; on-topic questions score 0.55-0.85, off-topic <= 0.21
     max_tokens: int = 1200

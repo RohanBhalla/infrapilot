@@ -247,7 +247,8 @@ refusal accuracy 1.00 ✅, 3 false refusals, ~$0.003/answer. Most failures are r
 correctness 1.00, refusal accuracy 1.00, so all four targets pass. After fixing wrong refusals (partial answers
 instead of refusing, best passage per page, sheet source name in chunk headers): 0 false refusals, refusal accuracy 0.90.
 With **reranking** (Cohere Rerank 3.5 on Bedrock, [decision 003](decisions/003-reranker.md)): hit@5 0.98, citation accuracy 0.98,
-version correctness 1.00, refusal accuracy 1.00, 1 failure out of 79. ⚠️ For Phase 2, check whether Bedrock KB hybrid search
+version correctness 1.00, refusal accuracy 1.00, 1 failure out of 79. Reranking is now **off by default** to avoid per-query
+cost; the default (hybrid) setup still meets all four targets. ⚠️ For Phase 2, check whether Bedrock KB hybrid search
 works with an S3 Vectors store; if not, the cloud retriever needs its own keyword step to match local results.
 
 **AWS used in Phase 1:** Bedrock only (embeddings + LLM). Everything else is local (LanceDB, LocalStack/DynamoDB Local, files on disk).

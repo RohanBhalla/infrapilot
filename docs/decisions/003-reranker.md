@@ -1,6 +1,9 @@
 # 003: Reranking search results
 
-- **Status:** accepted (2026-10-12)
+- **Status:** superseded the same day: reranking is **off by default** to avoid per-query cost.
+  The Cohere Marketplace agreement was cancelled (Bedrock model agreement deleted in us-east-1 and
+  us-west-2). The code stays; set `INFRAPILOT_RERANK_MODEL` to turn it back on.
+- **Originally accepted:** 2026-10-12
 
 ## Decision
 

@@ -6,8 +6,8 @@ RAG evaluation harness (plan, Feature 1.3). Questions live in `rag/questions.jso
 cd data_collection
 .venv/bin/pip install -e ../eval
 .venv/bin/infrapilot-eval check                  # free: validate questions against the corpus
-.venv/bin/infrapilot-eval run --retrieval-only   # hit@k / MRR only: ~$0.12 (reranking), free with INFRAPILOT_RERANK_MODEL=none
-.venv/bin/infrapilot-eval run                    # full run, default model (~$0.35)
+.venv/bin/infrapilot-eval run --retrieval-only   # ~free: hit@k / MRR only (question embeddings)
+.venv/bin/infrapilot-eval run                    # full run, default model (~$0.23)
 .venv/bin/infrapilot-eval run --model gpt-5.6-luna --tag luna
 .venv/bin/infrapilot-eval run --judge            # add LLM-judge scores (extra cost)
 .venv/bin/infrapilot-eval rescore ../eval/reports/<report>.json   # free: re-grade after fixing labels

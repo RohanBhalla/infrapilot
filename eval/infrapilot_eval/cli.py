@@ -1,7 +1,7 @@
 """infrapilot-eval: run the RAG eval or validate the question set.
 
   infrapilot-eval check                      # free: questions vs. corpus and version registry
-  infrapilot-eval run --retrieval-only       # ~$0.12 with reranking (free with INFRAPILOT_RERANK_MODEL=none)
+  infrapilot-eval run --retrieval-only       # ~free: hit@5 / MRR only (question embeddings)
   infrapilot-eval run                        # full run with the default answer model (~$0.25)
   infrapilot-eval run --model gpt-5.6-luna --judge --tag luna
   infrapilot-eval rescore eval/reports/<report>.json   # free: re-grade after fixing labels
