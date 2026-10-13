@@ -7,6 +7,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from infrapilot_assistant.state import DialogState, Question
 from infrapilot_rag.models import Citation
 
 
@@ -39,8 +40,16 @@ class Message(BaseModel):
 
 class MessageOut(BaseModel):
     session_id: str
+    type: Literal["answer", "clarification", "confirmation", "ready", "out_of_scope"] = Field(
+        description="answer: from the docs, with citations. clarification: questions for missing details. "
+                    "confirmation: check the task before starting. ready: all details known. "
+                    "out_of_scope: not something InfraPilot does.")
     message: Message = Field(description="The assistant's reply")
-    standalone_question: str = Field(description="The question actually searched (follow-ups are rewritten)")
+    intent: str
+    confidence: float
+    params: dict = Field(default_factory=dict, description="Task details so far (with defaults when ready)")
+    questions: list[Question] = Field(default_factory=list, description="Clarification questions, one per detail")
+    standalone_question: str = Field(description="The message rewritten to stand alone (what gets searched)")
     model: str | None
     latency_ms: int
     cost_usd: float
@@ -50,6 +59,7 @@ class Session(BaseModel):
     id: str
     created_at: datetime = Field(default_factory=utcnow)
     messages: list[Message] = Field(default_factory=list)
+    dialog: DialogState = Field(default_factory=DialogState, description="Task in progress, if any")
 
 
 class SessionCreated(BaseModel):

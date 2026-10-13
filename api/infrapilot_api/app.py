@@ -13,7 +13,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
-from .followups import standalone_question
 from .schemas import Message, MessageIn, MessageOut, Session, SessionCreated
 from .sessions import InMemorySessionStore, SessionStore, new_message_id
 
@@ -35,14 +34,22 @@ def build_service():
     return AnswerService(retriever, make_chat(), VersionRegistry())
 
 
-def create_app(service=None, store: SessionStore | None = None, rewriter=None) -> FastAPI:
-    """`service`, `store` and `rewriter` can be injected (tests); otherwise built on first use."""
+def build_assistant(llm):
+    from infrapilot_assistant.classifier import Classifier
+    from infrapilot_assistant.dialog import Assistant
+    from infrapilot_rag.versions import VersionRegistry
+
+    return Assistant(Classifier(llm), VersionRegistry().facts)
+
+
+def create_app(service=None, store: SessionStore | None = None, assistant=None) -> FastAPI:
+    """`service`, `store` and `assistant` can be injected (tests); otherwise built on first use."""
     app = FastAPI(title="InfraPilot Chat API", version="0.1.0",
                   description="Ask infrastructure and CI/CD questions; answers cite the docs they use.")
     origins = os.environ.get("INFRAPILOT_CORS_ORIGINS", "http://localhost:5173").split(",")
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
 
-    state = {"service": service, "store": store or InMemorySessionStore(), "rewriter": rewriter}
+    state = {"service": service, "store": store or InMemorySessionStore(), "assistant": assistant}
 
     def svc():
         if state["service"] is None:
@@ -75,30 +82,40 @@ def create_app(service=None, store: SessionStore | None = None, rewriter=None) -
     def read_session(session_id: str) -> Session:
         return get_session(session_id)
 
-    # Plain `def` (not async): the answer service blocks on network calls, so FastAPI runs
-    # it in a worker thread and other requests aren't held up.
+    # Plain `def` (not async): the model and search calls block, so FastAPI runs this in a
+    # worker thread and other requests aren't held up.
     @app.post("/sessions/{session_id}/messages")
     def post_message(session_id: str, body: MessageIn) -> MessageOut:
         session = get_session(session_id)
         service = svc()
+        if state["assistant"] is None:
+            state["assistant"] = build_assistant(service.llm)
         started = time.monotonic()
-        question, rewrite_cost = standalone_question(state["rewriter"] or service.llm,
-                                                     session.messages, body.content)
-        filters = body.filters.model_dump(exclude_none=True) if body.filters else None
-        try:
-            ans = service.ask(question, filters=filters)
-        except ValueError as exc:  # bad filter field
-            raise HTTPException(400, str(exc)) from exc
-        except Exception as exc:
-            log.exception("answer failed")
-            raise HTTPException(502, f"upstream model or search error: {type(exc).__name__}") from exc
+
+        turn = state["assistant"].handle(body.content, session.dialog, session.messages)
+        model, spent, citations, refused, text = None, turn.cost_usd, [], None, turn.message
+        if turn.type == "answer":
+            question = turn.standalone_question
+            if turn.error_text and turn.error_text not in question:
+                question = f"{question}\n\nError output:\n{turn.error_text[:1500]}"
+            filters = body.filters.model_dump(exclude_none=True) if body.filters else None
+            try:
+                ans = service.ask(question, filters=filters)
+            except ValueError as exc:  # bad filter field
+                raise HTTPException(400, str(exc)) from exc
+            except Exception as exc:
+                log.exception("answer failed")
+                raise HTTPException(502, f"upstream model or search error: {type(exc).__name__}") from exc
+            model, spent = ans.model, spent + ans.cost_usd
+            citations, refused, text = ans.citations, ans.refused, ans.text
 
         user_msg = Message(id=new_message_id(), role="user", content=body.content)
-        reply = Message(id=new_message_id(), role="assistant", content=ans.text,
-                        citations=ans.citations, refused=ans.refused)
+        reply = Message(id=new_message_id(), role="assistant", content=text, citations=citations, refused=refused)
         state["store"].append(session_id, user_msg, reply)
-        return MessageOut(session_id=session_id, message=reply, standalone_question=question,
-                          model=ans.model, latency_ms=int((time.monotonic() - started) * 1000),
-                          cost_usd=round(ans.cost_usd + rewrite_cost, 6))
+        state["store"].save_dialog(session_id, turn.state)
+        return MessageOut(session_id=session_id, type=turn.type, message=reply, intent=turn.intent,
+                          confidence=turn.confidence, params=turn.params, questions=turn.questions,
+                          standalone_question=turn.standalone_question, model=model,
+                          latency_ms=int((time.monotonic() - started) * 1000), cost_usd=round(spent, 6))
 
     return app

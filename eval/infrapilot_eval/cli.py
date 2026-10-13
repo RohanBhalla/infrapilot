@@ -5,6 +5,7 @@
   infrapilot-eval run                        # full run with the default answer model (~$0.25)
   infrapilot-eval run --model gpt-5.6-luna --judge --tag luna
   infrapilot-eval rescore eval/reports/<report>.json   # free: re-grade after fixing labels
+  infrapilot-eval intent                     # intent + clarification eval (~$0.18)
 """
 
 from __future__ import annotations
@@ -67,6 +68,12 @@ def main(argv: list[str] | None = None) -> None:
     sub.add_parser("check", help="validate eval/rag/questions.jsonl against the corpus")
     rs = sub.add_parser("rescore", help="re-grade a saved report against the current questions")
     rs.add_argument("report", type=Path)
+    it = sub.add_parser("intent", help="run the intent + clarification eval")
+    it.add_argument("--model", help="classifier model (default: the answer model)")
+    it.add_argument("--ids", help="comma-separated case ids")
+    it.add_argument("--limit", type=int)
+    it.add_argument("--workers", type=int, default=4)
+    it.add_argument("--tag", default="")
     r = sub.add_parser("run", help="run the RAG eval and write eval/reports/<date>-...")
     r.add_argument("--model", help=f"answer model ({' | '.join(MODELS)}); default {CONFIG.answer_model_id}")
     r.add_argument("--backend", choices=["local", "kb"], default="local")
@@ -86,6 +93,24 @@ def main(argv: list[str] | None = None) -> None:
 
         _, md = rescore(args.report)
         print(md.read_text().split("\n## Failures")[0])
+        return
+
+    if args.cmd == "intent":
+        from infrapilot_assistant.classifier import Classifier
+        from infrapilot_rag.llm import make_chat
+        from infrapilot_rag.versions import VersionRegistry
+
+        from .intent import run as run_intent
+
+        try:
+            llm = make_chat(args.model)
+        except RuntimeError as exc:
+            sys.exit(f"error: {exc}")
+        _, path = run_intent(Classifier(llm), VersionRegistry().facts, llm.model_id,
+                             ids=args.ids.split(",") if args.ids else None, limit=args.limit,
+                             workers=args.workers, tag=re.sub(r"[^\w.-]+", "-", args.tag))
+        print(Path(path).read_text().split("\n## Failures")[0])
+        print(f"report: {path}")
         return
 
     from infrapilot_rag.answer import AnswerService

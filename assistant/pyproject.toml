@@ -1,0 +1,19 @@
+[project]
+name = "infrapilot-assistant"
+version = "0.1.0"
+description = "InfraPilot intent classification and clarification (slot filling)"
+requires-python = ">=3.12"
+dependencies = ["infrapilot-rag", "pydantic>=2.7"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["infrapilot_assistant*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

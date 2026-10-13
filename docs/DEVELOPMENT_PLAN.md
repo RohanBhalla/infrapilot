@@ -286,6 +286,7 @@ works with an S3 Vectors store; if not, the cloud retriever needs its own keywor
 - Classifier: Haiku-class model with structured output (JSON schema) returning `{intent, confidence, params, missing_params}`. Below the confidence threshold, it asks the user to confirm.
 - Slot schemas per intent (e.g. `deploy_static_site`: source repo/dir, custom domain?, SPA routing?). The assistant asks only for the **required** missing slots, one round at a time, and offers defaults.
 - **Eval:** `eval/intent/utterances.jsonl` with ≥120 labeled utterances (both pairs write them, including ambiguous ones). Targets: intent accuracy ≥ 0.9, slot extraction F1 ≥ 0.85, and "asked when needed / didn't ask when not needed" ≥ 0.85.
+- **Status: implemented** in [`assistant/`](../assistant/README.md) (gpt-5.4-mini with structured output, rules in code) and wired into the Chat API. First eval (120 cases, one author): intent accuracy 1.00, action accuracy 1.00, slot F1 0.98, ~$0.0014/message. Needs cases from the rest of the team.
 
 #### Feature 3.2: Generators, starting with the cheapest to test (Pair A)
 Order: **GitHub Actions CI for Node → static site → Lambda → Dockerfile** (deploy targets in Phase 4).

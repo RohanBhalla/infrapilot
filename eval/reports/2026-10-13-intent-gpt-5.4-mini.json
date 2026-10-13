@@ -1,0 +1,3673 @@
+{
+  "meta": {
+    "date": "2026-10-13",
+    "model": "gpt-5.4-mini",
+    "seconds": 36.8
+  },
+  "summary": {
+    "cases": 120,
+    "errors": 0,
+    "intent_accuracy": 1.0,
+    "action_accuracy": 1.0,
+    "asks_accuracy": 1.0,
+    "slot_precision": 0.9541984732824428,
+    "slot_recall": 1.0,
+    "slot_f1": 0.9765625,
+    "latency_p50_ms": 1163.5,
+    "latency_p95_ms": 1725.0,
+    "cost_per_message_usd": 0.0013759999999999998,
+    "total_cost_usd": 0.16512
+  },
+  "rows": [
+    {
+      "id": "qa-01",
+      "message": "How does the ECS deployment circuit breaker decide to roll back?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001175,
+      "latency_ms": 1234,
+      "reply": ""
+    },
+    {
+      "id": "qa-02",
+      "message": "What's the difference between Fargate and the EC2 launch type?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001186,
+      "latency_ms": 1132,
+      "reply": ""
+    },
+    {
+      "id": "qa-03",
+      "message": "How do I deploy a Node.js function to Lambda?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001192,
+      "latency_ms": 1093,
+      "reply": ""
+    },
+    {
+      "id": "qa-04",
+      "message": "How do I host a static website on S3?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001215,
+      "latency_ms": 1095,
+      "reply": ""
+    },
+    {
+      "id": "qa-05",
+      "message": "What does DeletionPolicy: Retain do in CloudFormation?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00118,
+      "latency_ms": 777,
+      "reply": ""
+    },
+    {
+      "id": "qa-06",
+      "message": "Which GitHub Actions events can trigger a workflow?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001165,
+      "latency_ms": 1544,
+      "reply": ""
+    },
+    {
+      "id": "qa-07",
+      "message": "How do I cache npm dependencies in GitHub Actions?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00117,
+      "latency_ms": 1067,
+      "reply": ""
+    },
+    {
+      "id": "qa-08",
+      "message": "What is CDK bootstrapping?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001172,
+      "latency_ms": 881,
+      "reply": ""
+    },
+    {
+      "id": "qa-09",
+      "message": "How does Karpenter decide when to add nodes?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001192,
+      "latency_ms": 774,
+      "reply": ""
+    },
+    {
+      "id": "qa-10",
+      "message": "What's the current Node.js LTS version?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001159,
+      "latency_ms": 1047,
+      "reply": ""
+    },
+    {
+      "id": "qa-11",
+      "message": "Can a Lambda function URL require IAM auth?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001159,
+      "latency_ms": 831,
+      "reply": ""
+    },
+    {
+      "id": "qa-12",
+      "message": "How do multi-stage Docker builds reduce image size?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001165,
+      "latency_ms": 819,
+      "reply": ""
+    },
+    {
+      "id": "qa-13",
+      "message": "What does the awsvpc network mode do?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001165,
+      "latency_ms": 811,
+      "reply": ""
+    },
+    {
+      "id": "qa-14",
+      "message": "How do I make CloudFront serve updated files after a deploy?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00118,
+      "latency_ms": 744,
+      "reply": ""
+    },
+    {
+      "id": "qa-15",
+      "message": "What permissions does a GitHub Actions job need for OIDC with AWS?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001191,
+      "latency_ms": 815,
+      "reply": ""
+    },
+    {
+      "id": "qa-16",
+      "message": "Explain what an ECR lifecycle policy is",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001154,
+      "latency_ms": 863,
+      "reply": ""
+    },
+    {
+      "id": "qa-17",
+      "message": "Is it better to use Karpenter or Cluster Autoscaler?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001216,
+      "latency_ms": 927,
+      "reply": ""
+    },
+    {
+      "id": "qa-18",
+      "message": "What's the max timeout for a Lambda function?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001159,
+      "latency_ms": 822,
+      "reply": ""
+    },
+    {
+      "id": "qa-19",
+      "message": "How do I pass outputs between jobs in a workflow?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001179,
+      "latency_ms": 854,
+      "reply": ""
+    },
+    {
+      "id": "qa-20",
+      "message": "how do cdk constructs levels L1 L2 L3 differ",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001198,
+      "latency_ms": 972,
+      "reply": ""
+    },
+    {
+      "id": "fail-01",
+      "message": "My workflow fails with: Error: Credentials could not be loaded, please check your action inputs: Could not load credentials from any providers",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "Credentials could not be loaded"
+      },
+      "extracted": {
+        "error_text": "Error: Credentials could not be loaded, please check your action inputs: Could not load credentials from any providers"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001411,
+      "latency_ms": 1055,
+      "reply": ""
+    },
+    {
+      "id": "fail-02",
+      "message": "ECS task stopped: CannotPullContainerError: pull image manifest has been retried 5 time(s): failed to resolve ref 123.dkr.ecr.us-east-1.amazonaws.com/web:latest: not found",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "CannotPullContainerError"
+      },
+      "extracted": {
+        "error_text": "ECS task stopped: CannotPullContainerError: pull image manifest has been retried 5 time(s): failed to resolve ref 123.dkr.ecr.us-east-1.amazonaws.com/web:latest: not found"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001613,
+      "latency_ms": 1187,
+      "reply": ""
+    },
+    {
+      "id": "fail-03",
+      "message": "cdk deploy says: This stack uses assets, so the toolkit stack must be deployed to the environment (Run \"cdk bootstrap aws://123456789012/us-east-1\")",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "cdk bootstrap"
+      },
+      "extracted": {
+        "error_text": "This stack uses assets, so the toolkit stack must be deployed to the environment (Run \"cdk bootstrap aws://123456789012/us-east-1\")"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00154,
+      "latency_ms": 1304,
+      "reply": ""
+    },
+    {
+      "id": "fail-04",
+      "message": "Stack is in UPDATE_ROLLBACK_FAILED state and can not be updated. What now?",
+      "expected_intent": [
+        "explain_failure",
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.96,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "UPDATE_ROLLBACK_FAILED"
+      },
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001333,
+      "latency_ms": 1016,
+      "reply": ""
+    },
+    {
+      "id": "fail-05",
+      "message": "hadolint output:\nDockerfile:3 DL3008 warning: Pin versions in apt get install\nDockerfile:7 DL3025 warning: Use arguments JSON notation for CMD",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "DL3008"
+      },
+      "extracted": {
+        "error_text": "Dockerfile:3 DL3008 warning: Pin versions in apt get install\nDockerfile:7 DL3025 warning: Use arguments JSON notation for CMD"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001522,
+      "latency_ms": 1084,
+      "reply": ""
+    },
+    {
+      "id": "fail-06",
+      "message": "checkov failed: Check: CKV_AWS_18: \"Ensure the S3 bucket has access logging enabled\" FAILED for resource: AWS::S3::Bucket SiteBucket",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "CKV_AWS_18"
+      },
+      "extracted": {
+        "error_text": "checkov failed: Check: CKV_AWS_18: \"Ensure the S3 bucket has access logging enabled\" FAILED for resource: AWS::S3::Bucket SiteBucket"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00154,
+      "latency_ms": 2307,
+      "reply": ""
+    },
+    {
+      "id": "fail-07",
+      "message": "npm ci in my GitHub Action fails: npm ERR! The `npm ci` command can only install with an existing package-lock.json",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "package-lock.json"
+      },
+      "extracted": {
+        "error_text": "npm ERR! The `npm ci` command can only install with an existing package-lock.json"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001407,
+      "latency_ms": 1003,
+      "reply": ""
+    },
+    {
+      "id": "fail-08",
+      "message": "Lambda error: Runtime.ImportModuleError: Error: Cannot find module 'index'",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "Runtime.ImportModuleError"
+      },
+      "extracted": {
+        "error_text": "Lambda error: Runtime.ImportModuleError: Error: Cannot find module 'index'"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001336,
+      "latency_ms": 916,
+      "reply": ""
+    },
+    {
+      "id": "fail-09",
+      "message": "CodeBuild: COMMAND_EXECUTION_ERROR: Error while executing command: docker build -t app . Reason: exit status 1. Cannot connect to the Docker daemon",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "Cannot connect to the Docker daemon"
+      },
+      "extracted": {
+        "error_text": "CodeBuild: COMMAND_EXECUTION_ERROR: Error while executing command: docker build -t app . Reason: exit status 1. Cannot connect to the Docker daemon"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001492,
+      "latency_ms": 1064,
+      "reply": ""
+    },
+    {
+      "id": "fail-10",
+      "message": "aws-actions/amazon-ecr-login fails with 'not authorized to perform: ecr:GetAuthorizationToken'",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "ecr:GetAuthorizationToken"
+      },
+      "extracted": {
+        "error_text": "aws-actions/amazon-ecr-login fails with 'not authorized to perform: ecr:GetAuthorizationToken'"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001411,
+      "latency_ms": 1128,
+      "reply": ""
+    },
+    {
+      "id": "fail-11",
+      "message": "my github actions build is failing",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.95,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "error_text"
+      ],
+      "asks": [
+        "error_text"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001234,
+      "latency_ms": 1714,
+      "reply": "Can you paste the error message or the failing part of the log?"
+    },
+    {
+      "id": "fail-12",
+      "message": "the cloudformation deploy broke again",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.88,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "error_text"
+      ],
+      "asks": [
+        "error_text"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001243,
+      "latency_ms": 988,
+      "reply": "Can you paste the error message or the failing part of the log?"
+    },
+    {
+      "id": "fail-13",
+      "message": "Why did my ECS deployment fail?",
+      "expected_intent": [
+        "explain_failure",
+        "qa"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.96,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification",
+        "answer"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [
+        "error_text"
+      ],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001306,
+      "latency_ms": 1532,
+      "reply": "Can you paste the error message or the failing part of the log?"
+    },
+    {
+      "id": "fail-14",
+      "message": "Can you help, my lambda keeps timing out after 3 seconds",
+      "expected_intent": [
+        "explain_failure",
+        "qa"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.89,
+      "intent_ok": true,
+      "expected_action": [
+        "answer",
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [
+        "error_text"
+      ],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001244,
+      "latency_ms": 1188,
+      "reply": "Can you paste the error message or the failing part of the log?"
+    },
+    {
+      "id": "ci-01",
+      "message": "Set up a GitHub Actions workflow for my Node app that runs tests on pull requests",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "steps": "test",
+        "triggers": "pull requests"
+      },
+      "extracted": {
+        "language": "node",
+        "steps": "test",
+        "triggers": "pull requests",
+        "deploy_target": "none"
+      },
+      "tp": 3,
+      "fp": 1,
+      "fn": 0,
+      "cost_usd": 0.001503,
+      "latency_ms": 1403,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: node\n- steps: test\n- triggers: pull requests\n- deploy target: none\n- package manager: npm\n- runtime version: 24\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ci-02",
+      "message": "Create a CI pipeline in GitHub Actions for my TypeScript project using pnpm",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "package_manager": "pnpm"
+      },
+      "extracted": {
+        "language": "node",
+        "package_manager": "pnpm"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001547,
+      "latency_ms": 1228,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: node\n- package manager: pnpm\n- runtime version: 24\n- steps: lint, test, build\n- triggers: pushes to main and pull requests\n- deploy target: none\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot fe"
+    },
+    {
+      "id": "ci-03",
+      "message": "Write a GitHub Actions workflow for my python project, run pytest and lint",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "python",
+        "steps": "lint, test"
+      },
+      "extracted": {
+        "language": "python",
+        "steps": "lint, test"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001484,
+      "latency_ms": 1273,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: python\n- steps: lint, test\n- package manager: pip\n- runtime version: 24\n- triggers: pushes to main and pull requests\n- deploy target: none\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature."
+    },
+    {
+      "id": "ci-04",
+      "message": "I need a GitHub Actions workflow for my repo",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "language"
+      ],
+      "asks": [
+        "language"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001246,
+      "latency_ms": 889,
+      "reply": "To set up a GitHub Actions workflow, I need to know:\n- What language is the project in?\n\nUnless you say otherwise I'll use: package manager: npm; runtime version: 24; steps: lint, test, build; triggers: pushes to main and pull requests; deploy target: none."
+    },
+    {
+      "id": "ci-05",
+      "message": "Set up CI for my project",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification",
+        "confirmation"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "language"
+      ],
+      "asks": [
+        "language"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00122,
+      "latency_ms": 1155,
+      "reply": "To set up a GitHub Actions workflow, I need to know:\n- What language is the project in?\n\nUnless you say otherwise I'll use: package manager: npm; runtime version: 24; steps: lint, test, build; triggers: pushes to main and pull requests; deploy target: none."
+    },
+    {
+      "id": "ci-06",
+      "message": "Make a workflow that builds my Node 22 app with yarn and deploys it to S3",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "package_manager": "yarn",
+        "runtime_version": "22",
+        "deploy_target": "s3_static_site"
+      },
+      "extracted": {
+        "language": "node",
+        "package_manager": "yarn",
+        "runtime_version": "Node 22",
+        "steps": "build",
+        "deploy_target": "s3_static_site"
+      },
+      "tp": 4,
+      "fp": 1,
+      "fn": 0,
+      "cost_usd": 0.001905,
+      "latency_ms": 1811,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: node\n- package manager: yarn\n- runtime version: Node 22\n- steps: build\n- deploy target: s3_static_site\n- triggers: pushes to main and pull requests\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot"
+    },
+    {
+      "id": "ci-07",
+      "message": "Generate a GitHub Actions workflow for a Go service",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "go"
+      },
+      "extracted": {
+        "language": "go"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001412,
+      "latency_ms": 1216,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: go\n- package manager: go\n- runtime version: 24\n- steps: lint, test, build\n- triggers: pushes to main and pull requests\n- deploy target: none\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot featur"
+    },
+    {
+      "id": "ci-08",
+      "message": "Add a GitHub workflow that deploys my node app to ECS on every push to main",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "deploy_target": "ecs",
+        "triggers": "push to main"
+      },
+      "extracted": {
+        "language": "node",
+        "deploy_target": "ecs",
+        "triggers": "every push to main"
+      },
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00167,
+      "latency_ms": 1585,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: node\n- deploy target: ecs\n- triggers: every push to main\n- package manager: npm\n- runtime version: 24\n- steps: lint, test, build\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ci-09",
+      "message": "set up github actions ci, it's a java maven project",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "java",
+        "package_manager": "maven"
+      },
+      "extracted": {
+        "language": "java",
+        "package_manager": "maven"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001382,
+      "latency_ms": 1161,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: java\n- package manager: maven\n- runtime version: 24\n- steps: lint, test, build\n- triggers: pushes to main and pull requests\n- deploy target: none\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot f"
+    },
+    {
+      "id": "ci-10",
+      "message": "can you write me a CI workflow? javascript, npm, just run the tests",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "package_manager": "npm",
+        "steps": "test"
+      },
+      "extracted": {
+        "language": "node",
+        "package_manager": "npm",
+        "steps": "test"
+      },
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001471,
+      "latency_ms": 1263,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: node\n- package manager: npm\n- steps: test\n- runtime version: 24\n- triggers: pushes to main and pull requests\n- deploy target: none\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ci-11",
+      "message": "python",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "python"
+      },
+      "extracted": {
+        "language": "python"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001273,
+      "latency_ms": 982,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: python\n- package manager: pip\n- runtime version: 24\n- steps: lint, test, build\n- triggers: pushes to main and pull requests\n- deploy target: none\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot f"
+    },
+    {
+      "id": "ci-12",
+      "message": "it's a node project, and use pnpm please",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "package_manager": "pnpm"
+      },
+      "extracted": {
+        "language": "node",
+        "package_manager": "pnpm"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001387,
+      "latency_ms": 1351,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: node\n- package manager: pnpm\n- runtime version: 24\n- steps: lint, test, build\n- triggers: pushes to main and pull requests\n- deploy target: none\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot fe"
+    },
+    {
+      "id": "ci-13",
+      "message": "also make it deploy to lambda",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "deploy_target": "lambda"
+      },
+      "extracted": {
+        "language": "node",
+        "deploy_target": "lambda"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001396,
+      "latency_ms": 1088,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: node\n- deploy target: lambda\n- package manager: npm\n- runtime version: 24\n- steps: lint, test, build\n- triggers: pushes to main and pull requests\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot f"
+    },
+    {
+      "id": "ci-14",
+      "message": "Automate testing for my repo with GitHub Actions; it's a Rust project",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "other",
+        "steps": "test"
+      },
+      "extracted": {
+        "language": "other",
+        "steps": "test"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001605,
+      "latency_ms": 1416,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: other\n- steps: test\n- package manager: npm\n- runtime version: 24\n- triggers: pushes to main and pull requests\n- deploy target: none\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ci-15",
+      "message": "Build a workflow that lints and tests on PRs only",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "language"
+      ],
+      "asks": [
+        "language"
+      ],
+      "asks_ok": true,
+      "expected_params": {
+        "steps": "lint, test",
+        "triggers": "pull requests"
+      },
+      "extracted": {
+        "steps": "lint,test",
+        "triggers": "pull requests only"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001396,
+      "latency_ms": 1177,
+      "reply": "To set up a GitHub Actions workflow, I need to know:\n- What language is the project in?\n\nUnless you say otherwise I'll use: package manager: npm; runtime version: 24; deploy target: none."
+    },
+    {
+      "id": "ci-16",
+      "message": "Set up a GitHub Actions workflow that runs npm test on Node 24",
+      "expected_intent": [
+        "cicd_github_actions"
+      ],
+      "intent": "cicd_github_actions",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "package_manager": "npm",
+        "runtime_version": "24",
+        "steps": "test"
+      },
+      "extracted": {
+        "language": "node",
+        "package_manager": "npm",
+        "runtime_version": "Node 24",
+        "steps": "test"
+      },
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001628,
+      "latency_ms": 1697,
+      "reply": "Here's what I'll set up for a GitHub Actions workflow:\n- language: node\n- package manager: npm\n- runtime version: Node 24\n- steps: test\n- triggers: pushes to main and pull requests\n- deploy target: none\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-01",
+      "message": "Write a Dockerfile for my Express API that listens on port 3000",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "app_port": 3000
+      },
+      "extracted": {
+        "language": "node",
+        "app_port": "3000"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001349,
+      "latency_ms": 932,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: node\n- app port: 3000\n- start command: npm start\n- push to ecr: yes\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-02",
+      "message": "Containerize my Flask app, it runs on 5000",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "python",
+        "app_port": 5000
+      },
+      "extracted": {
+        "language": "python",
+        "app_port": "5000"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001342,
+      "latency_ms": 924,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: python\n- app port: 5000\n- start command: python main.py\n- push to ecr: yes\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-03",
+      "message": "Make a Dockerfile for my node app",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "app_port"
+      ],
+      "asks": [
+        "app_port"
+      ],
+      "asks_ok": true,
+      "expected_params": {
+        "language": "node"
+      },
+      "extracted": {
+        "language": "node"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001262,
+      "latency_ms": 1374,
+      "reply": "To set up a Dockerfile for your app, I need to know:\n- Which port does the app listen on?\n\nUnless you say otherwise I'll use: start command: npm start; push to ecr: yes; deploy to ecs: no."
+    },
+    {
+      "id": "ctr-04",
+      "message": "Dockerize my app",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification",
+        "confirmation"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "language",
+        "app_port"
+      ],
+      "asks": [
+        "language",
+        "app_port"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001219,
+      "latency_ms": 1166,
+      "reply": "To set up a Dockerfile for your app, I need to know:\n- What language is the app written in?\n- Which port does the app listen on?\n\nUnless you say otherwise I'll use: start command: npm start; push to ecr: yes; deploy to ecs: no."
+    },
+    {
+      "id": "ctr-05",
+      "message": "Create a Docker image for my Go service on port 8080 and push it to ECR",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "go",
+        "app_port": 8080,
+        "push_to_ecr": true
+      },
+      "extracted": {
+        "language": "go",
+        "app_port": "8080",
+        "push_to_ecr": "true"
+      },
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001464,
+      "latency_ms": 1427,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: go\n- app port: 8080\n- push to ecr: yes\n- start command: ./app\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-06",
+      "message": "Containerize my Spring Boot app (port 8080) and run it on ECS Fargate",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "java",
+        "app_port": 8080,
+        "deploy_to_ecs": true
+      },
+      "extracted": {
+        "language": "java",
+        "app_port": "8080",
+        "deploy_to_ecs": "true"
+      },
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00178,
+      "latency_ms": 1774,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: java\n- app port: 8080\n- deploy to ecs: yes\n- start command: java -jar app.jar\n- push to ecr: yes\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-07",
+      "message": "Write a Dockerfile for my Next.js app, port 3000, started with `npm run start`",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "app_port": 3000,
+        "start_command": "npm run start"
+      },
+      "extracted": {
+        "language": "node",
+        "app_port": "3000",
+        "start_command": "npm run start"
+      },
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001457,
+      "latency_ms": 1215,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: node\n- app port: 3000\n- start command: npm run start\n- push to ecr: yes\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-08",
+      "message": "3000",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "app_port": 3000
+      },
+      "extracted": {
+        "app_port": "3000"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00128,
+      "latency_ms": 939,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: node\n- app port: 3000\n- start command: npm start\n- push to ecr: yes\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-09",
+      "message": "it's python and listens on 8000",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "python",
+        "app_port": 8000
+      },
+      "extracted": {
+        "language": "python",
+        "app_port": "8000"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001388,
+      "latency_ms": 1147,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: python\n- app port: 8000\n- start command: python main.py\n- push to ecr: yes\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-10",
+      "message": "don't push it to ECR",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "push_to_ecr": false
+      },
+      "extracted": {
+        "language": "node",
+        "app_port": "3000",
+        "push_to_ecr": "false"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001395,
+      "latency_ms": 1208,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: node\n- app port: 3000\n- push to ecr: no\n- start command: npm start\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-11",
+      "message": "Package my FastAPI service as a container, port 80",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "python",
+        "app_port": 80
+      },
+      "extracted": {
+        "language": "python",
+        "app_port": "80"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001382,
+      "latency_ms": 1216,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: python\n- app port: 80\n- start command: python main.py\n- push to ecr: yes\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-12",
+      "message": "I want to run my node api on ECS",
+      "expected_intent": [
+        "containerize",
+        "qa"
+      ],
+      "intent": "containerize",
+      "confidence": 0.96,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification",
+        "confirmation",
+        "answer"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [
+        "app_port"
+      ],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {
+        "language": "node",
+        "deploy_to_ecs": "true"
+      },
+      "tp": 0,
+      "fp": 2,
+      "fn": 0,
+      "cost_usd": 0.001281,
+      "latency_ms": 1093,
+      "reply": "To set up a Dockerfile for your app, I need to know:\n- Which port does the app listen on?\n\nUnless you say otherwise I'll use: start command: npm start; push to ecr: yes."
+    },
+    {
+      "id": "ctr-13",
+      "message": "write a Dockerfile for a python script that runs on port eighty-eighty",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready",
+        "clarification"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "python",
+        "app_port": 8080
+      },
+      "extracted": {
+        "language": "python",
+        "app_port": "8080"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001488,
+      "latency_ms": 1397,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: python\n- app port: 8080\n- start command: python main.py\n- push to ecr: yes\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-14",
+      "message": "Make a container image for my TypeScript backend listening on 4000",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.96,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "app_port": 4000
+      },
+      "extracted": {
+        "language": "node",
+        "app_port": "4000"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001366,
+      "latency_ms": 1388,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: node\n- app port: 4000\n- start command: npm start\n- push to ecr: yes\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "ctr-15",
+      "message": "Build a production Dockerfile for my Django project",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "app_port"
+      ],
+      "asks": [
+        "app_port"
+      ],
+      "asks_ok": true,
+      "expected_params": {
+        "language": "python"
+      },
+      "extracted": {
+        "language": "python"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001349,
+      "latency_ms": 1091,
+      "reply": "To set up a Dockerfile for your app, I need to know:\n- Which port does the app listen on?\n\nUnless you say otherwise I'll use: start command: python main.py; push to ecr: yes; deploy to ecs: no."
+    },
+    {
+      "id": "ctr-16",
+      "message": "Dockerfile please, node, port 3000, and deploy to fargate too",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "app_port": 3000,
+        "deploy_to_ecs": true
+      },
+      "extracted": {
+        "language": "node",
+        "app_port": "3000",
+        "deploy_to_ecs": "true"
+      },
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001679,
+      "latency_ms": 1563,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: node\n- app port: 3000\n- deploy to ecs: yes\n- start command: npm start\n- push to ecr: yes\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-01",
+      "message": "Deploy my function to Lambda behind an HTTPS URL",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.95,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "function_url"
+      },
+      "extracted": {
+        "trigger": "function_url"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001344,
+      "latency_ms": 1298,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: function_url\n- runtime: nodejs24.x\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-02",
+      "message": "Set up a Lambda that runs every night at 2am",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "schedule"
+      },
+      "extracted": {
+        "trigger": "schedule"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001346,
+      "latency_ms": 1403,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: schedule\n- runtime: nodejs24.x\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-03",
+      "message": "Deploy this Python 3.13 function to Lambda with API Gateway in front",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "api_gateway",
+        "runtime": "python3.13"
+      },
+      "extracted": {
+        "trigger": "api_gateway",
+        "runtime": "python3.13"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001429,
+      "latency_ms": 1485,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: api_gateway\n- runtime: python3.13\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-04",
+      "message": "Deploy my code to Lambda",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "trigger"
+      ],
+      "asks": [
+        "trigger"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {
+        "deploy_target": "lambda"
+      },
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001305,
+      "latency_ms": 1208,
+      "reply": "To set up a Lambda deployment, I need to know:\n- What should trigger the function: an HTTPS URL, API Gateway, a schedule, S3 uploads, or nothing (you invoke it yourself)?\n\nUnless you say otherwise I'll use: runtime: nodejs24.x; source dir: src; memory mb: 256; timeout s: 10; region: us-east-1."
+    },
+    {
+      "id": "lam-05",
+      "message": "Create a Lambda that processes files uploaded to my S3 bucket",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "s3_event"
+      },
+      "extracted": {
+        "trigger": "s3_event"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001481,
+      "latency_ms": 1434,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: s3_event\n- runtime: nodejs24.x\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-06",
+      "message": "Deploy a node lambda with 512 MB memory and a 30 second timeout, triggered by a function URL",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "function_url",
+        "memory_mb": 512,
+        "timeout_s": 30
+      },
+      "extracted": {
+        "trigger": "function_url",
+        "memory_mb": "512",
+        "timeout_s": "30"
+      },
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00187,
+      "latency_ms": 1724,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: function_url\n- memory mb: 512\n- timeout s: 30\n- runtime: nodejs24.x\n- source dir: src\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-07",
+      "message": "a schedule, once an hour",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "schedule"
+      },
+      "extracted": {
+        "trigger": "schedule"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.00136,
+      "latency_ms": 899,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: schedule\n- runtime: nodejs24.x\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-08",
+      "message": "just a URL is fine",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "function_url"
+      },
+      "extracted": {
+        "trigger": "function_url"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001324,
+      "latency_ms": 1171,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: function_url\n- runtime: nodejs24.x\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-09",
+      "message": "make it eu-west-1",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "region": "eu-west-1"
+      },
+      "extracted": {
+        "trigger": "function_url",
+        "region": "eu-west-1"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001329,
+      "latency_ms": 1259,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: function_url\n- region: eu-west-1\n- runtime: nodejs24.x\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-10",
+      "message": "Ship my handler in ./lambda to AWS Lambda, no trigger, I'll invoke it myself",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "manual",
+        "source_dir": "lambda"
+      },
+      "extracted": {
+        "source_dir": "./lambda",
+        "trigger": "manual"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001476,
+      "latency_ms": 1276,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- source dir: ./lambda\n- trigger: manual\n- runtime: nodejs24.x\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-11",
+      "message": "serverless API for my node code please",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.86,
+      "intent_ok": true,
+      "expected_action": [
+        "ready",
+        "clarification",
+        "confirmation"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "api_gateway"
+      },
+      "extracted": {
+        "trigger": "api_gateway"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.002005,
+      "latency_ms": 1833,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: api_gateway\n- runtime: nodejs24.x\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-12",
+      "message": "Deploy a cron job to Lambda",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.95,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "schedule"
+      },
+      "extracted": {
+        "trigger": "schedule"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001337,
+      "latency_ms": 1133,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- trigger: schedule\n- runtime: nodejs24.x\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-13",
+      "message": "I want a webhook endpoint on Lambda",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.89,
+      "intent_ok": true,
+      "expected_action": [
+        "ready",
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [
+        "trigger"
+      ],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001986,
+      "latency_ms": 2310,
+      "reply": "To set up a Lambda deployment, I need to know:\n- What should trigger the function: an HTTPS URL, API Gateway, a schedule, S3 uploads, or nothing (you invoke it yourself)?\n\nUnless you say otherwise I'll use: runtime: nodejs24.x; source dir: src; memory mb: 256; timeout s: 10; region: us-east-1."
+    },
+    {
+      "id": "lam-14",
+      "message": "Deploy my Go function to Lambda",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "trigger"
+      ],
+      "asks": [
+        "trigger"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {
+        "language": "go"
+      },
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001652,
+      "latency_ms": 1594,
+      "reply": "To set up a Lambda deployment, I need to know:\n- What should trigger the function: an HTTPS URL, API Gateway, a schedule, S3 uploads, or nothing (you invoke it yourself)?\n\nUnless you say otherwise I'll use: runtime: nodejs24.x; source dir: src; memory mb: 256; timeout s: 10; region: us-east-1."
+    },
+    {
+      "id": "lam-15",
+      "message": "Set up a Lambda on the nodejs22.x runtime triggered by S3 uploads",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "trigger": "s3_event",
+        "runtime": "nodejs22.x"
+      },
+      "extracted": {
+        "runtime": "nodejs22.x",
+        "trigger": "s3_event"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001349,
+      "latency_ms": 1326,
+      "reply": "Here's what I'll set up for a Lambda deployment:\n- runtime: nodejs22.x\n- trigger: s3_event\n- source dir: src\n- memory mb: 256\n- timeout s: 10\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "lam-16",
+      "message": "Put my function on Lambda with 1024MB",
+      "expected_intent": [
+        "deploy_lambda"
+      ],
+      "intent": "deploy_lambda",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "trigger"
+      ],
+      "asks": [
+        "trigger"
+      ],
+      "asks_ok": true,
+      "expected_params": {
+        "memory_mb": 1024
+      },
+      "extracted": {
+        "memory_mb": "1024"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001372,
+      "latency_ms": 1141,
+      "reply": "To set up a Lambda deployment, I need to know:\n- What should trigger the function: an HTTPS URL, API Gateway, a schedule, S3 uploads, or nothing (you invoke it yourself)?\n\nUnless you say otherwise I'll use: runtime: nodejs24.x; source dir: src; timeout s: 10; region: us-east-1."
+    },
+    {
+      "id": "web-01",
+      "message": "Host my React app on S3 with CloudFront, the build is in build/",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "framework": "react",
+        "source_dir": "build"
+      },
+      "extracted": {
+        "source_dir": "build",
+        "framework": "react"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001363,
+      "latency_ms": 1204,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- source dir: build\n- framework: react\n- spa routing: yes\n- custom domain: none (CloudFront URL)\n- ci deploy: yes\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-02",
+      "message": "Deploy my Vue site; output folder is dist",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "framework": "vue",
+        "source_dir": "dist"
+      },
+      "extracted": {
+        "framework": "vue",
+        "source_dir": "dist"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001353,
+      "latency_ms": 1152,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- framework: vue\n- source dir: dist\n- spa routing: yes\n- custom domain: none (CloudFront URL)\n- ci deploy: yes\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-03",
+      "message": "Host my React app on S3 with HTTPS",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.96,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "source_dir"
+      ],
+      "asks": [
+        "source_dir"
+      ],
+      "asks_ok": true,
+      "expected_params": {
+        "framework": "react"
+      },
+      "extracted": {
+        "framework": "react"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001362,
+      "latency_ms": 1311,
+      "reply": "To set up static site hosting on S3 + CloudFront, I need to know:\n- Which folder has the built site (for example `dist/` or `build/`)?\n\nUnless you say otherwise I'll use: spa routing: yes; custom domain: none (CloudFront URL); ci deploy: yes; region: us-east-1."
+    },
+    {
+      "id": "web-04",
+      "message": "Put my static website online",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification",
+        "confirmation"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "source_dir"
+      ],
+      "asks": [
+        "source_dir"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001192,
+      "latency_ms": 981,
+      "reply": "To set up static site hosting on S3 + CloudFront, I need to know:\n- Which folder has the built site (for example `dist/` or `build/`)?\n\nUnless you say otherwise I'll use: framework: plain; spa routing: no; custom domain: none (CloudFront URL); ci deploy: yes; region: us-east-1."
+    },
+    {
+      "id": "web-05",
+      "message": "Deploy the public/ folder as a static site at www.example.com",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "source_dir": "public",
+        "custom_domain": "www.example.com"
+      },
+      "extracted": {
+        "source_dir": "public",
+        "custom_domain": "www.example.com"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001509,
+      "latency_ms": 1294,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- source dir: public\n- custom domain: www.example.com\n- framework: plain\n- spa routing: no\n- ci deploy: yes\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-06",
+      "message": "dist",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "source_dir": "dist"
+      },
+      "extracted": {
+        "source_dir": "dist",
+        "framework": "react"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001366,
+      "latency_ms": 886,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- framework: react\n- source dir: dist\n- spa routing: yes\n- custom domain: none (CloudFront URL)\n- ci deploy: yes\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-07",
+      "message": "the output is in ./out, and I don't need a deploy workflow",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "source_dir": "out",
+        "ci_deploy": false
+      },
+      "extracted": {
+        "source_dir": "./out",
+        "ci_deploy": "false"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001445,
+      "latency_ms": 1069,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- source dir: ./out\n- ci deploy: no\n- framework: plain\n- spa routing: no\n- custom domain: none (CloudFront URL)\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-08",
+      "message": "actually use the domain docs.example.org",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "custom_domain": "docs.example.org"
+      },
+      "extracted": {
+        "custom_domain": "docs.example.org"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001314,
+      "latency_ms": 1043,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- source dir: dist\n- custom domain: docs.example.org\n- framework: plain\n- spa routing: no\n- ci deploy: yes\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-09",
+      "message": "Set up hosting for my Angular app (dist/my-app)",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "framework": "angular",
+        "source_dir": "dist/my-app"
+      },
+      "extracted": {
+        "framework": "angular",
+        "source_dir": "dist/my-app"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001373,
+      "latency_ms": 1133,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- framework: angular\n- source dir: dist/my-app\n- spa routing: yes\n- custom domain: none (CloudFront URL)\n- ci deploy: yes\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feat"
+    },
+    {
+      "id": "web-10",
+      "message": "Host a plain HTML site from the site/ directory",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "framework": "plain",
+        "source_dir": "site"
+      },
+      "extracted": {
+        "source_dir": "site/",
+        "framework": "plain"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001318,
+      "latency_ms": 997,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- source dir: site/\n- framework: plain\n- spa routing: no\n- custom domain: none (CloudFront URL)\n- ci deploy: yes\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-11",
+      "message": "Deploy my portfolio website to AWS",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.86,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification",
+        "confirmation"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "source_dir"
+      ],
+      "asks": [
+        "source_dir"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001553,
+      "latency_ms": 1313,
+      "reply": "To set up static site hosting on S3 + CloudFront, I need to know:\n- Which folder has the built site (for example `dist/` or `build/`)?\n\nUnless you say otherwise I'll use: framework: plain; spa routing: no; custom domain: none (CloudFront URL); ci deploy: yes; region: us-east-1."
+    },
+    {
+      "id": "web-12",
+      "message": "I built my svelte app into build, host it with SPA routing",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "framework": "svelte",
+        "source_dir": "build",
+        "spa_routing": true
+      },
+      "extracted": {
+        "source_dir": "build",
+        "framework": "svelte",
+        "spa_routing": "true"
+      },
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001411,
+      "latency_ms": 1192,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- source dir: build\n- framework: svelte\n- spa routing: yes\n- custom domain: none (CloudFront URL)\n- ci deploy: yes\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-13",
+      "message": "Host my docs (mkdocs output in site/) on S3 in eu-central-1",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "source_dir": "site",
+        "region": "eu-central-1"
+      },
+      "extracted": {
+        "source_dir": "site/",
+        "framework": "other",
+        "region": "eu-central-1"
+      },
+      "tp": 2,
+      "fp": 1,
+      "fn": 0,
+      "cost_usd": 0.001562,
+      "latency_ms": 1626,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- source dir: site/\n- framework: other\n- region: eu-central-1\n- spa routing: no\n- custom domain: none (CloudFront URL)\n- ci deploy: yes\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-14",
+      "message": "Make my React SPA available over HTTPS on CloudFront",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "source_dir"
+      ],
+      "asks": [
+        "source_dir"
+      ],
+      "asks_ok": true,
+      "expected_params": {
+        "framework": "react",
+        "spa_routing": true
+      },
+      "extracted": {
+        "framework": "react",
+        "spa_routing": "true"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001606,
+      "latency_ms": 1331,
+      "reply": "To set up static site hosting on S3 + CloudFront, I need to know:\n- Which folder has the built site (for example `dist/` or `build/`)?\n\nUnless you say otherwise I'll use: custom domain: none (CloudFront URL); ci deploy: yes; region: us-east-1."
+    },
+    {
+      "id": "web-15",
+      "message": "static hosting for dist/ please, no github workflow",
+      "expected_intent": [
+        "deploy_static_site"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "source_dir": "dist",
+        "ci_deploy": false
+      },
+      "extracted": {
+        "source_dir": "dist/",
+        "ci_deploy": "false"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001642,
+      "latency_ms": 1450,
+      "reply": "Here's what I'll set up for static site hosting on S3 + CloudFront:\n- source dir: dist/\n- ci deploy: no\n- framework: plain\n- spa routing: no\n- custom domain: none (CloudFront URL)\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "web-16",
+      "message": "Deploy my frontend",
+      "expected_intent": [
+        "deploy_static_site",
+        "qa"
+      ],
+      "intent": "deploy_static_site",
+      "confidence": 0.74,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification",
+        "confirmation",
+        "answer"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [
+        "source_dir"
+      ],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001515,
+      "latency_ms": 1599,
+      "reply": "To set up static site hosting on S3 + CloudFront, I need to know:\n- Which folder has the built site (for example `dist/` or `build/`)?\n\nUnless you say otherwise I'll use: framework: plain; spa routing: no; custom domain: none (CloudFront URL); ci deploy: yes; region: us-east-1."
+    },
+    {
+      "id": "eks-01",
+      "message": "Create an EKS cluster with Karpenter autoscaling",
+      "expected_intent": [
+        "eks_cluster"
+      ],
+      "intent": "eks_cluster",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "cost_ack"
+      ],
+      "asks": [
+        "cost_ack"
+      ],
+      "asks_ok": true,
+      "expected_params": {
+        "autoscaler": "karpenter"
+      },
+      "extracted": {
+        "autoscaler": "karpenter"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001287,
+      "latency_ms": 1136,
+      "reply": "To set up an EKS cluster, I need to know:\n- EKS is billed by the hour (about $0.10/hour for the cluster plus the nodes) until it's deleted. Is that OK? We'd tear it down after testing.\n\nUnless you say otherwise I'll use: cluster name: infrapilot-demo; k8s version: 1.37; node instance type: t3.medium"
+    },
+    {
+      "id": "eks-02",
+      "message": "Spin up a Kubernetes cluster on AWS",
+      "expected_intent": [
+        "eks_cluster"
+      ],
+      "intent": "eks_cluster",
+      "confidence": 0.96,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification",
+        "confirmation"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "cost_ack"
+      ],
+      "asks": [
+        "cost_ack"
+      ],
+      "asks_ok": true,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001324,
+      "latency_ms": 1043,
+      "reply": "To set up an EKS cluster, I need to know:\n- EKS is billed by the hour (about $0.10/hour for the cluster plus the nodes) until it's deleted. Is that OK? We'd tear it down after testing.\n\nUnless you say otherwise I'll use: cluster name: infrapilot-demo; autoscaler: karpenter; k8s version: 1.37; node i"
+    },
+    {
+      "id": "eks-03",
+      "message": "yes that's fine, I'll delete it after",
+      "expected_intent": [
+        "eks_cluster"
+      ],
+      "intent": "eks_cluster",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "cost_ack": true
+      },
+      "extracted": {
+        "cost_ack": "true"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001332,
+      "latency_ms": 1073,
+      "reply": "Here's what I'll set up for an EKS cluster:\n- cost ack: yes\n- cluster name: infrapilot-demo\n- autoscaler: karpenter\n- k8s version: 1.37\n- node instance type: t3.medium\n- max nodes: 3\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "eks-04",
+      "message": "no, that's too expensive",
+      "expected_intent": [
+        "eks_cluster"
+      ],
+      "intent": "eks_cluster",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "cost_ack": false
+      },
+      "extracted": {
+        "cost_ack": "false"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001391,
+      "latency_ms": 1675,
+      "reply": "OK, I won't create an EKS cluster. I can still answer questions about EKS or set up something that isn't billed by the hour."
+    },
+    {
+      "id": "eks-05",
+      "message": "Create an EKS cluster called demo with up to 5 m5.large nodes; I know it costs money",
+      "expected_intent": [
+        "eks_cluster"
+      ],
+      "intent": "eks_cluster",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "cluster_name": "demo",
+        "max_nodes": 5,
+        "node_instance_type": "m5.large",
+        "cost_ack": true
+      },
+      "extracted": {
+        "cluster_name": "demo",
+        "max_nodes": "5",
+        "node_instance_type": "m5.large",
+        "cost_ack": "true"
+      },
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001619,
+      "latency_ms": 1264,
+      "reply": "Here's what I'll set up for an EKS cluster:\n- cluster name: demo\n- max nodes: 5\n- node instance type: m5.large\n- cost ack: yes\n- autoscaler: karpenter\n- k8s version: 1.37\n- region: us-east-1\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "eks-06",
+      "message": "Provision EKS with cluster autoscaler in us-west-2",
+      "expected_intent": [
+        "eks_cluster"
+      ],
+      "intent": "eks_cluster",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "cost_ack"
+      ],
+      "asks": [
+        "cost_ack"
+      ],
+      "asks_ok": true,
+      "expected_params": {
+        "autoscaler": "cluster_autoscaler",
+        "region": "us-west-2"
+      },
+      "extracted": {
+        "autoscaler": "cluster_autoscaler",
+        "region": "us-west-2"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001504,
+      "latency_ms": 1357,
+      "reply": "To set up an EKS cluster, I need to know:\n- EKS is billed by the hour (about $0.10/hour for the cluster plus the nodes) until it's deleted. Is that OK? We'd tear it down after testing.\n\nUnless you say otherwise I'll use: cluster name: infrapilot-demo; k8s version: 1.37; node instance type: t3.medium"
+    },
+    {
+      "id": "eks-07",
+      "message": "I need a k8s cluster for testing my manifests",
+      "expected_intent": [
+        "eks_cluster",
+        "qa"
+      ],
+      "intent": "eks_cluster",
+      "confidence": 0.93,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification",
+        "confirmation",
+        "answer"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [
+        "cost_ack"
+      ],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {
+        "cost_ack": "false"
+      },
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "cost_usd": 0.001409,
+      "latency_ms": 1201,
+      "reply": "To set up an EKS cluster, I need to know:\n- EKS is billed by the hour (about $0.10/hour for the cluster plus the nodes) until it's deleted. Is that OK? We'd tear it down after testing.\n\nUnless you say otherwise I'll use: cluster name: infrapilot-demo; autoscaler: karpenter; k8s version: 1.37; node i"
+    },
+    {
+      "id": "eks-08",
+      "message": "Set up EKS 1.36",
+      "expected_intent": [
+        "eks_cluster"
+      ],
+      "intent": "eks_cluster",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "clarification"
+      ],
+      "action": "clarification",
+      "action_ok": true,
+      "expected_asks": [
+        "cost_ack"
+      ],
+      "asks": [
+        "cost_ack"
+      ],
+      "asks_ok": true,
+      "expected_params": {
+        "k8s_version": "1.36"
+      },
+      "extracted": {
+        "k8s_version": "1.36"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001469,
+      "latency_ms": 1301,
+      "reply": "To set up an EKS cluster, I need to know:\n- EKS is billed by the hour (about $0.10/hour for the cluster plus the nodes) until it's deleted. Is that OK? We'd tear it down after testing.\n\nUnless you say otherwise I'll use: cluster name: infrapilot-demo; autoscaler: karpenter; node instance type: t3.me"
+    },
+    {
+      "id": "oth-01",
+      "message": "Tell me a joke",
+      "expected_intent": [
+        "other"
+      ],
+      "intent": "other",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001133,
+      "latency_ms": 864,
+      "reply": "I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up for you. What would you like to do?"
+    },
+    {
+      "id": "oth-02",
+      "message": "What's the weather in New York?",
+      "expected_intent": [
+        "other"
+      ],
+      "intent": "other",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001162,
+      "latency_ms": 890,
+      "reply": "I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up for you. What would you like to do?"
+    },
+    {
+      "id": "oth-03",
+      "message": "Write a poem about clouds",
+      "expected_intent": [
+        "other"
+      ],
+      "intent": "other",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001138,
+      "latency_ms": 866,
+      "reply": "I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up for you. What would you like to do?"
+    },
+    {
+      "id": "oth-04",
+      "message": "Can you deploy my app to Google Cloud Run?",
+      "expected_intent": [
+        "other",
+        "qa"
+      ],
+      "intent": "other",
+      "confidence": 0.97,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope",
+        "answer"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001331,
+      "latency_ms": 1175,
+      "reply": "I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up for you. What would you like to do?"
+    },
+    {
+      "id": "oth-05",
+      "message": "Help me with my calculus homework",
+      "expected_intent": [
+        "other"
+      ],
+      "intent": "other",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001148,
+      "latency_ms": 933,
+      "reply": "I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up for you. What would you like to do?"
+    },
+    {
+      "id": "oth-06",
+      "message": "hi",
+      "expected_intent": [
+        "other"
+      ],
+      "intent": "other",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope",
+        "answer"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001126,
+      "latency_ms": 849,
+      "reply": "I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up for you. What would you like to do?"
+    },
+    {
+      "id": "oth-07",
+      "message": "Who won the World Cup?",
+      "expected_intent": [
+        "other"
+      ],
+      "intent": "other",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001157,
+      "latency_ms": 1014,
+      "reply": "I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up for you. What would you like to do?"
+    },
+    {
+      "id": "oth-08",
+      "message": "Translate this to French: good morning",
+      "expected_intent": [
+        "other"
+      ],
+      "intent": "other",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001158,
+      "latency_ms": 797,
+      "reply": "I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up for you. What would you like to do?"
+    },
+    {
+      "id": "fail-15",
+      "message": "Run docker/build-push-action@v7\n#8 [build 4/6] RUN npm ci\n#8 2.31 npm ERR! code ERESOLVE\n#8 2.31 npm ERR! ERESOLVE unable to resolve dependency tree\nERROR: failed to solve: process \"/bin/sh -c npm ci\"",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "ERESOLVE"
+      },
+      "extracted": {
+        "error_text": "Run docker/build-push-action@v7\n#8 [build 4/6] RUN npm ci\n#8 2.31 npm ERR! code ERESOLVE\n#8 2.31 npm ERR! ERESOLVE unable to resolve dependency tree\nERROR: failed to solve: process \"/bin/sh -c npm ci\" did not complete successfully: exit code: 1"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001955,
+      "latency_ms": 1744,
+      "reply": ""
+    },
+    {
+      "id": "oth-09",
+      "message": "thanks, that's all for now!",
+      "expected_intent": [
+        "other"
+      ],
+      "intent": "other",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "out_of_scope",
+        "answer"
+      ],
+      "action": "out_of_scope",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001158,
+      "latency_ms": 1284,
+      "reply": "I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up for you. What would you like to do?"
+    },
+    {
+      "id": "mix-01",
+      "message": "wait, how much does CloudFront cost?",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001212,
+      "latency_ms": 776,
+      "reply": ""
+    },
+    {
+      "id": "mix-02",
+      "message": "actually, write a Dockerfile instead, node on port 8080",
+      "expected_intent": [
+        "containerize"
+      ],
+      "intent": "containerize",
+      "confidence": 0.99,
+      "intent_ok": true,
+      "expected_action": [
+        "ready"
+      ],
+      "action": "ready",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "language": "node",
+        "app_port": 8080
+      },
+      "extracted": {
+        "language": "node",
+        "app_port": "8080"
+      },
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001396,
+      "latency_ms": 1084,
+      "reply": "Here's what I'll set up for a Dockerfile for your app:\n- language: node\n- app port: 8080\n- start command: npm start\n- push to ecr: yes\n- deploy to ecs: no\n\nTell me if you want to change anything. (Generating the files is the next InfraPilot feature.)"
+    },
+    {
+      "id": "mix-03",
+      "message": "never mind, just tell me how S3 static hosting works",
+      "expected_intent": [
+        "qa"
+      ],
+      "intent": "qa",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {},
+      "extracted": {},
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001217,
+      "latency_ms": 1041,
+      "reply": ""
+    },
+    {
+      "id": "mix-04",
+      "message": "My deploy failed: Error: AccessDenied: User is not authorized to perform: cloudfront:CreateInvalidation",
+      "expected_intent": [
+        "explain_failure"
+      ],
+      "intent": "explain_failure",
+      "confidence": 0.98,
+      "intent_ok": true,
+      "expected_action": [
+        "answer"
+      ],
+      "action": "answer",
+      "action_ok": true,
+      "expected_asks": null,
+      "asks": [],
+      "asks_ok": null,
+      "expected_params": {
+        "error_text": "cloudfront:CreateInvalidation"
+      },
+      "extracted": {
+        "error_text": "Error: AccessDenied: User is not authorized to perform: cloudfront:CreateInvalidation"
+      },
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "cost_usd": 0.001435,
+      "latency_ms": 1482,
+      "reply": ""
+    }
+  ]
+}

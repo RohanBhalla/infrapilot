@@ -47,3 +47,13 @@ def test_runtime_id_accepts_readable_names():
     assert pat.search("Choose Node.js 24.x") and pat.search("use nodejs24.x") and not pat.search("Node.js 22")
     _, pat = M.expected_version({"tool": "lambda-runtime-python3.14", "extra": {}}, "runtime_id")
     assert pat.search("Python 3.14") and not pat.search("Python 3.1 ")
+
+
+def test_intent_slot_scoring():
+    from infrapilot_eval.intent import score_slots
+
+    # right port, language given as an alias, one extra unlabeled slot
+    assert score_slots("containerize", {"language": "node", "app_port": 3000},
+                       {"language": "TypeScript", "app_port": "3000", "start_command": "npm start"}) == (2, 1, 0)
+    assert score_slots("deploy_static_site", {"source_dir": "dist"}, {"source_dir": "./dist/"}) == (1, 0, 0)
+    assert score_slots("deploy_lambda", {"trigger": "schedule"}, {}) == (0, 0, 1)

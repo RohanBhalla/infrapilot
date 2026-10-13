@@ -11,7 +11,7 @@ cd data_collection
 ```
 
 Needs the same setup as `infrapilot-ask`: AWS credentials (question embeddings) and
-`OPENAI_API_KEY` in the repo's `.env`. Each answer costs about $0.003–0.006.
+`OPENAI_API_KEY` in the repo's `.env`. Each message costs about $0.0014 for the assistant, plus ~$0.003 when it's answered from the docs.
 
 ## Endpoints
 
@@ -32,10 +32,17 @@ The OpenAPI spec is at `/openapi.json`; the frontend can be built against it.
 
 ## How it works
 
-- **Follow-ups:** when a session has history, the latest message is first rewritten into a
-  standalone question ("and on Fargate?" → "How do I deploy to ECS on Fargate?") with one
-  small extra model call (~$0.0005). The reply shows it as `standalone_question`. If the
-  rewrite fails, the message is used as is.
+- **Every message goes through the assistant** ([`assistant/`](../assistant/README.md)) first. The
+  reply's `type` says what happened:
+  - `answer`: a question (or a pasted error), answered from the docs with citations
+  - `clarification`: a task is missing required details; `questions` lists them, one per detail
+  - `confirmation`: unsure it's a task, so it asks first
+  - `ready`: all details known; `params` has them, with defaults filled in
+  - `out_of_scope`: not something InfraPilot does
+- **Follow-ups:** the classifier also rewrites each message as a standalone question
+  ("and on Fargate?" → "How do I deploy to ECS on Fargate?"), shown as `standalone_question`.
+- **Task state** (`dialog`) is saved with the session, so answers to clarification questions
+  and changes ("use us-west-2 instead") apply to the task in progress.
 - **Sessions** are kept in memory (`InMemorySessionStore`) and lost on restart. A DynamoDB
   store will implement the same interface for AWS.
 - **Errors:** 404 unknown session, 422 invalid request (unknown fields are rejected), 400 bad

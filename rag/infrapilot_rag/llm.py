@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+import json
+import os
 import time
 from typing import Protocol
-
-import os
 
 from .config import CONFIG, MODELS, PRICES, RagConfig, is_openai
 
@@ -13,7 +13,9 @@ from .config import CONFIG, MODELS, PRICES, RagConfig, is_openai
 class ChatModel(Protocol):
     model_id: str
 
-    def complete(self, system: str, user: str) -> tuple[str, dict]: ...
+    def complete(self, system: str, user: str, json_schema: dict | None = None) -> tuple[str, dict]:
+        """Reply text and usage. With `json_schema` ({"name", "schema"}) the reply is JSON in that shape."""
+        ...
 
 
 class BedrockChat:
@@ -26,8 +28,11 @@ class BedrockChat:
         self.client = boto3.client("bedrock-runtime", region_name=cfg.region,
                                    config=Config(retries={"max_attempts": 6, "mode": "adaptive"}))
 
-    def complete(self, system: str, user: str) -> tuple[str, dict]:
+    def complete(self, system: str, user: str, json_schema: dict | None = None) -> tuple[str, dict]:
         started = time.monotonic()
+        if json_schema:  # no strict schema mode on Converse: ask for it in the instructions
+            system += ("\n\nReply with a single JSON object matching this JSON Schema, and nothing else:\n"
+                       + json.dumps(json_schema["schema"]))
         resp = self.client.converse(
             modelId=self.model_id,
             system=[{"text": system}],
@@ -60,11 +65,14 @@ class OpenAIChat:
         # tokens count toward the completion limit, so give them more room.
         self.reasoning = not self.model_id.startswith(("gpt-4", "chatgpt-"))
 
-    def complete(self, system: str, user: str) -> tuple[str, dict]:
+    def complete(self, system: str, user: str, json_schema: dict | None = None) -> tuple[str, dict]:
         started = time.monotonic()
         kwargs = {"model": self.model_id,
                   "messages": [{"role": "system", "content": system},
                                {"role": "user", "content": user}]}
+        if json_schema:  # structured outputs: the reply is guaranteed to match the schema
+            kwargs["response_format"] = {"type": "json_schema", "json_schema": {
+                "name": json_schema["name"], "schema": json_schema["schema"], "strict": True}}
         if self.reasoning:
             kwargs |= {"max_completion_tokens": self.cfg.max_tokens + 4000,
                        "reasoning_effort": self.cfg.reasoning_effort}

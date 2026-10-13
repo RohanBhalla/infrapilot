@@ -3,7 +3,7 @@ name = "infrapilot-eval"
 version = "0.1.0"
 description = "InfraPilot evaluation harness"
 requires-python = ">=3.12"
-dependencies = ["infrapilot-rag"]
+dependencies = ["infrapilot-rag", "infrapilot-assistant"]
 
 [project.scripts]
 infrapilot-eval = "infrapilot_eval.cli:main"

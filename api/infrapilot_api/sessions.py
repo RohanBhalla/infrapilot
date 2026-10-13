@@ -7,6 +7,8 @@ import uuid
 from collections import OrderedDict
 from typing import Protocol
 
+from infrapilot_assistant.state import DialogState
+
 from .schemas import Message, Session
 
 
@@ -14,6 +16,7 @@ class SessionStore(Protocol):
     def create(self) -> Session: ...
     def get(self, session_id: str) -> Session | None: ...
     def append(self, session_id: str, *messages: Message) -> None: ...
+    def save_dialog(self, session_id: str, dialog: DialogState) -> None: ...
 
 
 class InMemorySessionStore:
@@ -41,6 +44,10 @@ class InMemorySessionStore:
         with self._lock:
             self._sessions[session_id].messages.extend(messages)
             self._sessions.move_to_end(session_id)
+
+    def save_dialog(self, session_id: str, dialog: DialogState) -> None:
+        with self._lock:
+            self._sessions[session_id].dialog = dialog.model_copy(deep=True)
 
 
 def new_message_id() -> str:
