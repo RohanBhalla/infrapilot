@@ -1,4 +1,4 @@
-# Barebones authenticated chat API (AWS Console)
+# Authenticated chat API (AWS Console)
 
 This Lambda is a temporary API integration test. It stores sessions and messages in DynamoDB
 and returns a fixed reply. It does not call InfraPilot's assistant, embeddings, RAG, or an LLM.
