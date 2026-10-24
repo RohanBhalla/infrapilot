@@ -13,13 +13,16 @@ connected yet.
 
 ## Screenshots
 
-Put screenshots in `frontend/docs/images/` and reference them from this README using paths
-relative to the README, for example:
+### Cognito authentication page
 
-```md
 ![Cognito authentication page](docs/images/authentication-page.png)
+
+### CloudFront-hosted chat interface
+
 ![CloudFront-hosted chat interface](docs/images/chat-interface.png)
-```
+
+The screenshots are stored in `frontend/docs/images/`. Keep them free of passwords, tokens,
+email addresses, and other private account information.
 
 ## AWS components
 
