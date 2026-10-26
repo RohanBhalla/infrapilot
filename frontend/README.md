@@ -7,9 +7,10 @@ connected yet.
 
 ## Deployed demo
 
-- **CloudFront website:** <https://dzmh6iokkia76.cloudfront.net>
-- **Sign-in:** Open the website and select its sign-in button. Cognito is currently configured
-  for a test user; do not publish or commit test-user passwords or other credentials.
+- **CloudFront website:** <https://d310825pit4l2e.cloudfront.net> (team account, deployed with
+  CDK from `infra/`)
+- **Sign-in:** Open the website and select its sign-in button. Users are created by the team in
+  the Cognito console (self sign-up is off); do not publish or commit passwords or other credentials.
 
 ## Screenshots
 
