@@ -62,9 +62,11 @@ flowchart LR
   subgraph Ingestion["Document gathering (scheduled)"]
     SCH[EventBridge Scheduler] --> SFI[Step Functions: ingest]
     SFI --> FL[Fetcher Lambdas<br/>crawl · fetch · feed · api]
-    FL --> RAW[(S3 raw docs<br/>+ metadata.json)]
-    FL --> VER[(DynamoDB<br/>tool versions)]
-    RAW --> KB[Bedrock Knowledge Base<br/>S3 Vectors index]
+    FL --> RAW[(S3 raw / normalized / kb_export)]
+    FL --> IST[(DynamoDB<br/>ingest_state)]
+    RAW --> KB[Bedrock Knowledge Base<br/>Titan V2 · S3 Vectors index]
+    SCH --> VR[versions-refresh Lambda] --> VER[(DynamoDB<br/>tool_versions)]
+    SCH --> JAN[janitor Lambda]
   end
 
   subgraph App["Chat app"]
@@ -72,9 +74,9 @@ flowchart LR
     UI --> API[API Gateway HTTP API]
     API --> CHAT[Chat Lambda]
     CHAT --> KB
-    CHAT --> BR[Bedrock LLMs]
+    CHAT --> LLM[OpenAI gpt-5.4-mini<br/>Nova on Bedrock as fallback]
     CHAT --> VER
-    CHAT --> SESS[(DynamoDB sessions / audit)]
+    CHAT --> SESS[(DynamoDB sessions / requests)]
   end
 
   subgraph Action["Plan → review → deploy"]
@@ -83,6 +85,7 @@ flowchart LR
     SFW --> CB[CodeBuild sandbox deploy]
     CB --> CFN[CloudFormation stacks<br/>S3/CloudFront · Lambda · ECS · EKS]
     CB --> CWL[CloudWatch Logs]
+    JAN --> CFN
     SFW --> ART[(S3 generated artifacts)]
   end
 ```
@@ -92,21 +95,69 @@ flowchart LR
 | # | Component | Responsibility | Main AWS services |
 |---|---|---|---|
 | C1 | **Source registry** | Turn the Google Sheet into `data_collection/sources/sources.csv`: source id, type, URL, path filters, category | S3 (copy for Lambdas) |
-| C2 | **Fetchers** | One per sheet *Type*: `Crawl`, `Fetch`, `Feed`, `API`, `Upload` | Lambda, Step Functions, Secrets Manager (GitHub token) |
+| C2 | **Fetchers** | One per sheet *Type*: `Crawl`, `Fetch`, `Feed`, `API`, `Upload` | Lambda, Step Functions, SSM Parameter Store (GitHub token) |
 | C3 | **Normalizer** | HTML → Markdown, strip navigation, add a metadata sidecar, compute a content hash for change detection | Lambda |
 | C4 | **Raw doc store** | Versioned original + normalized docs | S3 |
 | C5 | **Version registry** | Latest versions, LTS and EOL facts (Node LTS, `actions/checkout@v*`, CDK, K8s/EKS versions) | DynamoDB |
 | C6 | **Knowledge base** | Chunking, embeddings, vector search with metadata filters | Bedrock Knowledge Bases, S3 Vectors, Titan Text Embeddings V2 |
-| C7 | **Answer service** | Retrieve → prompt → answer with citations and version facts injected | Bedrock (Converse API, Claude models) |
+| C7 | **Answer service** | Retrieve → prompt → answer with citations and version facts injected | OpenAI gpt-5.4-mini ([decision 002](decisions/002-answer-model.md)); Nova on Bedrock as fallback |
 | C8 | **Chat API** | Sessions, routing (Q&A vs. task vs. explain-failure), auth | API Gateway HTTP API, Lambda, Cognito, DynamoDB |
-| C9 | **Intent + clarification** | Classify the request, extract parameters, ask follow-up questions for anything missing | Bedrock (small/fast model) |
-| C10 | **Generators** | Produce files per task type from golden templates + RAG + version registry | Bedrock, S3 |
+| C9 | **Intent + clarification** | Classify the request, extract parameters, ask follow-up questions for anything missing | OpenAI gpt-5.4-mini (structured output), runs inside the chat Lambda |
+| C10 | **Generators** | Produce files per task type from golden templates + RAG + version registry | Lambda, OpenAI, S3 |
 | C11 | **Validation loop** | Lint/scan generated files; feed errors back to the generator for up to N retries | Lambda (container image) or CodeBuild |
 | C12 | **Request workflow** | Plan → review → approve → deploy → record, with a human approval step | Step Functions (task token) |
 | C13 | **Sandbox deployer** | Run `cdk deploy` / `cloudformation deploy` under a restricted role; stream logs; tear down | CodeBuild, CloudFormation, IAM permission boundary, CloudWatch Logs |
 | C14 | **Audit history** | Every request, its generated artifacts, approvals, and deploy outcome | DynamoDB, S3 |
 | C15 | **Frontend** | Chat, plan/diff review, approval, live logs, history, teardown button | S3, CloudFront |
 | C16 | **Observability + cost guard** | Logs, metrics, alarms, budgets, janitor that deletes stale sandbox stacks | CloudWatch, AWS Budgets, EventBridge Scheduler |
+
+**Status (2026-10-26):** C1–C9 are built and tested locally (C4 as folders, C5 as `versions.json`, C6 on LanceDB, C8 as a FastAPI app with an in-memory session store). C10–C16 are not started.
+
+### Where data lives
+
+DynamoDB holds only small, fast-changing records; anything large goes to S3.
+
+| Data | Store | Why |
+|---|---|---|
+| Raw pages, normalized docs, chunks | S3 (`raw/`, `normalized/`, `kb_export/`) | Large files, cheap, each layer can be rebuilt from the one before |
+| Embeddings / vector index | S3 Vectors, managed by the Bedrock Knowledge Base | Pay-per-use vector search |
+| Generated files and plans | S3 (`requests/<request_id>/`) | Files can exceed DynamoDB's 400 KB item limit |
+| Deploy logs | CloudWatch Logs | CodeBuild writes there by default |
+| Users, login | Cognito | Managed passwords and JWTs |
+| OpenAI key, GitHub token | SSM Parameter Store (SecureString) | Free; Secrets Manager costs $0.40/secret/month |
+
+DynamoDB tables (all on-demand):
+
+| Table | Key | Contents | Component |
+|---|---|---|---|
+| `sessions` | `session_id` + sort key `turn#<n>` | User id; one item per message (role, text, citations, cost); the dialog state (intent, collected params, slots asked, status, awaiting confirmation). TTL of 7 days deletes old sessions for free. | C8, C9 |
+| `tool_versions` | `tool` | `latest`, `lts`, `eol`, `source_url`, `checked_at`. Read on every answer. | C5 |
+| `requests` | `request_id`; GSI on `user_id` + `created_at` | Intent, params, plan S3 key, validation results, status (`planned → awaiting_approval → deploying → deployed / failed → torn_down`), approver, Step Functions task token, stack name, CodeBuild build id, `teardown_at` | C12, C14 |
+| `ingest_state` | `url` | Content hash, ETag / Last-Modified, last fetched, status. Unchanged pages are skipped, so they are not re-embedded. | C2, C3 |
+
+### Lambda functions
+
+A Lambda only where our own code runs. Step Functions calls DynamoDB, CodeBuild (`StartBuild.sync`), and Bedrock `StartIngestionJob` directly, so those steps need no function.
+
+| Lambda | Trigger | Does | Components |
+|---|---|---|---|
+| `chat-api` | API Gateway HTTP API | The FastAPI app via Mangum: sessions, intent + clarification, RAG answers, requests/history, approve (`SendTaskSuccess`), teardown, log polling | C7, C8, C9 |
+| `fetch` | Step Functions Map (one item per source) | Downloads one source; switches on the source type (Crawl/Fetch/Feed/API/Upload); writes `raw/` | C2 |
+| `normalize-chunk` | Step Functions, after `fetch` | HTML → Markdown, hash check against `ingest_state`, chunking, writes `kb_export/` | C3, C4 |
+| `versions-refresh` | EventBridge Scheduler, daily | GitHub releases, Node LTS/EOL, EKS versions → `tool_versions` | C5 |
+| `generate` | Step Functions request workflow | Templates + RAG + versions → files in S3 | C10 |
+| `validate` | Step Functions, after `generate` | Container-image Lambda with actionlint, hadolint, cfn-lint, checkov; findings go back to `generate` (≤ 3 retries) | C11 |
+| `janitor` | EventBridge Scheduler, hourly | Deletes `ip-sbx-*` stacks past `teardown_at` | C16 |
+
+### Main flows
+
+1. **Ingestion** (weekly; versions daily): Scheduler → Step Functions → `Map[fetch → normalize-chunk]` in parallel → changed chunks in S3 → KB sync (Titan embeds only what changed).
+2. **Question:** browser → CloudFront → API Gateway (Cognito JWT) → `chat-api` → classifier says `qa` → KB retrieve + `tool_versions` facts → OpenAI answer with citations → turn saved to `sessions`.
+3. **Task:** `chat-api` asks follow-ups until the slots are filled → starts the request workflow and writes `requests` (`planned`) → `generate` → `validate` → plan in S3 → wait for approval (task token) → user approves in the UI → CodeBuild deploys under the sandbox role, logs to CloudWatch → outcome recorded → `janitor` or the teardown button deletes the stack.
+
+### How it scales
+
+Everything is serverless and scales out, not up: Lambda runs one instance per concurrent request, DynamoDB on-demand and S3 Vectors grow with use, Step Functions Map (Distributed Map for very large crawls) processes sources in parallel, and CloudFront serves the UI from the edge. Idle cost is close to $0. The first real limits are OpenAI/Bedrock rate quotas and our own 1 req/s per-host crawl politeness.
 
 ---
 
@@ -177,7 +228,7 @@ Timeline assumes ~10 weeks starting the week of **2026-10-12**. Shift the dates 
 **Pair B: AWS account guardrails (do this before anyone deploys anything)**
 - AWS Budgets: monthly budget ($30 suggested) with email alerts at 50/80/100%, plus a $5/day anomaly alert (Cost Anomaly Detection).
 - IAM Identity Center users for all 4; no long-lived access keys. GitHub Actions uses OIDC if it ever needs AWS.
-- Enable Bedrock model access in `us-east-1`: Titan Text Embeddings V2, a Claude Haiku-class model (routing/classification), and a Claude Sonnet-class model (generation/answers). Model IDs live in config, not code.
+- Enable Bedrock model access in `us-east-1`: Titan Text Embeddings V2 and Amazon Nova (fallback answer model). Answers and intent use OpenAI ([decision 002](decisions/002-answer-model.md)); the key goes in SSM Parameter Store. Model IDs live in config, not code.
 - CDK bootstrap; a `infra/` app with an empty `CoreStack`; tagging aspect applied to all stacks.
 - Repo CI: `ruff`, `pytest`, `npm test` on PRs.
 
@@ -221,7 +272,7 @@ Timeline assumes ~10 weeks starting the week of **2026-10-12**. Shift the dates 
 
 - Start on a **hand-picked seed set** of ~30 docs (workflow syntax, Dockerfile reference, ECS troubleshooting, etc.) so this work doesn't wait for Feature 1.1. Switch to the full ingestion output when it lands.
 - `LocalLanceRetriever`: chunking (start with ~500 tokens, 15% overlap, split on Markdown headings), embeddings via **Bedrock Titan Text Embeddings V2** (same model as the cloud KB, so results are comparable; costs cents), stored in LanceDB.
-- Answer service: Bedrock Converse API with a system prompt that requires citations. Every claim maps to a retrieved chunk URL, and the model says "not in the docs" instead of guessing. The current version registry facts are injected into the prompt.
+- Answer service: OpenAI gpt-5.4-mini (Nova via the Bedrock Converse API as fallback) with a system prompt that requires citations. Every claim maps to a retrieved chunk URL, and the model says "not in the docs" instead of guessing. The current version registry facts are injected into the prompt.
 - Metadata filters by category, so a GitHub Actions question doesn't retrieve Kubernetes chunks.
 - CLI chat: `infrapilot-ask "What's the latest setup-node version and how do I cache npm?"`
 
@@ -233,7 +284,7 @@ Timeline assumes ~10 weeks starting the week of **2026-10-12**. Shift the dates 
 - Metrics:
   - **Retrieval:** hit@5 and MRR against the expected URLs
   - **Citation accuracy:** cited URLs ⊆ retrieved URLs, and at least one expected URL cited
-  - **Faithfulness/correctness:** LLM-as-judge (Claude Sonnet-class model, rubric 1–5) plus exact match on key facts
+  - **Faithfulness/correctness:** LLM-as-judge (gpt-5.4, rubric 1–5) plus exact match on key facts
   - **Version correctness:** the version in the answer equals the registry value
   - **Refusal accuracy** on unanswerable questions
   - **Latency** (p50/p95) and **cost per answer** (tokens × price)
@@ -263,7 +314,7 @@ works with an S3 Vectors store; if not, the cloud retriever needs its own keywor
   - Step Functions (Standard) runs a `Map` over `sources.csv` → per-source fetcher Lambda (max concurrency 5) → normalize → write S3. Crawl sources fan out per page batch so no Lambda nears the 15-minute limit.
   - At the end it calls `bedrock-agent:StartIngestionJob` (incremental sync: only changed/deleted S3 objects are re-embedded).
   - **EventBridge Scheduler**: release/version sources (API + Feed) **daily**, full docs (Crawl + Fetch) **weekly**. Both stay disabled until the manual run passes.
-  - GitHub token in **Secrets Manager**, or SSM Parameter Store SecureString, which is free.
+  - GitHub token and OpenAI key in **SSM Parameter Store** SecureString (free).
 - **Test:** run the same CLI against LocalStack first (S3/DynamoDB/Step Functions), then a real deploy with `--category` limited to one category, then all.
 
 #### Feature 2.2: Bedrock Knowledge Base + cloud retrieval (Pair B)
@@ -275,7 +326,7 @@ works with an S3 Vectors store; if not, the cloud retriever needs its own keywor
 
 **Done when:** the scheduled ingestion runs unattended for 3 days; the ingestion report and KB sync status are visible in CloudWatch; the cloud eval report meets targets; `cdk destroy IngestionStack` and redeploy work cleanly.
 
-**AWS used in Phase 2:** S3, DynamoDB, Lambda, Step Functions, EventBridge Scheduler, Secrets Manager/SSM, Bedrock, Bedrock Knowledge Bases, S3 Vectors, API Gateway HTTP API, CloudWatch Logs.
+**AWS used in Phase 2:** S3, DynamoDB, Lambda, Step Functions, EventBridge Scheduler, SSM Parameter Store, Bedrock, Bedrock Knowledge Bases, S3 Vectors, API Gateway HTTP API, CloudWatch Logs.
 
 ---
 
@@ -283,7 +334,7 @@ works with an S3 Vectors store; if not, the cloud retriever needs its own keywor
 
 #### Feature 3.1: Intent classification + clarification (Pair A)
 - Intents: `qa`, `explain_failure`, `cicd_github_actions`, `containerize`, `deploy_lambda`, `deploy_static_site`, `eks_cluster`, `other`.
-- Classifier: Haiku-class model with structured output (JSON schema) returning `{intent, confidence, params, missing_params}`. Below the confidence threshold, it asks the user to confirm.
+- Classifier: small, fast model (gpt-5.4-mini) with structured output (JSON schema) returning `{intent, confidence, params, missing_params}`. Below the confidence threshold, it asks the user to confirm.
 - Slot schemas per intent (e.g. `deploy_static_site`: source repo/dir, custom domain?, SPA routing?). The assistant asks only for the **required** missing slots, one round at a time, and offers defaults.
 - **Eval:** `eval/intent/utterances.jsonl` with ≥120 labeled utterances (both pairs write them, including ambiguous ones). Targets: intent accuracy ≥ 0.9, slot extraction F1 ≥ 0.85, and "asked when needed / didn't ask when not needed" ≥ 0.85.
 - **Status: implemented** in [`assistant/`](../assistant/README.md) (gpt-5.4-mini with structured output, rules in code) and wired into the Chat API. First eval (120 cases, one author): intent accuracy 1.00, action accuracy 1.00, slot F1 0.98, ~$0.0014/message. Needs cases from the rest of the team.
@@ -330,7 +381,7 @@ Classify → (Clarify loop in chat) → Generate → Validate (retry ≤3) → S
 - **Deploy targets, in order of cost:**
   1. Static site → S3 + CloudFront (≈ free)
   2. Lambda function (+ Function URL) (≈ free)
-  3. GitHub Actions CI/CD: commit/PR the workflow to a team-owned sample repo via a GitHub token (Secrets Manager), plus an OIDC deploy role for the workflow
+  3. GitHub Actions CI/CD: commit/PR the workflow to a team-owned sample repo via a GitHub token (SSM Parameter Store), plus an OIDC deploy role for the workflow
   4. Container: build image in CodeBuild → ECR → **ECS Fargate** service (public subnet, no NAT gateway; ALB only if needed); torn down after test
   5. EKS cluster with autoscaling (`eksctl`/CDK, managed node group + Cluster Autoscaler or Karpenter); **only in a scheduled 1–2 hour test window, then destroyed**
 
@@ -341,7 +392,7 @@ Classify → (Clarify loop in chat) → Generate → Validate (retry ≤3) → S
 - **Eval:** `eval/explain/cases.jsonl`, ≥25 real failure logs (create them by breaking the sample apps on purpose). Metrics: correct root cause (judge + manual), the fix validates when applied, citation accuracy.
 - Generators for `containerize` (Dockerfile + ECR/ECS CDK) and `eks_cluster` (cluster + node group + autoscaler + Deployment/Service/HPA manifests), with `checkov`/`trivy` in the validation loop.
 
-**AWS used in Phase 4:** Step Functions, CodeBuild, CloudFormation, IAM (roles, permission boundaries, OIDC provider), CloudWatch Logs, DynamoDB, S3, Secrets Manager, ECR, ECS Fargate, (EKS + EC2 + ELB in test windows only), EventBridge Scheduler.
+**AWS used in Phase 4:** Step Functions, CodeBuild, CloudFormation, IAM (roles, permission boundaries, OIDC provider), CloudWatch Logs, DynamoDB, S3, SSM Parameter Store, ECR, ECS Fargate, (EKS + EC2 + ELB in test windows only), EventBridge Scheduler.
 
 ---
 
@@ -371,11 +422,11 @@ Final week also includes: demo script, architecture diagram, final eval report, 
 
 | Feature | Local stage | Cloud stage |
 |---|---|---|
-| Document gathering | Python CLI, files on disk, LocalStack S3/DynamoDB | Lambda, Step Functions, S3, DynamoDB, EventBridge Scheduler, Secrets Manager/SSM |
+| Document gathering | Python CLI, files on disk, LocalStack S3/DynamoDB | Lambda, Step Functions, S3, DynamoDB, EventBridge Scheduler, SSM Parameter Store |
 | Version registry | DynamoDB Local | DynamoDB (on-demand) |
 | Embeddings + vector search | Bedrock Titan V2 + LanceDB | Bedrock Knowledge Bases + S3 Vectors |
-| Q&A with citations | Bedrock Converse from CLI | Lambda + API Gateway HTTP API + Bedrock |
-| Intent + clarification | Bedrock from CLI/tests | Lambda + Bedrock |
+| Q&A with citations | OpenAI from CLI / local FastAPI | Lambda + API Gateway HTTP API + Bedrock KB + OpenAI |
+| Intent + clarification | OpenAI from CLI/tests | Inside the chat Lambda |
 | Generation + validation | Docker validators locally | Lambda container image / CodeBuild, ECR (validator image), S3 |
 | Chat UI + auth | Vite dev server, local API shim | S3 + CloudFront, Cognito |
 | Plan → review → approve | Step Functions Local / LocalStack | Step Functions (task tokens), DynamoDB, S3 |
@@ -425,9 +476,9 @@ The eval datasets are versioned in git. Each run writes a dated report, and regr
 | Separate stacks | `lifecycle=ephemeral` stacks can be destroyed without touching the RAG/app stacks |
 | Janitor | Hourly scheduled Lambda deletes `ip-sbx-*` stacks older than 4 h |
 | Teardown script | `scripts/teardown.sh [--ephemeral \| --all]` runs `cdk destroy` in dependency order and empties buckets |
-| Bedrock spend | Haiku-class model for routing/classification, Sonnet-class only for generation/answers and judging; cap `max_tokens`; cache embeddings by content hash; evals run per milestone, not per PR |
+| Model spend | gpt-5.4-mini for intent and answers, a larger model only for judging; reranking off by default; no third-party Bedrock (Marketplace) models without approval; cap `max_tokens`; cache embeddings by content hash; evals run per milestone, not per PR |
 | Ingestion spend | Content hashing + KB incremental sync re-embeds only changed docs; crawl page caps |
-| Secrets | SSM Parameter Store SecureString (free) where Secrets Manager features aren't needed |
+| Secrets | SSM Parameter Store SecureString (free) instead of Secrets Manager |
 | Weekly check | Cost Explorer grouped by `owner` tag at the Monday sync |
 
 Rough expectation with this discipline: **well under $30/month**, with the EKS test windows the largest single line item. Check current prices on the AWS pricing pages before each new service is deployed.
@@ -438,7 +489,7 @@ Rough expectation with this discipline: **well under $30/month**, with the EKS t
 2. **Cognito.** Not in the proposal's AWS table, but needed for user login in front of the API. IAM stays the access control for services.
 3. **DynamoDB.** Not in the proposal's table, but the sheet already relies on it (version registry); we also use it for sessions and audit.
 4. **CodeBuild.** Added to run sandboxed deployments and heavy validators without managing servers.
-5. **GitHub write access** for the CI/CD feature: GitHub App vs. fine-grained PAT stored in Secrets Manager. Start with a PAT scoped to a sample repo.
+5. **GitHub write access** for the CI/CD feature: GitHub App vs. fine-grained PAT stored in SSM Parameter Store. Start with a PAT scoped to a sample repo.
 6. **Sheet gaps:** add Lambda, static-site, EKS autoscaling, and GitHub Actions troubleshooting sources (see Feature 1.1).
 
 ## 10. Immediate next steps (this week)
