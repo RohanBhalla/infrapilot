@@ -89,7 +89,7 @@ export default function App() {
 
     async function initialize() {
       if (!authConfigured) {
-        setError("Cognito is not configured. Add the Cognito VITE_ settings and rebuild the frontend.");
+        setError("Cognito is not configured. Deploy with CDK, or set the VITE_COGNITO_ settings for local development.");
         setAuthLoading(false);
         setLoadingSession(false);
         return;

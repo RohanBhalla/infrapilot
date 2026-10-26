@@ -1,0 +1,6 @@
+{
+  "app": ".venv/bin/python app.py",
+  "watch": {
+    "include": ["app.py", "infrapilot_infra/**"]
+  }
+}

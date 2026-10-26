@@ -1,12 +1,9 @@
 import { accessToken } from "./auth";
+import { config } from "./config";
 
-const API_URL = (
-  import.meta.env.VITE_API_URL ??
-  (import.meta.env.DEV ? "http://127.0.0.1:8000" : "")
-).replace(
-  /\/$/,
-  "",
-);
+function apiBase(): string {
+  return (config.apiUrl ?? "").replace(/\/$/, "");
+}
 let pendingSession: Promise<{ id: string }> | null = null;
 
 export class ApiError extends Error {
@@ -68,8 +65,9 @@ type Session = {
 };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  if (!API_URL) {
-    throw new Error("The chat API is not configured yet. Set VITE_API_URL and rebuild the frontend.");
+  const base = apiBase();
+  if (!base) {
+    throw new Error("The chat API is not configured yet. Deploy with CDK, or set VITE_API_URL for local development.");
   }
 
   const token = await accessToken();
@@ -78,10 +76,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   let response: Response;
   try {
-    response = await fetch(`${API_URL}${path}`, { ...init, headers });
+    response = await fetch(`${base}${path}`, { ...init, headers });
   } catch {
     throw new Error(
-      `Could not reach the API at ${API_URL}. Check that it is available and allows this website's origin in its CORS settings.`,
+      `Could not reach the API at ${base}. Check that it is available and allows this website's origin in its CORS settings.`,
     );
   }
 
@@ -126,5 +124,5 @@ export async function sendMessage(
 }
 
 export function apiUrl(): string {
-  return API_URL || "not configured";
+  return apiBase() || "not configured";
 }

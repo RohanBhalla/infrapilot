@@ -40,23 +40,16 @@ and the test stub's limitations.
 
 ## Build and deploy the frontend
 
-Build a React/Vite app with a chat page, message list, text input, and send button. This
-repository already contains that frontend.
+The AWS resources are defined in CDK; see [`../infra/README.md`](../infra/README.md). To deploy:
 
-1. Configure the frontend environment variables as described below.
-2. Build the app from this directory:
+```bash
+npm ci && npm run build
+cd ../infra && npx aws-cdk@2 deploy
+```
 
-   ```bash
-   npm install
-   npm run build
-   ```
-
-3. Upload the **contents** of `dist/`—including `index.html` and the complete `assets/`
-   directory—to the S3 bucket. Do not upload only `index.html`.
-4. Configure the CloudFront distribution to use the S3 bucket as its origin, and set its
-   default root object to `index.html`. The test distribution was created without WAF to avoid
-   additional cost.
-5. If the site still serves an older build, invalidate the CloudFront cache (for example, `/*`).
+The deploy uploads `dist/`, clears the CloudFront cache, and writes `config.json` next to the
+site with the Cognito and API settings. The app reads `config.json` at startup, so the deployed
+site needs no `.env` file and no rebuild when an ID changes.
 
 To run locally:
 
@@ -65,30 +58,12 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:5173>.
+Open <http://localhost:5173>. Without a `.env.local`, the app calls the local FastAPI app at
+`http://127.0.0.1:8000`; Cognito sign-in needs the `VITE_COGNITO_*` values from the stack outputs
+(copy `.env.example` to `.env.local`, which is git-ignored).
 
-## Cognito and frontend configuration
-
-Copy `.env.example` to `.env.local` and set the values for your AWS resources. `.env.local` is
-intended for local configuration and is ignored by Git.
-
-The Cognito app client must be a **public single-page application client with no client
-secret**. Allow the exact callback and sign-out URLs in the app client's managed login settings:
-
-- Local development: `http://localhost:5173/`
-- Deployed site: `https://dzmh6iokkia76.cloudfront.net/`
-
-Configure the user pool's hosted sign-in domain and the required OAuth scopes (including
-`openid`). The frontend starts the Cognito sign-in redirect and handles the return to the
-callback URL. The test user is managed in Cognito; do not place its credentials in this
-repository.
-
-Set `VITE_API_URL` to the API Gateway invoke URL once the API is deployed. Build-time `VITE_`
-values are included in public browser assets. Never put a client secret, password, AWS access
-key, or other private credential in a `VITE_` setting.
-
-After changing `.env.local`, rebuild and upload the new `dist/` contents; changing the local
-file alone does not update the deployed site.
+`VITE_` values and `config.json` are public. Never put a client secret, password, AWS access key,
+or other private credential in them. The Cognito app client is a public client with no secret.
 
 ## Backend connection
 

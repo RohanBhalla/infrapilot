@@ -1,5 +1,8 @@
 # Authenticated chat API (AWS Console)
 
+> These console steps are kept as a record of the first setup. The same resources are now
+> defined in CDK: deploy with [`infra/`](../../infra/README.md) instead of creating them by hand.
+
 This Lambda is a temporary API integration test. It stores sessions and messages in DynamoDB
 and returns a fixed reply. It does not call InfraPilot's assistant, embeddings, RAG, or an LLM.
 

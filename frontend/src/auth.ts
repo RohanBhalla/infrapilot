@@ -6,21 +6,24 @@ import {
   signOut,
 } from "aws-amplify/auth";
 
-const region = import.meta.env.VITE_COGNITO_REGION;
-const userPoolId = import.meta.env.VITE_COGNITO_USER_POOL_ID;
-const userPoolClientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
-const domain = import.meta.env.VITE_COGNITO_DOMAIN?.replace(/^https?:\/\//, "").replace(/\/$/, "");
-const redirectUrl = import.meta.env.VITE_COGNITO_REDIRECT_URL || window.location.origin;
-const signOutUrl = import.meta.env.VITE_COGNITO_SIGN_OUT_URL || redirectUrl;
+import { config } from "./config";
 
-export const authConfigured = Boolean(region && userPoolId && userPoolClientId && domain);
+export let authConfigured = false;
 
-if (authConfigured) {
+// Call once, after loadConfig().
+export function configureAuth(): void {
+  const { region, userPoolId, clientId } = config;
+  const domain = config.domain?.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  const redirectUrl = config.redirectUrl || window.location.origin;
+  const signOutUrl = config.signOutUrl || redirectUrl;
+
+  authConfigured = Boolean(region && userPoolId && clientId && domain);
+  if (!authConfigured) return;
   Amplify.configure({
     Auth: {
       Cognito: {
         userPoolId: userPoolId!,
-        userPoolClientId: userPoolClientId!,
+        userPoolClientId: clientId!,
         loginWith: {
           oauth: {
             domain: domain!,

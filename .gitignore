@@ -17,3 +17,6 @@ data_collection/data/
 *.egg-info/
 .pytest_cache/
 !.env.example
+
+# CDK synth output
+cdk.out/
