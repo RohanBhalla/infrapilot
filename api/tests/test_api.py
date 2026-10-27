@@ -148,7 +148,7 @@ def test_upstream_failure_is_502_and_not_stored():
                                    assistant=Assistant(ScriptedClassifier())))
     sid = new_session(client)
     r = client.post(f"/sessions/{sid}/messages", json={"content": "q"})
-    assert r.status_code == 502 and store.get(sid).messages == []
+    assert r.status_code == 502 and store.get("local", sid).messages == []
 
 
 def test_openapi_lists_endpoints(setup):

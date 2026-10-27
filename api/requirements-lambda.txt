@@ -1,0 +1,5 @@
+# Third-party packages bundled into the chat Lambda (infra/ installs these for Linux ARM).
+# boto3 is left out: the Lambda Python runtime already includes it.
+aws-lambda-powertools==3.37.0
+openai==3.29.0
+pydantic==2.14.0

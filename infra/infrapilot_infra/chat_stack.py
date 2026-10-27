@@ -1,7 +1,8 @@
 """The chat app on AWS (plan C8, C15): website, login, chat API and session table.
 
-One stack, so `cdk deploy` creates all of it and `cdk destroy` removes all of it. The Lambda is
-still the test stub in aws/lambda_chat (fixed reply, no RAG).
+One stack, so `cdk deploy` creates all of it and `cdk destroy` removes all of it. The Lambda runs
+api/infrapilot_api/lambda_handler.py: the assistant, with answers searched from the Knowledge Base
+(InfraPilotKnowledge) and written by OpenAI.
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from aws_cdk import (
     aws_cloudfront_origins as origins,
     aws_cognito as cognito,
     aws_dynamodb as dynamodb,
+    aws_iam as iam,
     aws_lambda as lambda_,
     aws_logs as logs,
     aws_s3 as s3,
@@ -28,13 +30,16 @@ from aws_cdk import (
 )
 from constructs import Construct
 
+from .chat_bundle import chat_code
+
 REPO = Path(__file__).resolve().parents[2]
 LOCAL_DEV = "http://localhost:5173"  # Vite dev server; Cognito allows plain http only for localhost
+OPENAI_KEY_PARAM = "/infrapilot/openai-api-key"  # SecureString, created by hand (see infra/README.md)
 
 
 class ChatStack(Stack):
-    def __init__(self, scope: Construct, construct_id: str, *, frontend_dist: Path | None = None,
-                 **kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str, *, knowledge_base_id: str,
+                 knowledge_base_arn: str, frontend_dist: Path | None = None, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
         dist = frontend_dist or REPO / "frontend" / "dist"
 
@@ -80,28 +85,47 @@ class ChatStack(Stack):
             prevent_user_existence_errors=True,
         )
 
-        # Sessions and messages, one partition per Cognito user (see aws/lambda_chat/handler.py).
+        # Sessions and messages, one partition per Cognito user (see api/infrapilot_api/dynamo.py).
         sessions = dynamodb.Table(
             self, "Sessions",
             partition_key=dynamodb.Attribute(name="PK", type=dynamodb.AttributeType.STRING),
             sort_key=dynamodb.Attribute(name="SK", type=dynamodb.AttributeType.STRING),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            time_to_live_attribute="expires_at",  # old sessions are deleted for free
             removal_policy=RemovalPolicy.DESTROY,
         )
 
+        # One function for all routes: fewer cold starts than one per route. ARM is ~20% cheaper,
+        # and 512 MB is plenty since it mostly waits on OpenAI. 29 s fits API Gateway's 30 s limit.
         chat_fn = lambda_.Function(
             self, "ChatFunction",
             runtime=lambda_.Runtime.PYTHON_3_12,
-            handler="handler.lambda_handler",
-            code=lambda_.Code.from_asset(str(REPO / "aws" / "lambda_chat"),
-                                         exclude=["test_*", "README.md", "__pycache__"]),
-            memory_size=256,
-            timeout=Duration.seconds(10),
-            environment={"TABLE_NAME": sessions.table_name},
+            architecture=lambda_.Architecture.ARM_64,
+            handler="infrapilot_api.lambda_handler.lambda_handler",
+            code=chat_code(),
+            memory_size=512,
+            timeout=Duration.seconds(29),
+            environment={
+                "SESSIONS_TABLE": sessions.table_name,
+                "OPENAI_KEY_PARAM": OPENAI_KEY_PARAM,
+                "INFRAPILOT_BACKEND": "kb",
+                "INFRAPILOT_KB_ID": knowledge_base_id,
+                "INFRAPILOT_DATA_DIR": "/var/task/data",
+                "INFRAPILOT_ANSWER_MODEL": "gpt-5.4-mini",
+                "INFRAPILOT_RERANK_MODEL": "none",  # reranking costs per query; off (decision 003)
+                "POWERTOOLS_SERVICE_NAME": "infrapilot-chat",
+            },
             log_group=logs.LogGroup(self, "ChatLogs", retention=logs.RetentionDays.TWO_WEEKS,
                                     removal_policy=RemovalPolicy.DESTROY),
         )
-        sessions.grant(chat_fn, "dynamodb:PutItem", "dynamodb:Query")
+        sessions.grant(chat_fn, "dynamodb:PutItem", "dynamodb:Query", "dynamodb:UpdateItem",
+                       "dynamodb:BatchWriteItem")
+        chat_fn.add_to_role_policy(iam.PolicyStatement(
+            actions=["ssm:GetParameter"],
+            resources=[self.format_arn(service="ssm", resource="parameter",
+                                       resource_name=OPENAI_KEY_PARAM.lstrip("/"))]))
+        chat_fn.add_to_role_policy(iam.PolicyStatement(actions=["bedrock:Retrieve"],
+                                                       resources=[knowledge_base_arn]))
 
         # API: Cognito checks the token before the Lambda runs; /health stays open.
         api = apigw.HttpApi(

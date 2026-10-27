@@ -1,7 +1,12 @@
 # InfraPilot Chat API
 
-FastAPI app for component C8 of the [development plan](../docs/DEVELOPMENT_PLAN.md): chat sessions
-and grounded answers with citations, using the same answer service as `infrapilot-ask`.
+Component C8 of the [development plan](../docs/DEVELOPMENT_PLAN.md): chat sessions and grounded
+answers with citations. The logic lives in `ChatService` (`service.py`), with two thin entry points:
+
+| Entry point | Where | Sessions | Search | Users |
+|---|---|---|---|---|
+| `app.py` (FastAPI) | Local development, docs at `/docs` | In memory | Local LanceDB | One user, `local` |
+| `lambda_handler.py` (Powertools router) | AWS Lambda behind API Gateway | DynamoDB (`dynamo.py`) | Bedrock Knowledge Base | Cognito `sub` claim |
 
 ```bash
 cd data_collection
@@ -43,15 +48,18 @@ The OpenAPI spec is at `/openapi.json`; the frontend can be built against it.
   ("and on Fargate?" → "How do I deploy to ECS on Fargate?"), shown as `standalone_question`.
 - **Task state** (`dialog`) is saved with the session, so answers to clarification questions
   and changes ("use us-west-2 instead") apply to the task in progress.
-- **Sessions** are kept in memory (`InMemorySessionStore`) and lost on restart. A DynamoDB
-  store will implement the same interface for AWS.
-- **Errors:** 404 unknown session, 422 invalid request (unknown fields are rejected), 400 bad
+- **Sessions** belong to a user and nobody else can read them. Locally they're kept in memory and
+  lost on restart. On AWS, `DynamoSessionStore` keeps one partition per user (`PK=USER#<sub>`), the
+  session's task state in a `META` item, one item per message, and a 30-day TTL.
+- **Errors:** 401 no login (AWS only), 404 unknown session, 422 invalid request (unknown fields are rejected), 400 bad
   filter, 502 model or search failure (nothing is saved), 503 service not configured.
 - **CORS** allows `http://localhost:5173` (Vite dev server); set `INFRAPILOT_CORS_ORIGINS`.
 - `INFRAPILOT_BACKEND=kb` uses the Bedrock Knowledge Base retriever instead of local LanceDB (Phase 2).
 
-Not yet: authentication (Cognito, Phase 3), streaming, and the `/requests/*` endpoints for
-generate/approve/deploy (Phases 3–4).
+On AWS the Lambda reads the OpenAI key from SSM Parameter Store once per instance, and API Gateway
+does the Cognito check and CORS. Deployment: [`infra/`](../infra/README.md).
+
+Not yet: streaming, and the `/requests/*` endpoints for generate/approve/deploy (Phases 3–4).
 
 ## Tests
 
@@ -59,4 +67,5 @@ generate/approve/deploy (Phases 3–4).
 cd api && ../data_collection/.venv/bin/pytest -q
 ```
 
-Offline: a fake answer service and rewriter, no network calls.
+Offline: a fake answer service and scripted classifier, moto's in-memory DynamoDB, and API
+Gateway–style events for the Lambda handler. No network calls.

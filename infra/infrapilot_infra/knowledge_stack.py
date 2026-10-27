@@ -101,6 +101,9 @@ class KnowledgeStack(Stack):
                     chunking_strategy="NONE")),
         )
 
+        self.knowledge_base_id = kb.attr_knowledge_base_id
+        self.knowledge_base_arn = kb.attr_knowledge_base_arn
+
         CfnOutput(self, "DocsBucketName", value=docs.bucket_name)
         CfnOutput(self, "KnowledgeBaseId", value=kb.attr_knowledge_base_id)
         CfnOutput(self, "DataSourceId", value=source.attr_data_source_id)

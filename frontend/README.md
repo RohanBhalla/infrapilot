@@ -1,9 +1,9 @@
 # InfraPilot frontend
 
 A React + TypeScript + Vite chat interface with Cognito hosted sign-in and a session-based API.
-The current AWS deployment is a barebones integration test: the Lambda persists sessions in
-DynamoDB and returns a fixed reply. The InfraPilot assistant, embeddings, RAG, and LLM are not
-connected yet.
+On AWS the API is the InfraPilot assistant in a Lambda (`api/infrapilot_api/lambda_handler.py`):
+answers are searched from the Bedrock Knowledge Base and written by OpenAI, and sessions are saved
+in DynamoDB.
 
 ## Deployed demo
 
@@ -33,11 +33,11 @@ email addresses, and other private account information.
 | CloudFront | Serves the S3 site through the public website domain. |
 | Cognito | Authenticates users through its hosted sign-in experience. |
 | API Gateway | Exposes the session API routes and validates Cognito JWTs. |
-| Lambda | Implements the temporary session API and connects API Gateway to DynamoDB. |
+| Lambda | Runs the chat API: the assistant, document search, and session storage. |
 | DynamoDB | Stores user-scoped session and message records. |
 
-See [`../aws/lambda_chat/README.md`](../aws/lambda_chat/README.md) for the backend/API setup
-and the test stub's limitations.
+See [`../api/README.md`](../api/README.md) for the API and [`../infra/README.md`](../infra/README.md)
+for the AWS setup.
 
 ## Build and deploy the frontend
 
@@ -85,8 +85,8 @@ The current frontend uses these routes:
 - `GET /sessions/{session_id}` to restore it
 - `POST /sessions/{session_id}/messages` to send a message
 
-The Lambda test implementation stores sessions/messages in DynamoDB and returns a fixed reply.
-It is a placeholder, not the production assistant.
+Locally, without `VITE_API_URL`, the app talks to the FastAPI app (`infrapilot-api`) at
+`http://127.0.0.1:8000`, which serves the same routes.
 
 ## Errors encountered and resolutions
 

@@ -141,7 +141,7 @@ A Lambda only where our own code runs. Step Functions calls DynamoDB, CodeBuild 
 
 | Lambda | Trigger | Does | Components |
 |---|---|---|---|
-| `chat-api` | API Gateway HTTP API | The FastAPI app via Mangum: sessions, intent + clarification, RAG answers, requests/history, approve (`SendTaskSuccess`), teardown, log polling | C7, C8, C9 |
+| `chat-api` | API Gateway HTTP API | Native handler (Powertools router) over the same `ChatService` the local FastAPI app uses: sessions, intent + clarification, RAG answers, requests/history, approve (`SendTaskSuccess`), teardown, log polling | C7, C8, C9 |
 | `fetch` | Step Functions Map (one item per source) | Downloads one source; switches on the source type (Crawl/Fetch/Feed/API/Upload); writes `raw/` | C2 |
 | `normalize-chunk` | Step Functions, after `fetch` | HTML → Markdown, hash check against `ingest_state`, chunking, writes `kb_export/` | C3, C4 |
 | `versions-refresh` | EventBridge Scheduler, daily | GitHub releases, Node LTS/EOL, EKS versions → `tool_versions` | C5 |

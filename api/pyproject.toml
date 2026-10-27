@@ -1,7 +1,7 @@
 [project]
 name = "infrapilot-api"
 version = "0.1.0"
-description = "InfraPilot Chat API (FastAPI): sessions and grounded answers"
+description = "InfraPilot Chat API: sessions and grounded answers (FastAPI locally, Lambda on AWS)"
 requires-python = ">=3.12"
 dependencies = [
   "fastapi>=0.115",
@@ -11,7 +11,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "httpx>=0.27"]
+lambda = ["aws-lambda-powertools>=3.0"]
+dev = ["pytest>=8", "httpx>=0.27", "aws-lambda-powertools>=3.0", "moto[dynamodb]>=5.0"]
 
 [project.scripts]
 infrapilot-api = "infrapilot_api.__main__:main"

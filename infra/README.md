@@ -7,7 +7,7 @@ removed with another. Nothing is created by hand in the console.
 
 | Stack | What it creates |
 |---|---|
-| `InfraPilotChat` | The chat app: S3 + CloudFront website, Cognito login, API Gateway HTTP API with a Cognito JWT authorizer, the chat Lambda (`aws/lambda_chat`, still the fixed-reply test stub), and the DynamoDB session table |
+| `InfraPilotChat` | The chat app: S3 + CloudFront website, Cognito login, API Gateway HTTP API with a Cognito JWT authorizer, the chat Lambda (`api/infrapilot_api/lambda_handler.py`: the assistant, searching `InfraPilotKnowledge`), and the DynamoDB session table |
 | `InfraPilotKnowledge` | Document search: S3 docs bucket, S3 Vectors index, Bedrock Knowledge Base (Titan Text Embeddings V2, no re-chunking: it uses the chunks from `data_collection`) |
 
 All resources are tagged `project=infrapilot`. The stack is pay-per-use and costs close to $0
@@ -23,7 +23,17 @@ python3.12 -m venv .venv
 ```
 
 You need AWS credentials for the team account in your shell and Node.js (for the CDK CLI, run
-with `npx`). Bootstrap the account once. This creates a small S3 bucket and the IAM roles CDK
+with `npx`). The deploy packages the chat Lambda with `pip` on your machine (Linux ARM wheels, no
+Docker needed).
+
+The chat Lambda reads the OpenAI key from SSM Parameter Store. CloudFormation can't create
+encrypted parameters, so add it once by hand (`read -s` keeps the key off the screen and out of
+your shell history):
+
+```bash
+read -s "KEY?OpenAI key: " && aws ssm put-parameter --region us-east-1 \
+  --name /infrapilot/openai-api-key --type SecureString --value "$KEY" && unset KEY
+``` Bootstrap the account once. This creates a small S3 bucket and the IAM roles CDK
 deploys with:
 
 ```bash
