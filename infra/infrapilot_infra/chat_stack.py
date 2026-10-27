@@ -113,6 +113,9 @@ class ChatStack(Stack):
                 "INFRAPILOT_DATA_DIR": "/var/task/data",
                 "INFRAPILOT_ANSWER_MODEL": "gpt-5.4-mini",
                 "INFRAPILOT_RERANK_MODEL": "none",  # reranking costs per query; off (decision 003)
+                # OpenAI sometimes stalls ~20 s then errors: cut it off at 12 s and retry once.
+                "INFRAPILOT_LLM_TIMEOUT": "12",
+                "INFRAPILOT_LLM_RETRIES": "1",
                 "POWERTOOLS_SERVICE_NAME": "infrapilot-chat",
             },
             log_group=logs.LogGroup(self, "ChatLogs", retention=logs.RetentionDays.TWO_WEEKS,

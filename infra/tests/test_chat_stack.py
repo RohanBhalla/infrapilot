@@ -37,7 +37,8 @@ def test_session_table_matches_the_lambda(built):
         "Timeout": 29,
         "Environment": {"Variables": Match.object_like({
             "SESSIONS_TABLE": Match.any_value(), "INFRAPILOT_BACKEND": "kb", "INFRAPILOT_KB_ID": "KB123",
-            "OPENAI_KEY_PARAM": "/infrapilot/openai-api-key", "INFRAPILOT_RERANK_MODEL": "none"})},
+            "OPENAI_KEY_PARAM": "/infrapilot/openai-api-key", "INFRAPILOT_RERANK_MODEL": "none",
+            "INFRAPILOT_LLM_TIMEOUT": "12", "INFRAPILOT_LLM_RETRIES": "1"})},
     })
 
 

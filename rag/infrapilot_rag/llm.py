@@ -60,7 +60,7 @@ class OpenAIChat:
                                "(see .env.example), or use --model nova-pro to answer with Bedrock.")
         self.cfg = cfg
         self.model_id = model_id or cfg.answer_model_id
-        self.client = OpenAI(max_retries=4, timeout=60)
+        self.client = OpenAI(max_retries=cfg.llm_retries, timeout=cfg.llm_timeout)
         # gpt-5 / o-series are reasoning models: no temperature, and their hidden reasoning
         # tokens count toward the completion limit, so give them more room.
         self.reasoning = not self.model_id.startswith(("gpt-4", "chatgpt-"))

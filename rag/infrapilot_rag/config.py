@@ -87,6 +87,10 @@ class RagConfig:
     max_tokens: int = 1200
     reasoning_effort: str = os.environ.get("INFRAPILOT_REASONING_EFFORT", "low")  # gpt-5 family
     temperature: float = 0.0
+    # Per-call limit and retries for OpenAI. Patient by default (eval runs); the chat Lambda sets
+    # tighter values so a stalled call is retried within API Gateway's 30 s limit.
+    llm_timeout: float = float(os.environ.get("INFRAPILOT_LLM_TIMEOUT", "60"))
+    llm_retries: int = int(os.environ.get("INFRAPILOT_LLM_RETRIES", "4"))
 
 
 CONFIG = RagConfig()
