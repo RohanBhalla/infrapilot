@@ -8,6 +8,7 @@ removed with another. Nothing is created by hand in the console.
 | Stack | What it creates |
 |---|---|
 | `InfraPilotChat` | The chat app: S3 + CloudFront website, Cognito login, API Gateway HTTP API with a Cognito JWT authorizer, the chat Lambda (`aws/lambda_chat`, still the fixed-reply test stub), and the DynamoDB session table |
+| `InfraPilotKnowledge` | Document search: S3 docs bucket, S3 Vectors index, Bedrock Knowledge Base (Titan Text Embeddings V2, no re-chunking: it uses the chunks from `data_collection`) |
 
 All resources are tagged `project=infrapilot`. The stack is pay-per-use and costs close to $0
 when idle. The API is throttled to 10 requests/s (burst 20), and Lambda logs are kept for 14 days.
@@ -47,6 +48,19 @@ is off, so only users the team creates can sign in.
 For local frontend development against the deployed API, copy the outputs into
 `frontend/.env.local` (see `frontend/.env.example`). `http://localhost:5173` is already allowed
 for Cognito sign-in and CORS.
+
+## Load the documents into the Knowledge Base
+
+After deploying `InfraPilotKnowledge`, upload the local chunks and start an ingestion job:
+
+```bash
+scripts/sync_knowledge.sh
+```
+
+It syncs `data_collection/data/kb_export/` to the docs bucket (adding, updating and deleting files)
+and waits for the Knowledge Base to embed the changes. Embedding the full corpus once costs about
+$0.07 with Titan V2. To search it from `rag/` or `eval/`, set `INFRAPILOT_KB_ID` to the printed id
+and use `--backend kb`.
 
 ## Tear down
 
