@@ -4,7 +4,7 @@ One partition per user, so a user can only ever query their own sessions:
 
     PK = USER#<cognito sub>
     SK = SESSION#<id>#META                          created_at, dialog (task state)
-    SK = SESSION#<id>#MESSAGE#<created_at>#<msg id> role, content, citations, refused
+    SK = SESSION#<id>#MESSAGE#<created_at>#<msg id> role, content, citations, refused, files
 
 Messages sort by time within a session. Every item has `expires_at` (epoch seconds), which
 DynamoDB's TTL uses to delete old sessions for free.
@@ -78,7 +78,8 @@ class DynamoSessionStore:
             DialogState.model_validate(_plain(dialog))
         messages = [
             Message(id=i["message_id"], role=i["role"], content=i["content"], created_at=i["created_at"],
-                    citations=json.loads(i.get("citations") or "[]"), refused=i.get("refused"))
+                    citations=json.loads(i.get("citations") or "[]"), refused=i.get("refused"),
+                    files=json.loads(i.get("files") or "[]"))
             for i in items if "#MESSAGE#" in i["SK"]  # SK order = time order
         ]
         return Session(id=session_id, created_at=meta["created_at"], messages=messages, dialog=dialog)
@@ -94,6 +95,7 @@ class DynamoSessionStore:
                     "created_at": m.created_at.isoformat(),
                     "citations": json.dumps([c.model_dump() for c in m.citations]),
                     "refused": m.refused, "expires_at": expires,
+                    **({"files": json.dumps([f.model_dump() for f in m.files])} if m.files else {}),
                 })
 
     def save_dialog(self, user: str, session_id: str, dialog: DialogState) -> None:
