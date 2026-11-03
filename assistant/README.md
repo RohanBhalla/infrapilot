@@ -60,7 +60,7 @@ a summary, one-time setup steps, notes, checks and sources. So far: **GitHub Act
 A linter that isn't installed reports "skipped", never "fail". Locally that's usually checkov,
 hadolint and cfn-lint. On AWS the chat Lambda doesn't carry them. It sends the files to the
 validator Lambda, a container image with all four (`validator/Dockerfile`), named by
-`INFRAPILOT_VALIDATOR_FUNCTION`. If that call fails or takes over 20 s, the checks report
+`INFRAPILOT_VALIDATOR_FUNCTION`. If that call fails or takes over 12 s, the checks report
 "skipped" and the reply still goes out.
 
 There's no retry loop. The generators are templates, so a failed check is a template bug, and the
