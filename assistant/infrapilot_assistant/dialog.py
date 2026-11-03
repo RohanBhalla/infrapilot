@@ -148,8 +148,7 @@ def step(message: str, state: DialogState, classification: Classification, versi
     summary = "\n".join(f"- {k.replace('_', ' ')}: {_fmt(v)}" for k, v in params.items())
     return Turn(type="ready", state=state, params=params, **base,
                 message=f"Here's what I'll set up for {LABELS[intent.name]}:\n{summary}\n\n"
-                        "Tell me if you want to change anything. (Generating the files is the next "
-                        "InfraPilot feature.)")
+                        "Tell me if you want to change anything.")
 
 
 class Assistant:

@@ -23,6 +23,12 @@ export type Citation = {
   chunk_id: string;
 };
 
+export type GeneratedFile = {
+  path: string;
+  content: string;
+  language: string;
+};
+
 export type ChatMessage = {
   id: string;
   role: "user" | "assistant";
@@ -30,6 +36,7 @@ export type ChatMessage = {
   created_at: string;
   citations: Citation[];
   refused?: boolean | null;
+  files?: GeneratedFile[];
 };
 
 export type Question = {

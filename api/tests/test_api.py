@@ -42,10 +42,15 @@ class ScriptedClassifier:
         return Classification("qa", 0.95, message, cost_usd=0.001)
 
 
+# Just enough of the version registry for the GitHub Actions generator.
+VERSIONS = {a: {"extra": {"major": m}} for a, m in [
+    ("actions/checkout", "v7"), ("actions/setup-node", "v7"), ("aws-actions/configure-aws-credentials", "v6")]}
+
+
 def make(svc=None, *queue):
     svc = svc or FakeService()
     clf = ScriptedClassifier(*queue)
-    client = TestClient(create_app(service=svc, store=InMemorySessionStore(), assistant=Assistant(clf)))
+    client = TestClient(create_app(service=svc, store=InMemorySessionStore(), assistant=Assistant(clf, VERSIONS)))
     return client, svc, clf
 
 
@@ -161,3 +166,25 @@ def test_root_redirects_to_docs(setup):
     client, *_ = setup
     r = client.get("/", follow_redirects=False)
     assert r.status_code == 307 and r.headers["location"] == "/docs"
+
+
+def test_ready_ci_task_returns_generated_workflow():
+    client, svc, _ = make(None, Classification("cicd_github_actions", 0.95, "set up CI for my node app",
+                                               {"language": "node", "deploy_target": "lambda"}))
+    sid = new_session(client)
+    r = client.post(f"/sessions/{sid}/messages", json={"content": "set up CI for my node app"}).json()
+    assert r["type"] == "ready" and r["plan"]["intent"] == "cicd_github_actions"
+    files = r["message"]["files"]
+    assert [f["path"] for f in files] == [".github/workflows/ci.yml"] and "aws lambda" in files[0]["content"]
+    assert "Before the first run" in r["message"]["content"] and "Checks: version-pins passed" in r["message"]["content"]
+    assert any("oidc-in-aws" in c["url"] for c in r["message"]["citations"])
+    saved = client.get(f"/sessions/{sid}").json()["messages"][-1]
+    assert saved["files"] == files and svc.calls == []
+
+
+def test_ready_task_without_a_generator_says_so():
+    client, _, _ = make(None, Classification("deploy_static_site", 0.95, "host my site", {"source_dir": "dist"}))
+    sid = new_session(client)
+    r = client.post(f"/sessions/{sid}/messages", json={"content": "host my site from dist"}).json()
+    assert r["type"] == "ready" and r["plan"] is None and r["message"]["files"] == []
+    assert "isn't available yet" in r["message"]["content"]

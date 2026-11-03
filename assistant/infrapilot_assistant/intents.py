@@ -6,6 +6,7 @@ defaults, the question to ask) is plain data, so the dialog is predictable and t
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -54,6 +55,28 @@ def _eks_version(params, versions) -> str | None:
     return ".".join(fact["latest"].split("-")[0].split(".")[:2]) if fact and fact.get("latest") else None
 
 
+def _newest_lambda(versions, prefix: str) -> str | None:
+    """Newest supported Lambda runtime of a language, e.g. python3.14 -> "3.14", java25 -> "25"."""
+    found = []
+    for tool, fact in (versions or {}).items():
+        m = re.fullmatch(rf"lambda-runtime-{prefix}(\d+(?:\.\d+)?)", tool)
+        if m and fact.get("extra", {}).get("status") == "supported":
+            found.append(m.group(1))
+    return max(found, key=lambda v: tuple(int(x) for x in v.split(".")), default=None)
+
+
+def _runtime_version(params, versions) -> str | None:
+    """Node: current LTS. Python, Java: newest version Lambda supports. Go: none (read from go.mod)."""
+    language = params.get("language")
+    if language == "python":
+        return _newest_lambda(versions, "python")
+    if language == "java":
+        return _newest_lambda(versions, "java")
+    if language in (None, "node"):
+        return _node_lts(params, versions)
+    return None
+
+
 def _start_command(params, versions) -> str:
     return {"node": "npm start", "python": "python main.py", "java": "java -jar app.jar",
             "go": "./app"}.get(params.get("language"), "npm start")
@@ -83,7 +106,8 @@ INTENTS: dict[str, Intent] = {i.name: i for i in [
              "What language is the project in?", required=True, options=LANGUAGES),
         Slot("package_manager", "enum", "Package manager", "Which package manager?",
              options=("npm", "yarn", "pnpm", "pip", "poetry", "maven", "gradle", "go"), default=_package_manager),
-        Slot("runtime_version", "str", "Language version, e.g. Node 24", "Which version?", default=_node_lts),
+        Slot("runtime_version", "str", "Language version, e.g. Node 24", "Which version?",
+             default=_runtime_version),
         Slot("steps", "str", "Steps to run, comma separated (lint, test, build)", "Which steps should it run?",
              default="lint, test, build"),
         Slot("triggers", "str", "When it runs", "When should it run?",

@@ -12,6 +12,10 @@ import os
 import time
 from typing import Callable
 
+from infrapilot_assistant.generators import generate
+from infrapilot_assistant.plan import Plan
+from infrapilot_rag.models import Citation
+
 from .schemas import Message, MessageIn, MessageOut, Session
 from .sessions import SessionStore, new_message_id
 
@@ -93,18 +97,47 @@ class ChatService:
             model, spent = ans.model, spent + ans.cost_usd
             citations, refused, text = ans.citations, ans.refused, ans.text
 
+        plan = None
+        if turn.type == "ready":
+            plan, text = self._plan(turn, text)
+            if plan:
+                citations = [Citation(n=i, title=s.title, url=s.url, chunk_id="")
+                             for i, s in enumerate(plan.citations, 1)]
+
         user_msg = Message(id=new_message_id(), role="user", content=body.content)
-        reply = Message(id=new_message_id(), role="assistant", content=text, citations=citations, refused=refused)
+        reply = Message(id=new_message_id(), role="assistant", content=text, citations=citations, refused=refused,
+                        files=plan.files if plan else [])
         self.store.append(user, session_id, user_msg, reply)
         self.store.save_dialog(user, session_id, turn.state)
         out = MessageOut(session_id=session_id, type=turn.type, message=reply, intent=turn.intent,
                          confidence=turn.confidence, params=turn.params, questions=turn.questions,
-                         standalone_question=turn.standalone_question, model=model,
+                         standalone_question=turn.standalone_question, plan=plan, model=model,
                          latency_ms=int((time.monotonic() - started) * 1000), cost_usd=round(spent, 6))
         log.info("message answered", extra={"type": out.type, "intent": out.intent, "model": model,
+                                            "files": len(reply.files),
                                             "latency_ms": out.latency_ms, "cost_usd": out.cost_usd,
                                             "refused": refused})
         return out
+
+    def _plan(self, turn, text: str) -> tuple[Plan | None, str]:
+        """Generate the files for a ready task and describe them under the task summary."""
+        try:
+            plan = generate(turn.intent, turn.params, getattr(self._assistant, "versions", None))
+        except Exception:
+            log.exception("generator failed")
+            return None, text + "\n\nSorry, something went wrong while writing the files. Please try again."
+        if plan is None:
+            return None, text + "\n\nWriting the files for this task isn't available yet."
+        parts = [text, plan.summary]
+        if plan.setup:
+            parts.append("Before the first run:\n" + "\n".join(f"- {s}" for s in plan.setup))
+        if plan.notes:
+            parts.append("Notes:\n" + "\n".join(f"- {n}" for n in plan.notes))
+        checks = ", ".join(f"{v.tool} {'passed' if v.status == 'pass' else v.status}" for v in plan.validations)
+        parts.append(f"Checks: {checks}.")
+        if not plan.valid:
+            parts.append("Some checks failed, so review the file before using it.")
+        return plan, "\n\n".join(parts)
 
 
 def build_answers():
