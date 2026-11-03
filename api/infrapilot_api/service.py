@@ -51,8 +51,8 @@ class ChatService:
     a session (and a Lambda cold start) doesn't need the OpenAI key or the search backend."""
 
     def __init__(self, store: SessionStore, make_answers: Callable[[], object],
-                 make_assistant: Callable[[object], object]):
-        self.store = store
+                 make_assistant: Callable[[object], object], plans=None):
+        self.store, self.plans = store, plans  # plans: S3PlanStore on AWS, None locally
         self._make_answers, self._make_assistant = make_answers, make_assistant
         self._answers = self._assistant = None
 
@@ -108,6 +108,11 @@ class ChatService:
         reply = Message(id=new_message_id(), role="assistant", content=text, citations=citations, refused=refused,
                         files=plan.files if plan else [])
         self.store.append(user, session_id, user_msg, reply)
+        if plan and self.plans:
+            try:
+                self.plans.save(user, session_id, reply.id, plan)
+            except Exception:  # the reply already has the files; Phase 4 can't use this plan
+                log.exception("saving the plan failed")
         self.store.save_dialog(user, session_id, turn.state)
         out = MessageOut(session_id=session_id, type=turn.type, message=reply, intent=turn.intent,
                          confidence=turn.confidence, params=turn.params, questions=turn.questions,

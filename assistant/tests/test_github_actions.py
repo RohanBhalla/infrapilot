@@ -45,8 +45,10 @@ def params(**kw):
 def test_every_combination_is_valid(language, pm, deploy):
     plan = generate("cicd_github_actions", params(language=language, package_manager=pm or None,
                                                   deploy_target=deploy), VERSIONS)
-    assert {v.tool: v.status for v in plan.validations} == {"version-pins": "pass", "actionlint": "pass"}, \
+    status = {v.tool: v.status for v in plan.validations}
+    assert status["version-pins"] == status["actionlint"] == "pass" and "fail" not in status.values(), \
         [v.findings for v in plan.validations]
+    assert set(status) <= {"version-pins", "actionlint", "checkov"}  # checkov: skipped unless installed
     wf = yaml.safe_load(plan.files[0].content)
     assert set(wf["jobs"]) == ({"ci"} if deploy == "none" else {"ci", "deploy"})
     assert wf["permissions"] == {"contents": "read"}

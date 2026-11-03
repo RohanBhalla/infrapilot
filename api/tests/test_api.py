@@ -188,3 +188,41 @@ def test_ready_task_without_a_generator_says_so():
     r = client.post(f"/sessions/{sid}/messages", json={"content": "host my site from dist"}).json()
     assert r["type"] == "ready" and r["plan"] is None and r["message"]["files"] == []
     assert "isn't available yet" in r["message"]["content"]
+
+
+class FakePlans:
+    def __init__(self, fail=False):
+        self.saved, self.fail = [], fail
+
+    def save(self, user, session_id, message_id, plan):
+        if self.fail:
+            raise RuntimeError("s3 down")
+        self.saved.append((user, session_id, message_id, plan.intent))
+
+
+@pytest.mark.parametrize("fail", [False, True])
+def test_ready_plans_are_saved_and_a_failed_save_doesnt_break_the_reply(fail):
+    from infrapilot_api.schemas import MessageIn
+    from infrapilot_api.service import ChatService
+
+    plans = FakePlans(fail)
+    clf = ScriptedClassifier(Classification("cicd_github_actions", 0.95, "CI for node", {"language": "node"}))
+    chat = ChatService(InMemorySessionStore(), FakeService, lambda llm: Assistant(clf, VERSIONS), plans=plans)
+    sid = chat.create_session("u1").id
+    out = chat.post_message("u1", sid, MessageIn(content="CI for node"))
+    assert out.type == "ready" and out.message.files
+    assert plans.saved == ([] if fail else [("u1", sid, out.message.id, "cicd_github_actions")])
+
+
+def test_s3_plan_store_writes_json_under_the_users_prefix():
+    from infrapilot_api.artifacts import S3PlanStore
+    from infrapilot_assistant.plan import Plan
+
+    class FakeS3:
+        def put_object(self, **kw):
+            self.kw = kw
+
+    s3 = FakeS3()
+    key = S3PlanStore("bucket", client=s3).save("u1", "s1", "m1", Plan(intent="x", params={}, files=[], summary="s"))
+    assert key == "plans/u1/s1/m1.json" == s3.kw["Key"] and s3.kw["Bucket"] == "bucket"
+    assert Plan.model_validate_json(s3.kw["Body"]).intent == "x"

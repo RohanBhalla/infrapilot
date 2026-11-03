@@ -1,4 +1,5 @@
-"""The chat app on AWS (plan C8, C15): website, login, chat API and session table.
+"""The chat app on AWS (plan C8, C11, C15): website, login, chat API, session table, the
+validator for generated files and the bucket they're saved to.
 
 One stack, so `cdk deploy` creates all of it and `cdk destroy` removes all of it. The Lambda runs
 api/infrapilot_api/lambda_handler.py: the assistant, with answers searched from the Knowledge Base
@@ -21,6 +22,7 @@ from aws_cdk import (
     aws_cloudfront as cloudfront,
     aws_cloudfront_origins as origins,
     aws_cognito as cognito,
+    aws_ecr_assets as ecr_assets,
     aws_dynamodb as dynamodb,
     aws_iam as iam,
     aws_lambda as lambda_,
@@ -95,6 +97,34 @@ class ChatStack(Stack):
             removal_policy=RemovalPolicy.DESTROY,
         )
 
+        # Generated plans (files, checks, setup), kept for the request workflow (C12). Deleted after
+        # 30 days, like the sessions.
+        artifacts = s3.Bucket(
+            self, "Artifacts",
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            enforce_ssl=True,
+            encryption=s3.BucketEncryption.S3_MANAGED,
+            lifecycle_rules=[s3.LifecycleRule(expiration=Duration.days(30))],
+            removal_policy=RemovalPolicy.DESTROY,
+            auto_delete_objects=True,
+        )
+
+        # The linters (actionlint, hadolint, cfn-lint, checkov) as a container image: too big for
+        # the chat Lambda's zip. CDK builds assistant/validator/Dockerfile with Docker and pushes it
+        # to the CDK bootstrap ECR repository. It only reads the files it's sent, so no permissions.
+        # 2 GB gives checkov enough CPU to check a workflow in ~2 s; it costs only while it runs.
+        validator = lambda_.DockerImageFunction(
+            self, "ValidatorFunction",
+            code=lambda_.DockerImageCode.from_image_asset(
+                str(REPO / "assistant"), file="validator/Dockerfile",
+                platform=ecr_assets.Platform.LINUX_ARM64),
+            architecture=lambda_.Architecture.ARM_64,
+            memory_size=2048,
+            timeout=Duration.seconds(20),
+            log_group=logs.LogGroup(self, "ValidatorLogs", retention=logs.RetentionDays.TWO_WEEKS,
+                                    removal_policy=RemovalPolicy.DESTROY),
+        )
+
         # One function for all routes: fewer cold starts than one per route. ARM is ~20% cheaper,
         # and 512 MB is plenty since it mostly waits on OpenAI. 29 s fits API Gateway's 30 s limit.
         chat_fn = lambda_.Function(
@@ -116,6 +146,8 @@ class ChatStack(Stack):
                 # OpenAI sometimes stalls ~20 s then errors: cut it off at 12 s and retry once.
                 "INFRAPILOT_LLM_TIMEOUT": "12",
                 "INFRAPILOT_LLM_RETRIES": "1",
+                "ARTIFACTS_BUCKET": artifacts.bucket_name,
+                "INFRAPILOT_VALIDATOR_FUNCTION": validator.function_name,
                 "POWERTOOLS_SERVICE_NAME": "infrapilot-chat",
             },
             log_group=logs.LogGroup(self, "ChatLogs", retention=logs.RetentionDays.TWO_WEEKS,
@@ -123,6 +155,8 @@ class ChatStack(Stack):
         )
         sessions.grant(chat_fn, "dynamodb:PutItem", "dynamodb:Query", "dynamodb:UpdateItem",
                        "dynamodb:BatchWriteItem")
+        artifacts.grant_put(chat_fn, "plans/*")
+        validator.grant_invoke(chat_fn)
         chat_fn.add_to_role_policy(iam.PolicyStatement(
             actions=["ssm:GetParameter"],
             resources=[self.format_arn(service="ssm", resource="parameter",
@@ -181,3 +215,5 @@ class ChatStack(Stack):
         CfnOutput(self, "UserPoolClientId", value=client.user_pool_client_id)
         CfnOutput(self, "CognitoDomain", value=domain.base_url())
         CfnOutput(self, "SessionsTable", value=sessions.table_name)
+        CfnOutput(self, "ArtifactsBucketName", value=artifacts.bucket_name)
+        CfnOutput(self, "ValidatorFunctionName", value=validator.function_name)
