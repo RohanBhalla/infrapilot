@@ -7,11 +7,15 @@ removed with another. Nothing is created by hand in the console.
 
 | Stack | What it creates |
 |---|---|
-| `InfraPilotChat` | The chat app: S3 + CloudFront website, Cognito login, API Gateway HTTP API with a Cognito JWT authorizer, the chat Lambda (`api/infrapilot_api/lambda_handler.py`: the assistant, searching `InfraPilotKnowledge`), and the DynamoDB session table |
+| `InfraPilotChat` | The chat app: S3 + CloudFront website, Cognito login, API Gateway HTTP API with a Cognito JWT authorizer, the chat Lambda (`api/infrapilot_api/lambda_handler.py`: the assistant, searching `InfraPilotKnowledge`), the DynamoDB session table, the validator Lambda (container image with actionlint, hadolint, cfn-lint and checkov, for generated files) and the artifacts bucket (generated plans, deleted after 30 days) |
 | `InfraPilotKnowledge` | Document search: S3 docs bucket, S3 Vectors index, Bedrock Knowledge Base (Titan Text Embeddings V2, no re-chunking: it uses the chunks from `data_collection`) |
 
 All resources are tagged `project=infrapilot`. The stack is pay-per-use and costs close to $0
 when idle. The API is throttled to 10 requests/s (burst 20), and Lambda logs are kept for 14 days.
+
+The validator image (~1.4 GB) is stored in the CDK bootstrap ECR repository, about $0.10/GB-month.
+Each deploy that changes `assistant/` pushes a new image and the old ones stay; run
+`npx aws-cdk@2 gc --unstable=gc --type=ecr` now and then to delete unused ones.
 
 ## Setup (once)
 
@@ -47,6 +51,8 @@ npx aws-cdk@2 bootstrap aws://<account-id>/us-east-1
 npx aws-cdk@2 diff                            # review the changes first
 npx aws-cdk@2 deploy
 ```
+
+Docker must be running: CDK builds the validator image (`assistant/validator/Dockerfile`) for ARM.
 
 The deploy uploads the website, writes `config.json` next to it with the real Cognito and API
 values (the frontend reads it at startup), and clears the CloudFront cache. The outputs print

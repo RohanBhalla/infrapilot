@@ -97,3 +97,27 @@ def test_missing_build_skips_upload_with_a_warning(tmp_path):
     stack, t = synth(tmp_path / "missing")
     t.resource_count_is("Custom::CDKBucketDeployment", 0)
     Annotations.from_stack(stack).has_warning("*", Match.string_like_regexp("npm run build"))
+
+
+def test_validator_is_an_arm_container_the_chat_lambda_can_call(built):
+    _, t = built
+    t.has_resource_properties("AWS::Lambda::Function", {
+        "PackageType": "Image", "Architectures": ["arm64"], "MemorySize": 2048, "Timeout": 20})
+    t.has_resource_properties("AWS::Lambda::Function", {
+        "Handler": "infrapilot_api.lambda_handler.lambda_handler",
+        "Environment": {"Variables": Match.object_like({
+            "INFRAPILOT_VALIDATOR_FUNCTION": Match.any_value(), "ARTIFACTS_BUCKET": Match.any_value()})}})
+    statements = [s for p in t.find_resources("AWS::IAM::Policy").values()
+                  for s in p["Properties"]["PolicyDocument"]["Statement"]]
+    assert any("lambda:InvokeFunction" in str(s["Action"]) for s in statements)
+
+
+def test_artifacts_bucket_is_private_and_expires_plans(built):
+    _, t = built
+    t.has_resource_properties("AWS::S3::Bucket", {
+        "LifecycleConfiguration": {"Rules": [Match.object_like({"ExpirationInDays": 30, "Status": "Enabled"})]},
+        "PublicAccessBlockConfiguration": Match.object_like({"BlockPublicPolicy": True})})
+    statements = [s for p in t.find_resources("AWS::IAM::Policy").values()
+                  for s in p["Properties"]["PolicyDocument"]["Statement"]]
+    put = [s for s in statements if "s3:PutObject" in str(s["Action"]) and "Artifacts" in str(s["Resource"])]
+    assert put and all("plans/*" in str(s["Resource"]) for s in put)

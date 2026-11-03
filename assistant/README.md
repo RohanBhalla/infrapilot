@@ -41,11 +41,37 @@ a summary, one-time setup steps, notes, checks and sources. So far: **GitHub Act
   `FALLBACK_PINS` in `pins.py`; add those repos to the sources sheet so they're refreshed too.
 - **Safe defaults.** Read-only token by default; deploy jobs sign in with OIDC (no stored AWS
   keys), run only on pushes/manual runs of the main branch, and use a `production` environment.
-- **Checks.** `version-pins` (every action on its current major) runs everywhere. `actionlint`
-  runs when installed (locally, and in the tests); on Lambda it reports "skipped" until the
-  validation loop (C11) bundles the linters.
+- **Checks.** `version-pins` (every action on its current major) runs everywhere; the linters
+  run as described under [Validation](#validation-c11).
 - Free-text steps ("lint and unit tests") and triggers ("nightly", "PRs to develop") are read
   with keyword rules; anything not used is listed in the notes.
+
+## Validation (C11)
+
+`generators/validate.py` runs each linter on the generated files it understands:
+
+| Linter | Files |
+|---|---|
+| actionlint | `.github/workflows/*.yml` |
+| hadolint | `Dockerfile`, `Dockerfile.*`, `*.Dockerfile` |
+| cfn-lint | CloudFormation templates (`AWSTemplateFormatVersion` or `*.template.*`) |
+| checkov | all of the above (GitHub Actions, Dockerfile and CloudFormation checks) |
+
+A linter that isn't installed reports "skipped", never "fail". Locally that's usually checkov,
+hadolint and cfn-lint. On AWS the chat Lambda doesn't carry them. It sends the files to the
+validator Lambda, a container image with all four (`validator/Dockerfile`), named by
+`INFRAPILOT_VALIDATOR_FUNCTION`. If that call fails or takes over 20 s, the checks report
+"skipped" and the reply still goes out.
+
+There's no retry loop. The generators are templates, so a failed check is a template bug, and the
+tests catch it. To run every generated workflow through all four linters:
+
+```bash
+docker build --platform linux/arm64 -t infrapilot-validator -f validator/Dockerfile .
+docker run --rm -p 9000:8080 infrapilot-validator
+INFRAPILOT_VALIDATOR_URL=http://localhost:9000/2015-03-31/functions/function/invocations \
+  ../data_collection/.venv/bin/pytest -q tests/test_validate.py
+```
 
 ## Eval
 

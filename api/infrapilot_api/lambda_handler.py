@@ -4,7 +4,8 @@ Powertools routes the request; the logic is the same ChatService the local FastA
 API Gateway checks the token and adds the CORS headers, so neither happens here.
 
 Environment: SESSIONS_TABLE, OPENAI_KEY_PARAM (SSM SecureString name), INFRAPILOT_BACKEND=kb,
-INFRAPILOT_KB_ID, INFRAPILOT_DATA_DIR (bundled versions.json).
+INFRAPILOT_KB_ID, INFRAPILOT_DATA_DIR (bundled versions.json), ARTIFACTS_BUCKET (saved plans),
+INFRAPILOT_VALIDATOR_FUNCTION (the Lambda that runs the linters on generated files).
 """
 
 from __future__ import annotations
@@ -18,6 +19,7 @@ from aws_lambda_powertools.logging.utils import copy_config_to_registered_logger
 from aws_lambda_powertools.utilities import parameters
 from pydantic import ValidationError
 
+from .artifacts import S3PlanStore
 from .dynamo import DynamoSessionStore
 from .schemas import MessageIn
 from .service import ChatError, ChatService, Unauthorized, build_answers, build_assistant
@@ -35,7 +37,9 @@ def _answers():
     return build_answers()
 
 
-chat = ChatService(DynamoSessionStore(os.environ.get("SESSIONS_TABLE", "")), _answers, build_assistant)
+bucket = os.environ.get("ARTIFACTS_BUCKET")
+chat = ChatService(DynamoSessionStore(os.environ.get("SESSIONS_TABLE", "")), _answers, build_assistant,
+                   plans=S3PlanStore(bucket) if bucket else None)
 
 
 def _user() -> str:

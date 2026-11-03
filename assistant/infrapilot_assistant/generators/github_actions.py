@@ -13,8 +13,7 @@ import re
 from dataclasses import dataclass, field
 
 from ..plan import Plan, PlanFile, Source
-from . import pins
-from .validate import actionlint
+from . import pins, validate
 
 PATH = ".github/workflows/ci.yml"
 STEP_ORDER = ("format", "lint", "typecheck", "test", "build")
@@ -425,7 +424,7 @@ def generate(params: dict, versions: dict | None = None) -> Plan:
         estimated_cost_note="Free for public repos; private repos use your GitHub Actions minutes "
                             "(2,000 free per month on the Free plan).",
     )
-    plan.validations = [pins.check_pins(content, v), actionlint(files)]
+    plan.validations = [pins.check_pins(content, v), *validate.run(files)]
     return plan
 
 

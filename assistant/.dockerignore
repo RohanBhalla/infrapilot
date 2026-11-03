@@ -1,0 +1,7 @@
+# Build context for validator/Dockerfile: only the package and its metadata.
+*
+!pyproject.toml
+!README.md
+!infrapilot_assistant/
+!validator/
+**/__pycache__
