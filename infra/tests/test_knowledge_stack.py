@@ -38,3 +38,8 @@ def test_data_source_keeps_our_chunks(t):
 def test_no_opensearch(t):
     # OpenSearch Serverless has a large always-on minimum cost (plan §8).
     t.resource_count_is("AWS::OpenSearchServerless::Collection", 0)
+
+
+def test_the_cdk_helper_lambda_has_a_description(t):
+    t.has_resource_properties("AWS::Lambda::Function", {
+        "Description": Match.string_like_regexp("^InfraPilot .*docs bucket")})

@@ -18,6 +18,8 @@ from aws_cdk import (
 )
 from constructs import Construct
 
+from .helpers import describe_cdk_helpers
+
 EMBED_MODEL = "amazon.titan-embed-text-v2:0"  # same model as the local LanceDB index
 DIMENSIONS = 1024
 PREFIX = "kb_export/"
@@ -103,6 +105,8 @@ class KnowledgeStack(Stack):
 
         self.knowledge_base_id = kb.attr_knowledge_base_id
         self.knowledge_base_arn = kb.attr_knowledge_base_arn
+
+        describe_cdk_helpers(self, "the docs bucket")
 
         CfnOutput(self, "DocsBucketName", value=docs.bucket_name)
         CfnOutput(self, "KnowledgeBaseId", value=kb.attr_knowledge_base_id)

@@ -121,3 +121,10 @@ def test_artifacts_bucket_is_private_and_expires_plans(built):
                   for s in p["Properties"]["PolicyDocument"]["Statement"]]
     put = [s for s in statements if "s3:PutObject" in str(s["Action"]) and "Artifacts" in str(s["Resource"])]
     assert put and all("plans/*" in str(s["Resource"]) for s in put)
+
+
+def test_every_lambda_has_a_description(built):
+    _, t = built
+    functions = t.find_resources("AWS::Lambda::Function")
+    assert len(functions) == 4  # chat, validator, auto-delete helper, website upload helper
+    assert all(f["Properties"].get("Description", "").startswith("InfraPilot") for f in functions.values())
