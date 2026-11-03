@@ -28,7 +28,9 @@ from ..plan import PlanFile, Validation
 
 log = logging.getLogger(__name__)
 TIMEOUT = 20  # seconds per linter
-REMOTE_TIMEOUT = 20  # the chat Lambda has 29 s in all
+# The chat Lambda has 29 s in all, and the classifier can take 12 s when OpenAI stalls. A cold
+# validator (~12 s) may miss this and report "skipped"; it still finishes, so the next call is warm.
+REMOTE_TIMEOUT = 12
 
 
 def _find(tool: str) -> str | None:
