@@ -33,6 +33,7 @@ from aws_cdk import (
 from constructs import Construct
 
 from .chat_bundle import chat_code
+from .helpers import describe_cdk_helpers
 
 REPO = Path(__file__).resolve().parents[2]
 LOCAL_DEV = "http://localhost:5173"  # Vite dev server; Cognito allows plain http only for localhost
@@ -115,6 +116,8 @@ class ChatStack(Stack):
         # 2 GB gives checkov enough CPU to check a workflow in ~2 s; it costs only while it runs.
         validator = lambda_.DockerImageFunction(
             self, "ValidatorFunction",
+            description="InfraPilot validator: runs actionlint, hadolint, cfn-lint and checkov on generated "
+                        "files sent by the chat Lambda and returns the findings. No AWS permissions.",
             code=lambda_.DockerImageCode.from_image_asset(
                 str(REPO / "assistant"), file="validator/Dockerfile",
                 platform=ecr_assets.Platform.LINUX_ARM64),
@@ -129,6 +132,8 @@ class ChatStack(Stack):
         # and 512 MB is plenty since it mostly waits on OpenAI. 29 s fits API Gateway's 30 s limit.
         chat_fn = lambda_.Function(
             self, "ChatFunction",
+            description="InfraPilot chat API: sessions, intent classification, cited answers from the "
+                        "Knowledge Base, and generated files (checked by the validator, saved to S3).",
             runtime=lambda_.Runtime.PYTHON_3_12,
             architecture=lambda_.Architecture.ARM_64,
             handler="infrapilot_api.lambda_handler.lambda_handler",
@@ -208,6 +213,8 @@ class ChatStack(Stack):
             Annotations.of(self).add_warning(
                 f"{dist} not found, so the website files won't be uploaded. "
                 "Run `npm run build` in frontend/ first.")
+
+        describe_cdk_helpers(self, "the website and artifacts buckets")
 
         CfnOutput(self, "SiteUrl", value=site_url)
         CfnOutput(self, "ApiUrl", value=api.api_endpoint)
