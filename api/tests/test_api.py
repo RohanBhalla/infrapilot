@@ -100,6 +100,7 @@ def test_task_flow_clarifies_then_ready_and_state_is_saved():
     assert client.get(f"/sessions/{sid}").json()["dialog"]["intent"] == "deploy_static_site"
     r2 = client.post(f"/sessions/{sid}/messages", json={"content": "dist"}).json()
     assert r2["type"] == "ready" and r2["params"]["source_dir"] == "dist" and r2["params"]["spa_routing"] is True
+    assert [f["path"] for f in r2["message"]["files"]] == ["infra/static-site.yaml", ".github/workflows/deploy-site.yml"]
     assert svc.calls == []  # no RAG answer needed for task turns
 
 
@@ -183,9 +184,9 @@ def test_ready_ci_task_returns_generated_workflow():
 
 
 def test_ready_task_without_a_generator_says_so():
-    client, _, _ = make(None, Classification("deploy_static_site", 0.95, "host my site", {"source_dir": "dist"}))
+    client, _, _ = make(None, Classification("deploy_lambda", 0.95, "deploy my function", {"trigger": "manual"}))
     sid = new_session(client)
-    r = client.post(f"/sessions/{sid}/messages", json={"content": "host my site from dist"}).json()
+    r = client.post(f"/sessions/{sid}/messages", json={"content": "deploy my function, I'll invoke it myself"}).json()
     assert r["type"] == "ready" and r["plan"] is None and r["message"]["files"] == []
     assert "isn't available yet" in r["message"]["content"]
 
