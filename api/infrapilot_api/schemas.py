@@ -7,6 +7,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from infrapilot_assistant.plan import Plan, PlanFile
 from infrapilot_assistant.state import DialogState, Question
 from infrapilot_rag.models import Citation
 
@@ -36,6 +37,7 @@ class Message(BaseModel):
     created_at: datetime = Field(default_factory=utcnow)
     citations: list[Citation] = Field(default_factory=list)
     refused: bool | None = None
+    files: list[PlanFile] = Field(default_factory=list, description="Generated files (ready tasks)")
 
 
 class MessageOut(BaseModel):
@@ -50,6 +52,7 @@ class MessageOut(BaseModel):
     params: dict = Field(default_factory=dict, description="Task details so far (with defaults when ready)")
     questions: list[Question] = Field(default_factory=list, description="Clarification questions, one per detail")
     standalone_question: str = Field(description="The message rewritten to stand alone (what gets searched)")
+    plan: Plan | None = Field(None, description="Generated files, checks and setup steps (ready tasks)")
     model: str | None
     latency_ms: int
     cost_usd: float

@@ -8,6 +8,7 @@ from moto import mock_aws
 
 from infrapilot_api.dynamo import DynamoSessionStore
 from infrapilot_api.schemas import Message
+from infrapilot_assistant.plan import PlanFile
 from infrapilot_assistant.state import DialogState
 from infrapilot_rag.models import Citation
 
@@ -73,3 +74,11 @@ def test_reads_sessions_written_by_the_first_test_lambda(store):
                                "created_at": "2026-10-24T00:00:01+00:00"})
     got = store.get("alice", "old")
     assert got.dialog.status == "idle" and got.messages[0].content == "hi"
+
+
+def test_generated_files_round_trip(store):
+    s = store.create("alice")
+    a = Message(id="m1", role="assistant", content="Here's your workflow",
+                files=[PlanFile(path=".github/workflows/ci.yml", content="name: CI\n")])
+    store.append("alice", s.id, a)
+    assert store.get("alice", s.id).messages[0].files == a.files

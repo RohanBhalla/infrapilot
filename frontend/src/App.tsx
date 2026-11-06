@@ -8,9 +8,37 @@ import {
   getSession,
   sendMessage,
 } from "./api";
-import type { ChatMessage, MessageReply } from "./api";
+import type { ChatMessage, GeneratedFile, MessageReply } from "./api";
 
 const SESSION_KEY = "infrapilot.sessionId";
+
+function FileBlock({ file }: { file: GeneratedFile }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(file.content);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  return (
+    <figure className="file-block">
+      <figcaption>
+        <code>{file.path}</code>
+        <button type="button" className="copy-button" onClick={copy}>
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </figcaption>
+      <pre>
+        <code>{file.content}</code>
+      </pre>
+    </figure>
+  );
+}
 
 function ChatBubble({ message, reply }: { message: ChatMessage; reply?: MessageReply }) {
   const isUser = message.role === "user";
@@ -50,6 +78,7 @@ function ChatBubble({ message, reply }: { message: ChatMessage; reply?: MessageR
             </dl>
           )}
         </div>
+        {!isUser && message.files?.map((file) => <FileBlock file={file} key={file.path} />)}
         {!isUser && message.citations.length > 0 && (
           <div className="citations" aria-label="Sources">
             {message.citations.map((citation) => (

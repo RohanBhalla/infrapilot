@@ -1,0 +1,4 @@
+# Linters for the validator Lambda (actionlint and hadolint are single binaries: see Dockerfile).
+cfn-lint==1.57.2
+checkov==3.3.29
+pydantic==2.14.0

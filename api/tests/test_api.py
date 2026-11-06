@@ -42,10 +42,15 @@ class ScriptedClassifier:
         return Classification("qa", 0.95, message, cost_usd=0.001)
 
 
+# Just enough of the version registry for the GitHub Actions generator.
+VERSIONS = {a: {"extra": {"major": m}} for a, m in [
+    ("actions/checkout", "v7"), ("actions/setup-node", "v7"), ("aws-actions/configure-aws-credentials", "v6")]}
+
+
 def make(svc=None, *queue):
     svc = svc or FakeService()
     clf = ScriptedClassifier(*queue)
-    client = TestClient(create_app(service=svc, store=InMemorySessionStore(), assistant=Assistant(clf)))
+    client = TestClient(create_app(service=svc, store=InMemorySessionStore(), assistant=Assistant(clf, VERSIONS)))
     return client, svc, clf
 
 
@@ -161,3 +166,63 @@ def test_root_redirects_to_docs(setup):
     client, *_ = setup
     r = client.get("/", follow_redirects=False)
     assert r.status_code == 307 and r.headers["location"] == "/docs"
+
+
+def test_ready_ci_task_returns_generated_workflow():
+    client, svc, _ = make(None, Classification("cicd_github_actions", 0.95, "set up CI for my node app",
+                                               {"language": "node", "deploy_target": "lambda"}))
+    sid = new_session(client)
+    r = client.post(f"/sessions/{sid}/messages", json={"content": "set up CI for my node app"}).json()
+    assert r["type"] == "ready" and r["plan"]["intent"] == "cicd_github_actions"
+    files = r["message"]["files"]
+    assert [f["path"] for f in files] == [".github/workflows/ci.yml"] and "aws lambda" in files[0]["content"]
+    assert "Before the first run" in r["message"]["content"] and "Checks: version-pins passed" in r["message"]["content"]
+    assert any("oidc-in-aws" in c["url"] for c in r["message"]["citations"])
+    saved = client.get(f"/sessions/{sid}").json()["messages"][-1]
+    assert saved["files"] == files and svc.calls == []
+
+
+def test_ready_task_without_a_generator_says_so():
+    client, _, _ = make(None, Classification("deploy_static_site", 0.95, "host my site", {"source_dir": "dist"}))
+    sid = new_session(client)
+    r = client.post(f"/sessions/{sid}/messages", json={"content": "host my site from dist"}).json()
+    assert r["type"] == "ready" and r["plan"] is None and r["message"]["files"] == []
+    assert "isn't available yet" in r["message"]["content"]
+
+
+class FakePlans:
+    def __init__(self, fail=False):
+        self.saved, self.fail = [], fail
+
+    def save(self, user, session_id, message_id, plan):
+        if self.fail:
+            raise RuntimeError("s3 down")
+        self.saved.append((user, session_id, message_id, plan.intent))
+
+
+@pytest.mark.parametrize("fail", [False, True])
+def test_ready_plans_are_saved_and_a_failed_save_doesnt_break_the_reply(fail):
+    from infrapilot_api.schemas import MessageIn
+    from infrapilot_api.service import ChatService
+
+    plans = FakePlans(fail)
+    clf = ScriptedClassifier(Classification("cicd_github_actions", 0.95, "CI for node", {"language": "node"}))
+    chat = ChatService(InMemorySessionStore(), FakeService, lambda llm: Assistant(clf, VERSIONS), plans=plans)
+    sid = chat.create_session("u1").id
+    out = chat.post_message("u1", sid, MessageIn(content="CI for node"))
+    assert out.type == "ready" and out.message.files
+    assert plans.saved == ([] if fail else [("u1", sid, out.message.id, "cicd_github_actions")])
+
+
+def test_s3_plan_store_writes_json_under_the_users_prefix():
+    from infrapilot_api.artifacts import S3PlanStore
+    from infrapilot_assistant.plan import Plan
+
+    class FakeS3:
+        def put_object(self, **kw):
+            self.kw = kw
+
+    s3 = FakeS3()
+    key = S3PlanStore("bucket", client=s3).save("u1", "s1", "m1", Plan(intent="x", params={}, files=[], summary="s"))
+    assert key == "plans/u1/s1/m1.json" == s3.kw["Key"] and s3.kw["Bucket"] == "bucket"
+    assert Plan.model_validate_json(s3.kw["Body"]).intent == "x"
