@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { Hub } from "aws-amplify/utils";
 import { authConfigured, beginSignIn, beginSignOut, currentUser } from "./auth";
 import {
   ApiError,
@@ -167,8 +168,13 @@ export default function App() {
       }
     }
 
+    // Login may finish after the initial authentication check.
+    const stopListening = Hub.listen("auth", ({ payload }) => {
+      if (payload.event === "signedIn") void initialize();
+    });
     void initialize();
     return () => {
+      stopListening();
       cancelled = true;
     };
   }, []);
