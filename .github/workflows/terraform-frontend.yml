@@ -33,17 +33,6 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v4
 
-      - name: Check deployment configuration
-        env:
-          AWS_DEPLOY_ROLE_ARN: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-        run: |
-          test -n "$AWS_DEPLOY_ROLE_ARN" || { echo "Missing AWS_DEPLOY_ROLE_ARN repository secret."; exit 1; }
-          test -n "$TF_STATE_BUCKET" || { echo "Missing TF_STATE_BUCKET repository variable."; exit 1; }
-          test -n "$TF_VAR_cognito_domain_prefix" || { echo "Missing COGNITO_DOMAIN_PREFIX repository variable."; exit 1; }
-          echo "AWS deployment role secret is configured (value hidden)."
-          echo "Terraform state bucket and Cognito domain prefix are configured."
-          echo "Workflow ref: ${GITHUB_REF}"
-
       - name: Log OIDC trust claims (without token)
         uses: actions/github-script@v7
         with:
@@ -57,6 +46,13 @@ jobs:
             core.info(`OIDC subject: ${claims.sub}`);
             core.info(`OIDC repository: ${claims.repository}`);
             core.info(`OIDC ref: ${claims.ref}`);
+
+      - name: Check AWS deployment role is configured
+        env:
+          AWS_DEPLOY_ROLE_ARN: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+        run: |
+          test -n "$AWS_DEPLOY_ROLE_ARN" || { echo "Missing AWS_DEPLOY_ROLE_ARN repository secret."; exit 1; }
+          echo "AWS deployment role secret is configured (value hidden)."
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -86,6 +82,12 @@ jobs:
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
+      - name: Check Terraform deployment variables
+        run: |
+          test -n "$TF_STATE_BUCKET" || { echo "Missing TF_STATE_BUCKET repository variable."; exit 1; }
+          test -n "$TF_VAR_cognito_domain_prefix" || { echo "Missing COGNITO_DOMAIN_PREFIX repository variable."; exit 1; }
+          echo "Terraform state bucket and Cognito domain prefix are configured."
+
       - name: Check Terraform formatting
         working-directory: infra/terraform
         run: terraform fmt -check -recursive
@@ -93,7 +95,6 @@ jobs:
       - name: Initialize Terraform
         working-directory: infra/terraform
         run: |
-          test -n "$TF_STATE_BUCKET" || { echo "Set the TF_STATE_BUCKET repository variable."; exit 1; }
           terraform init -input=false \
             -backend-config="bucket=${TF_STATE_BUCKET}" \
             -backend-config="key=infrapilot/terraform.tfstate" \
