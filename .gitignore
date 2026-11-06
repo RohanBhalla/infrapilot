@@ -20,3 +20,9 @@ data_collection/data/
 
 # CDK synth output
 cdk.out/
+
+# Terraform state, local plugins, and saved plans
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
