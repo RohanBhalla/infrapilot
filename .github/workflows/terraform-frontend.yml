@@ -33,6 +33,31 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v4
 
+      - name: Check deployment configuration
+        env:
+          AWS_DEPLOY_ROLE_ARN: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+        run: |
+          test -n "$AWS_DEPLOY_ROLE_ARN" || { echo "Missing AWS_DEPLOY_ROLE_ARN repository secret."; exit 1; }
+          test -n "$TF_STATE_BUCKET" || { echo "Missing TF_STATE_BUCKET repository variable."; exit 1; }
+          test -n "$TF_VAR_cognito_domain_prefix" || { echo "Missing COGNITO_DOMAIN_PREFIX repository variable."; exit 1; }
+          echo "AWS deployment role secret is configured (value hidden)."
+          echo "Terraform state bucket and Cognito domain prefix are configured."
+          echo "Workflow ref: ${GITHUB_REF}"
+
+      - name: Log OIDC trust claims (without token)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken('sts.amazonaws.com');
+            const parts = token.split('.');
+            if (parts.length !== 3) throw new Error('GitHub returned an unexpected OIDC token format.');
+            const claims = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
+            core.info(`OIDC issuer: ${claims.iss}`);
+            core.info(`OIDC audience: ${JSON.stringify(claims.aud)}`);
+            core.info(`OIDC subject: ${claims.sub}`);
+            core.info(`OIDC repository: ${claims.repository}`);
+            core.info(`OIDC ref: ${claims.ref}`);
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -56,6 +81,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GitHubActions-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Verify AWS identity
         run: aws sts get-caller-identity
