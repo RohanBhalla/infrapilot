@@ -31,7 +31,8 @@ Chat API runs its generator (below) and returns the files with the reply.
 
 `generators/` turns a ready task's details into a `Plan` (`plan.py`, plan contract 5): files,
 a summary, one-time setup steps, notes, checks and sources. So far: **GitHub Actions**
-(`cicd_github_actions`). Other tasks reply that file generation isn't available yet.
+(`cicd_github_actions`) and **static site** (`deploy_static_site`). Other tasks reply that file
+generation isn't available yet.
 
 - **Deterministic, no model call.** The workflow is built from tested blocks per language (Node
   npm/yarn/pnpm, Python pip/poetry, Java Maven/Gradle, Go) and deploy target (none, S3 + CloudFront,
@@ -45,6 +46,29 @@ a summary, one-time setup steps, notes, checks and sources. So far: **GitHub Act
   run as described under [Validation](#validation-c11).
 - Free-text steps ("lint and unit tests") and triggers ("nightly", "PRs to develop") are read
   with keyword rules; anything not used is listed in the notes.
+
+### Static site
+
+`static_site.py` writes `infra/static-site.yaml`, a CloudFormation template:
+
+- **Private S3 bucket** (all public access blocked, encrypted, HTTPS only). CloudFront reads it
+  through Origin Access Control. Versioning keeps old files for 30 days, so a bad upload can be
+  rolled back.
+- **CloudFront** with HTTPS redirect, the AWS managed CachingOptimized and SecurityHeaders policies,
+  and the cheapest price class.
+  - Single-page apps: unknown paths load `index.html`.
+  - Custom domain: an ACM certificate (from us-east-1) and TLS 1.2 minimum.
+- **GitHub deploy role** (when a CI workflow is wanted and a repo is given). It trusts only that
+  repo's `production` environment and can only upload to this bucket, clear this distribution's
+  cache and read this stack.
+
+With CI, it also writes `.github/workflows/deploy-site.yml`. On each push to main it builds the site
+with npm (not for plain HTML), finds the bucket from the stack outputs, uploads the files and clears
+the cache.
+
+Four checkov rules are skipped in the template, each with its reason. Three add cost a small site
+usually doesn't need: WAF, the S3 access-log bucket and CloudFront access logs. The fourth (a
+minimum TLS version) can't be set on the default `*.cloudfront.net` certificate.
 
 ## Validation (C11)
 
@@ -93,5 +117,7 @@ scores on new messages. More cases from teammates, especially ambiguous ones, ar
 cd assistant && ../data_collection/.venv/bin/pytest -q
 ```
 
-The generator tests build every language x package manager x deploy target (36 workflows), parse
-them and run actionlint (`pip install -e "assistant[dev]"` installs it).
+The generator tests build every combination: 36 GitHub Actions workflows (language x package
+manager x deploy target) and 48 static site plans (framework x SPA x domain x CI). They parse each
+file and run actionlint and cfn-lint (`pip install -e "assistant[dev]"` installs both). Checkov
+runs only against the validator image (see Validation).

@@ -125,4 +125,4 @@ def test_citations_include_docs_and_release_pages():
 
 
 def test_tasks_without_a_generator_return_none():
-    assert generate("deploy_static_site", {"source_dir": "dist"}, VERSIONS) is None
+    assert generate("deploy_lambda", {"trigger": "manual"}, VERSIONS) is None
