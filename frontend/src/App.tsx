@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { Hub } from "aws-amplify/utils";
 import { authConfigured, beginSignIn, beginSignOut, currentUser } from "./auth";
 import {
   ApiError,
@@ -167,8 +168,18 @@ export default function App() {
       }
     }
 
-    void initialize();
+    // Login may finish after the initial authentication check. Runs one at a time, so a
+    // second run finds the saved session instead of creating another one.
+    let pending = Promise.resolve();
+    const run = () => {
+      pending = pending.then(initialize);
+    };
+    const stopListening = Hub.listen("auth", ({ payload }) => {
+      if (payload.event === "signedIn") run();
+    });
+    run();
     return () => {
+      stopListening();
       cancelled = true;
     };
   }, []);
