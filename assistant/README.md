@@ -31,15 +31,17 @@ Chat API runs its generator (below) and returns the files with the reply.
 
 `generators/` turns a ready task's details into a `Plan` (`plan.py`, plan contract 5): files,
 a summary, one-time setup steps, notes, checks and sources. So far: **GitHub Actions**
-(`cicd_github_actions`), **static site** (`deploy_static_site`) and **Lambda** (`deploy_lambda`).
-Other tasks reply that file generation isn't available yet.
+(`cicd_github_actions`), **static site** (`deploy_static_site`), **Lambda** (`deploy_lambda`) and
+**Dockerfile** (`containerize`). Other tasks (EKS, or a language a generator doesn't cover) reply that
+file generation isn't available yet.
 
 - **Deterministic, no model call.** The workflow is built from tested blocks per language (Node
   npm/yarn/pnpm, Python pip/poetry, Java Maven/Gradle, Go) and deploy target (none, S3 + CloudFront,
   Lambda, ECS). The same details always give the same file.
-- **Current versions.** Every `uses:` comes from the version registry. Five actions the registry
-  doesn't track yet (setup-python, setup-java, setup-go, download-artifact, pnpm/action-setup) use
-  `FALLBACK_PINS` in `pins.py`; add those repos to the sources sheet so they're refreshed too.
+- **Current versions.** Every `uses:` comes from the version registry. Eight actions the registry
+  doesn't track yet (setup-python, setup-java, setup-go, download-artifact, pnpm/action-setup and
+  Docker's setup-qemu, setup-buildx and build-push) use `FALLBACK_PINS` in `pins.py`; add those repos
+  to the sources sheet so they're refreshed too.
 - **Safe defaults.** Read-only token by default; deploy jobs sign in with OIDC (no stored AWS
   keys), run only on pushes/manual runs of the main branch, and use a `production` environment.
 - **Checks.** `version-pins` (every action on its current major) runs everywhere; the linters
@@ -100,6 +102,34 @@ Five checkov rules are skipped where they apply, each with its reason: VPC (need
 reach the internet), dead-letter queue, reserved concurrency, a KMS key for logs, and S3 access logs.
 The public function URL check is skipped only for that trigger, since that's what was asked for.
 
+### Dockerfile
+
+`container.py` writes a `Dockerfile` and `.dockerignore` for Node, Python, Java (Maven) or Go:
+
+- **Two stages:** dependencies and builds happen in the first, so the final image only has what
+  runs. Java and Go build on the runner's own platform (no emulation); Go ends up in a 3 MB
+  distroless image.
+- **Current official images** from the version registry (Node LTS, newest Python and Java that AWS
+  supports; Go from a dated fallback), pulled from the ECR Public mirror so CI doesn't hit Docker
+  Hub's pull limits.
+- **Non-root** (numeric user ids) and a **health check** that the app's port accepts connections,
+  which works whatever the app's routes are. Go's distroless image has no shell, so it has none.
+- **Exec-form `CMD`**, so the app gets stop signals; commands with shell syntax go through `sh -c`.
+
+With ECR (the default), `infra/container.yaml` adds a private repository (immutable tags, scan on
+push, keeps 10 images) and `.github/workflows/deploy-container.yml` builds for arm64 and pushes on
+each push to main. With ECS, the template also creates a small VPC (two public subnets, no NAT
+gateway), a Fargate service on arm64 (0.25 vCPU, 0.5 GB) with a circuit breaker, a 30-day log group
+and least-privilege roles. The service starts with 0 tasks; the workflow sets the stack's `ImageTag`
+parameter to the new commit, which starts or replaces the task. There's no load balancer, so the
+task is reached on its public IP.
+
+Four checkov rules are skipped where they apply, each with its reason: KMS keys for ECR and logs,
+Container Insights (billed per metric), and the Docker health check for Go's distroless image.
+
+All four sample apps (one per language) were built and run from the generated Dockerfiles; each
+answered on its port and became healthy.
+
 ## Validation (C11)
 
 `generators/validate.py` runs each linter on the generated files it understands:
@@ -149,6 +179,6 @@ cd assistant && ../data_collection/.venv/bin/pytest -q
 
 The generator tests build every combination: 36 GitHub Actions workflows (language x package
 manager x deploy target), 48 static site plans (framework x SPA x domain x CI) and 20 Lambda plans
-(trigger x runtime x CI). They parse each
+(trigger x runtime x CI) and 16 Dockerfile plans (language x ECR x ECS). They parse each
 file and run actionlint and cfn-lint (`pip install -e "assistant[dev]"` installs both). Checkov
 runs only against the validator image (see Validation).
