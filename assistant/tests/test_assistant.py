@@ -47,6 +47,18 @@ def test_defaults_come_from_version_registry():
     assert t.params["k8s_version"] == "1.37"
 
 
+def test_lambda_runtime_named_in_the_message_is_kept_when_the_model_drops_it():
+    def runtime(message, params):
+        t = step(message, DialogState(), C("deploy_lambda", params={"trigger": "function_url", **params}), VERSIONS)
+        return t.params["runtime"]
+
+    assert runtime("Deploy my Python function to Lambda with a public URL", {}) == "python"
+    assert runtime("deploy my node 22 function behind a url", {}) == "node 22"
+    assert runtime("lambda with python 3.13 and a url", {}) == "python 3.13"
+    assert runtime("deploy my Python function", {"runtime": "python3.12"}) == "python3.12"  # model wins
+    assert runtime("deploy my function behind a url", {}) == "nodejs24.x"  # nothing named: Node LTS
+
+
 def test_low_confidence_new_task_asks_for_confirmation_then_proceeds():
     st = DialogState()
     t = step("lambda stuff", st, C("deploy_lambda", conf=0.5))
