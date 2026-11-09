@@ -131,6 +131,7 @@ INTENTS: dict[str, Intent] = {i.name: i for i in [
              default=True),
         Slot("deploy_to_ecs", "bool", "Run it as an ECS Fargate service", "Should I deploy it to ECS Fargate?",
              default=False),
+        REGION,
     )),
     Intent("deploy_lambda", "Deploy a function to AWS Lambda.", "task", (
         Slot("trigger", "enum", "What invokes the function (manual: the user invokes it themselves)",

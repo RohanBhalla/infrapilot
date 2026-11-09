@@ -18,6 +18,10 @@ FALLBACK_PINS = {
     "actions/setup-go": "v7",
     "actions/download-artifact": "v8",
     "pnpm/action-setup": "v6",
+    # Checked 2026-11-09.
+    "docker/setup-qemu-action": "v4",
+    "docker/setup-buildx-action": "v4",
+    "docker/build-push-action": "v7",
 }
 
 USES = re.compile(r"uses:\s*([\w.-]+/[\w.-]+)@(v\d+)")

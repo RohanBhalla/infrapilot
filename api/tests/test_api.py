@@ -192,11 +192,20 @@ def test_ready_lambda_task_returns_template_and_workflow():
     assert "rate(1 hour)" in r["message"]["files"][0]["content"]
 
 
+def test_ready_containerize_task_returns_the_dockerfile():
+    client, _, _ = make(None, Classification("containerize", 0.95, "write a dockerfile",
+                                             {"language": "node", "app_port": 3000, "push_to_ecr": "no"}))
+    sid = new_session(client)
+    r = client.post(f"/sessions/{sid}/messages", json={"content": "dockerfile for my node app on 3000, no ecr"}).json()
+    assert r["type"] == "ready" and [f["path"] for f in r["message"]["files"]] == ["Dockerfile", ".dockerignore"]
+    assert "EXPOSE 3000" in r["message"]["files"][0]["content"]
+
+
 def test_ready_task_without_a_generator_says_so():
     client, _, _ = make(None, Classification("containerize", 0.95, "write a dockerfile",
-                                             {"language": "node", "app_port": 3000}))
+                                             {"language": "other", "app_port": 3000}))
     sid = new_session(client)
-    r = client.post(f"/sessions/{sid}/messages", json={"content": "write a dockerfile for my node app on 3000"}).json()
+    r = client.post(f"/sessions/{sid}/messages", json={"content": "write a dockerfile for my rust app on 3000"}).json()
     assert r["type"] == "ready" and r["plan"] is None and r["message"]["files"] == []
     assert "isn't available yet" in r["message"]["content"]
 
