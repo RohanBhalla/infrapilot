@@ -31,8 +31,8 @@ Chat API runs its generator (below) and returns the files with the reply.
 
 `generators/` turns a ready task's details into a `Plan` (`plan.py`, plan contract 5): files,
 a summary, one-time setup steps, notes, checks and sources. So far: **GitHub Actions**
-(`cicd_github_actions`) and **static site** (`deploy_static_site`). Other tasks reply that file
-generation isn't available yet.
+(`cicd_github_actions`), **static site** (`deploy_static_site`) and **Lambda** (`deploy_lambda`).
+Other tasks reply that file generation isn't available yet.
 
 - **Deterministic, no model call.** The workflow is built from tested blocks per language (Node
   npm/yarn/pnpm, Python pip/poetry, Java Maven/Gradle, Go) and deploy target (none, S3 + CloudFront,
@@ -69,6 +69,36 @@ the cache.
 Four checkov rules are skipped in the template, each with its reason. Three add cost a small site
 usually doesn't need: WAF, the S3 access-log bucket and CloudFront access logs. The fourth (a
 minimum TLS version) can't be set on the default `*.cloudfront.net` certificate.
+
+### Lambda
+
+`lambda_function.py` writes `infra/lambda.yaml`, a CloudFormation template:
+
+- **The function** on arm64 (about 20% cheaper), with the runtime, handler, memory and timeout from
+  the chat. It starts with inline placeholder code; the workflow ships the real code, so pushes
+  never need a stack update.
+- **Runtime** from what the user said: "python", "Python 3.13", "node 22", "nodejs24.x". With no
+  version, it's the Node LTS or the newest Python that Lambda supports (from the version registry).
+  Deprecated or unknown runtimes are replaced, with a note. Only Node and Python for now.
+- **Its own role** that can only write to its **log group** (kept 30 days).
+- **One trigger:**
+  - Function URL: public (`AuthType: NONE`), with both permissions AWS now requires.
+  - API Gateway: an HTTP API (quick create, one catch-all route).
+  - Schedule: EventBridge Scheduler with its own invoke-only role. Rate expressions are fixed up
+    ("rate(1 hours)" becomes "rate(1 hour)"); anything unusable falls back to hourly, with a note.
+  - S3 uploads: a private bucket where new files under `uploads/` run the function. The role can
+    read `uploads/` and write `processed/`, so results don't trigger the function again.
+  - Manual: nothing.
+- **GitHub deploy role** (same pattern as the static site): trusts only the repo's `production`
+  environment and can only update this function's code.
+
+With CI, it also writes `.github/workflows/deploy-lambda.yml`. On each push to main it zips the code
+folder (with production dependencies; Python wheels are fetched for arm64 Linux), finds the function
+from the stack outputs and runs `aws lambda update-function-code`.
+
+Five checkov rules are skipped where they apply, each with its reason: VPC (needs a NAT gateway to
+reach the internet), dead-letter queue, reserved concurrency, a KMS key for logs, and S3 access logs.
+The public function URL check is skipped only for that trigger, since that's what was asked for.
 
 ## Validation (C11)
 
@@ -118,6 +148,7 @@ cd assistant && ../data_collection/.venv/bin/pytest -q
 ```
 
 The generator tests build every combination: 36 GitHub Actions workflows (language x package
-manager x deploy target) and 48 static site plans (framework x SPA x domain x CI). They parse each
+manager x deploy target), 48 static site plans (framework x SPA x domain x CI) and 20 Lambda plans
+(trigger x runtime x CI). They parse each
 file and run actionlint and cfn-lint (`pip install -e "assistant[dev]"` installs both). Checkov
 runs only against the validator image (see Validation).

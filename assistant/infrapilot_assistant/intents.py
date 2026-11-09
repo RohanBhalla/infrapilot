@@ -50,6 +50,10 @@ def _lambda_node_runtime(params, versions) -> str | None:
     return f"nodejs{lts}.x" if lts else None
 
 
+def _lambda_schedule(params, versions) -> str | None:
+    return "rate(1 hour)" if params.get("trigger") == "schedule" else None
+
+
 def _eks_version(params, versions) -> str | None:
     fact = versions.get("amazon-eks") if versions else None
     return ".".join(fact["latest"].split("-")[0].split(".")[:2]) if fact and fact.get("latest") else None
@@ -133,11 +137,17 @@ INTENTS: dict[str, Intent] = {i.name: i for i in [
              "What should trigger the function: an HTTPS URL, API Gateway, a schedule, S3 uploads, or "
              "nothing (you invoke it yourself)?", required=True,
              options=("function_url", "api_gateway", "schedule", "s3_event", "manual")),
-        Slot("runtime", "str", "Lambda runtime id, e.g. nodejs24.x or python3.13", "Which runtime?",
-             default=_lambda_node_runtime),
+        Slot("runtime", "str", "Lambda runtime id, e.g. nodejs24.x or python3.13; just the language "
+             "(node, python) when no version is given", "Which runtime?", default=_lambda_node_runtime),
         Slot("source_dir", "str", "Folder with the function code", "Which folder has the code?", default="src"),
+        Slot("handler", "str", "Handler as file.function, e.g. index.handler", "What's the handler?",
+             default="index.handler"),
+        Slot("schedule", "str", "EventBridge schedule expression for the schedule trigger, e.g. rate(1 hour) "
+             "or cron(0 2 * * ? *) for 2am UTC daily", "How often should it run?", default=_lambda_schedule),
         Slot("memory_mb", "int", "Memory in MB", "How much memory?", default=256, min=128, max=10240),
         Slot("timeout_s", "int", "Timeout in seconds", "What timeout?", default=10, min=1, max=900),
+        Slot("ci_deploy", "bool", "Add a GitHub Actions workflow that deploys the code on push",
+             "Should I add a GitHub Actions deploy workflow?", default=True),
         REGION,
     )),
     Intent("deploy_static_site", "Host a static website (e.g. a React build) on S3 + CloudFront.", "task", (

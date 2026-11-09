@@ -183,10 +183,20 @@ def test_ready_ci_task_returns_generated_workflow():
     assert saved["files"] == files and svc.calls == []
 
 
-def test_ready_task_without_a_generator_says_so():
-    client, _, _ = make(None, Classification("deploy_lambda", 0.95, "deploy my function", {"trigger": "manual"}))
+def test_ready_lambda_task_returns_template_and_workflow():
+    client, _, _ = make(None, Classification("deploy_lambda", 0.95, "deploy my function", {"trigger": "schedule"}))
     sid = new_session(client)
-    r = client.post(f"/sessions/{sid}/messages", json={"content": "deploy my function, I'll invoke it myself"}).json()
+    r = client.post(f"/sessions/{sid}/messages", json={"content": "run my function every hour on lambda"}).json()
+    assert r["type"] == "ready" and r["plan"]["intent"] == "deploy_lambda"
+    assert [f["path"] for f in r["message"]["files"]] == ["infra/lambda.yaml", ".github/workflows/deploy-lambda.yml"]
+    assert "rate(1 hour)" in r["message"]["files"][0]["content"]
+
+
+def test_ready_task_without_a_generator_says_so():
+    client, _, _ = make(None, Classification("containerize", 0.95, "write a dockerfile",
+                                             {"language": "node", "app_port": 3000}))
+    sid = new_session(client)
+    r = client.post(f"/sessions/{sid}/messages", json={"content": "write a dockerfile for my node app on 3000"}).json()
     assert r["type"] == "ready" and r["plan"] is None and r["message"]["files"] == []
     assert "isn't available yet" in r["message"]["content"]
 

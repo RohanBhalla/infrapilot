@@ -5,10 +5,11 @@ from __future__ import annotations
 from typing import Callable
 
 from ..plan import Plan
-from . import github_actions, static_site
+from . import github_actions, lambda_function, static_site
 
 GENERATORS: dict[str, Callable[[dict, dict | None], Plan]] = {
     "cicd_github_actions": github_actions.generate,
+    "deploy_lambda": lambda_function.generate,
     "deploy_static_site": static_site.generate,
 }
 
