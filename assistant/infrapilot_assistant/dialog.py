@@ -20,6 +20,8 @@ PLACEHOLDERS = {"unknown", "n/a", "na", "null", "not specified", "unspecified", 
                 "not given", "none given"}
 COST_WORDS = re.compile(r"cost|price|pric|bill|charge|money|pay|expens|\$|budget", re.I)
 FALSE = {"false", "no", "n", "0", "off"}
+# A language named in the message, e.g. "Python", "node 22", "Python 3.13".
+LANGUAGE_WORDS = re.compile(r"\b(python|node(?:\.?js)?|typescript|javascript)(?:\s*(\d+(?:\.\d+)?))?\b", re.I)
 
 OUT_OF_SCOPE = ("I can help with AWS infrastructure and CI/CD: answering questions about GitHub Actions, "
                 "CloudFormation, CDK, ECS, EKS, Lambda, S3 static sites and Docker, and setting those up "
@@ -57,6 +59,9 @@ def _apply(intent: Intent, state: DialogState, extracted: dict[str, str], messag
             continue  # consent (yes or no) must come from the user, not the model
         if value is not None:
             state.params[name] = value
+    # The model sometimes drops a language the user named, which would quietly give a Node function.
+    if intent.name == "deploy_lambda" and "runtime" not in state.params and (m := LANGUAGE_WORDS.search(message)):
+        state.params["runtime"] = " ".join(filter(None, m.groups())).lower()
 
 
 def _missing(intent: Intent, state: DialogState) -> list[Slot]:
