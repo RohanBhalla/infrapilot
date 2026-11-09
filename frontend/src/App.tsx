@@ -168,11 +168,16 @@ export default function App() {
       }
     }
 
-    // Login may finish after the initial authentication check.
+    // Login may finish after the initial authentication check. Runs one at a time, so a
+    // second run finds the saved session instead of creating another one.
+    let pending = Promise.resolve();
+    const run = () => {
+      pending = pending.then(initialize);
+    };
     const stopListening = Hub.listen("auth", ({ payload }) => {
-      if (payload.event === "signedIn") void initialize();
+      if (payload.event === "signedIn") run();
     });
-    void initialize();
+    run();
     return () => {
       stopListening();
       cancelled = true;
