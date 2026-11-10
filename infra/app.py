@@ -6,6 +6,7 @@ import aws_cdk as cdk
 
 from infrapilot_infra.chat_stack import ChatStack
 from infrapilot_infra.knowledge_stack import KnowledgeStack
+from infrapilot_infra.sandbox_stack import SandboxStack
 
 app = cdk.App()
 env = cdk.Environment(account=os.environ.get("CDK_DEFAULT_ACCOUNT"), region="us-east-1")
@@ -14,6 +15,8 @@ knowledge = KnowledgeStack(app, "InfraPilotKnowledge", env=env,
 ChatStack(app, "InfraPilotChat", env=env, knowledge_base_id=knowledge.knowledge_base_id,
           knowledge_base_arn=knowledge.knowledge_base_arn,
           description="InfraPilot chat app: website, Cognito login, chat API, session table")
+SandboxStack(app, "InfraPilotSandbox", env=env,
+             description="InfraPilot sandbox limits: CloudFormation service role and permissions boundary")
 
 cdk.Tags.of(app).add("project", "infrapilot")
 cdk.Tags.of(app).add("owner", "pair-b")
