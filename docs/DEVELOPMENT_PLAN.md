@@ -392,6 +392,69 @@ Classify → (Clarify loop in chat) → Generate → Validate (retry ≤3) → S
 
 **E2E tests:** for each target, `samples/<target>` → chat request → approve → deploy → HTTP check on the output URL → teardown → verify the stack is gone. Tracked metrics: **deploy success rate**, time to deploy, teardown success = 100%.
 
+#### Deploy build order (Features 4.1 + 4.2)
+
+Each step needs the ones before it, except step 8. The generators (C10), validation (C11) and saved plans (`plans/<user>/<session>/<message>.json` in the artifacts bucket) already exist.
+
+**0. Decisions first (both pairs)**
+- Account: deploys go into the team account as a temporary demo sandbox, not the user's own account.
+- Code: sandboxes run our `samples/` apps and placeholder code, not the user's code.
+- Who can deploy: any logged-in user, or team only. ECS and EKS stay team-only either way.
+- Limits: 1 active sandbox per user, deleted after 4 hours.
+
+**1. Sandbox foundation: `InfraPilotSandbox` stack (Pair B)**
+- Permissions boundary: allowed services only (S3, CloudFront, Lambda, API Gateway, Scheduler, ECR, ECS, VPC, logs), stacks named `ip-sbx-*`, resources tagged `lifecycle=ephemeral`.
+- CodeBuild deploy role: it can create IAM roles only if they carry the same boundary (`iam:PermissionsBoundary` condition), so a template can't create a role outside the limits.
+- CodeBuild project (`general1.small`, on demand): downloads the plan's files from S3, runs `aws cloudformation deploy --stack-name ip-sbx-<id> --tags lifecycle=ephemeral`, prints the stack outputs.
+- CloudWatch log group for builds (14 days).
+- *Done when:* a static site template deploys and deletes by hand through CodeBuild, and a template with a role that lacks the boundary is refused.
+
+**2. Generator changes for the sandbox (Pair A)**
+- Optional `PermissionsBoundary` parameter in all four CloudFormation templates, attached to every role they create. Without it, step 1 blocks every deploy.
+- Sandbox mode: no GitHub deploy role (no repo or OIDC trust in a sandbox); fixed values for parameters the sandbox doesn't need.
+- Something to show: a sample `index.html` uploaded after a static site deploys; the Lambda placeholder code already works; containers use a sample app's image.
+- Buckets emptied before delete: the static site and Lambda upload buckets can't be deleted with files in them (the ECR repository already has `EmptyOnDelete`).
+- `samples/`: small Node, Python and Go apps.
+
+**3. Request records + API (Pair B)**
+- DynamoDB `requests` table (C14): request id, user, intent, plan S3 key, status (`pending → approved → deploying → deployed / failed → torn_down`), stack name, outputs, timestamps.
+- Endpoints on the existing HTTP API, each checking that the request belongs to the logged-in user:
+  - `POST /requests` (from a saved plan)
+  - `POST /requests/{id}/approve`, `POST /requests/{id}/reject` (with feedback)
+  - `GET /requests/{id}` (status, outputs), `GET /requests/{id}/logs?next=`
+  - `POST /requests/{id}/teardown`
+  - `GET /requests` (history)
+- Refuse a new deploy while the user has an active sandbox.
+
+**4. Approval and deploy workflow: Step Functions (Pair B)**
+- Save request → wait for approval (task token, 24 h timeout) → CodeBuild with the `.sync` integration (no polling Lambda) → read stack outputs → record outcome.
+- Approve calls `SendTaskSuccess`; reject calls `SendTaskFailure` and the chat regenerates the plan with the feedback.
+- A failed deploy is marked failed and its half-built stack is deleted.
+
+**5. Teardown + janitor (Pair B)**
+- Teardown: empty the stack's buckets, `delete-stack`, wait, record `torn_down`.
+- Janitor: EventBridge Scheduler, hourly, deletes `ip-sbx-*` stacks older than 4 hours and marks them in the history.
+
+**6. Frontend (Pair B)**
+- Plan card: Approve, Reject with a feedback box, cost note.
+- Live log panel, polling every 2 s while deploying.
+- Result: output links (site URL, function URL), **Tear down** button, countdown to automatic deletion.
+- History page.
+
+**7. Deploy targets, one at a time (both pairs)**
+1. Static site: the first end-to-end run.
+2. Lambda, each trigger.
+3. GitHub Actions: commit or PR to a team sample repo (GitHub token in SSM).
+4. Container on ECS: CodeBuild (privileged) builds the sample image, pushes to ECR, updates the stack's image tag. Same-day teardown.
+5. EKS: after its generator exists, scheduled test windows only.
+
+Each target gets the E2E test above.
+
+**8. Teardown from chat (Pair A, optional)**
+- A `teardown` intent: "delete my site" → list the user's active sandboxes → confirm → the same teardown endpoint.
+
+**Cost:** CodeBuild ≈ $0.005/build minute (free tier for `general1.small` if the account still qualifies); Step Functions within the free tier; static site and Lambda sandboxes ≈ $0; ECS ≈ $0.015/hour while running. No new paid services.
+
 #### Feature 4.3: Explain scan results and build failures + container/EKS generators (Pair A)
 - `explain_failure` intent: user pastes a failed GitHub Actions log, CodeBuild log, `checkov`/`trivy`/`cfn-lint` output, or ECS stopped-task reason. The assistant parses rule IDs and error codes, retrieves with a `doc_type in (rule, troubleshooting)` filter, and answers with the cause, the fix, and the pinned current versions.
 - **Eval:** `eval/explain/cases.jsonl`, ≥25 real failure logs (create them by breaking the sample apps on purpose). Metrics: correct root cause (judge + manual), the fix validates when applied, citation accuracy.
