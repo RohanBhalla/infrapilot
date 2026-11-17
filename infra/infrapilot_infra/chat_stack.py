@@ -34,6 +34,7 @@ from constructs import Construct
 
 from .chat_bundle import chat_code
 from .helpers import describe_cdk_helpers
+from .sandbox_stack import boundary_arn
 
 REPO = Path(__file__).resolve().parents[2]
 LOCAL_DEV = "http://localhost:5173"  # Vite dev server; Cognito allows plain http only for localhost
@@ -110,6 +111,20 @@ class ChatStack(Stack):
             auto_delete_objects=True,
         )
 
+        # Deploy requests and their sandboxes, the audit history (C14; api/infrapilot_api/deploy_requests.py):
+        # key `id`, plus a by_user index for each user's history. No TTL: history is kept.
+        requests = dynamodb.Table(
+            self, "Requests",
+            partition_key=dynamodb.Attribute(name="id", type=dynamodb.AttributeType.STRING),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.DESTROY,
+        )
+        requests.add_global_secondary_index(
+            index_name="by_user",
+            partition_key=dynamodb.Attribute(name="user_id", type=dynamodb.AttributeType.STRING),
+            sort_key=dynamodb.Attribute(name="created_at", type=dynamodb.AttributeType.STRING),
+        )
+
         # The linters (actionlint, hadolint, cfn-lint, checkov) as a container image: too big for
         # the chat Lambda's zip. CDK builds assistant/validator/Dockerfile with Docker and pushes it
         # to the CDK bootstrap ECR repository. It only reads the files it's sent, so no permissions.
@@ -153,6 +168,8 @@ class ChatStack(Stack):
                 "INFRAPILOT_LLM_RETRIES": "1",
                 "ARTIFACTS_BUCKET": artifacts.bucket_name,
                 "INFRAPILOT_VALIDATOR_FUNCTION": validator.function_name,
+                "REQUESTS_TABLE": requests.table_name,
+                "SANDBOX_BOUNDARY_ARN": boundary_arn(self),
                 "POWERTOOLS_SERVICE_NAME": "infrapilot-chat",
             },
             log_group=logs.LogGroup(self, "ChatLogs", retention=logs.RetentionDays.TWO_WEEKS,
@@ -161,6 +178,10 @@ class ChatStack(Stack):
         sessions.grant(chat_fn, "dynamodb:PutItem", "dynamodb:Query", "dynamodb:UpdateItem",
                        "dynamodb:BatchWriteItem")
         artifacts.grant_put(chat_fn, "plans/*")
+        artifacts.grant_read(chat_fn, "plans/*")
+        # Transactions (approving takes the user's lock) are checked as their PutItem/UpdateItem.
+        requests.grant(chat_fn, "dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem",
+                       "dynamodb:DeleteItem", "dynamodb:Query")
         validator.grant_invoke(chat_fn)
         chat_fn.add_to_role_policy(iam.PolicyStatement(
             actions=["ssm:GetParameter"],
@@ -190,7 +211,14 @@ class ChatStack(Stack):
         api.add_routes(path="/health", methods=[apigw.HttpMethod.GET], integration=integration)
         for path, method in [("/sessions", apigw.HttpMethod.POST),
                              ("/sessions/{session_id}", apigw.HttpMethod.GET),
-                             ("/sessions/{session_id}/messages", apigw.HttpMethod.POST)]:
+                             ("/sessions/{session_id}/messages", apigw.HttpMethod.POST),
+                             ("/requests", apigw.HttpMethod.POST),
+                             ("/requests", apigw.HttpMethod.GET),
+                             ("/requests/{request_id}", apigw.HttpMethod.GET),
+                             ("/requests/{request_id}/approve", apigw.HttpMethod.POST),
+                             ("/requests/{request_id}/reject", apigw.HttpMethod.POST),
+                             ("/requests/{request_id}/teardown", apigw.HttpMethod.POST),
+                             ("/requests/{request_id}/logs", apigw.HttpMethod.GET)]:
             api.add_routes(path=path, methods=[method], integration=integration, authorizer=cognito_auth)
 
         # The frontend reads these at startup, so nobody copies IDs into a .env file to deploy.
@@ -222,5 +250,6 @@ class ChatStack(Stack):
         CfnOutput(self, "UserPoolClientId", value=client.user_pool_client_id)
         CfnOutput(self, "CognitoDomain", value=domain.base_url())
         CfnOutput(self, "SessionsTable", value=sessions.table_name)
+        CfnOutput(self, "RequestsTable", value=requests.table_name)
         CfnOutput(self, "ArtifactsBucketName", value=artifacts.bucket_name)
         CfnOutput(self, "ValidatorFunctionName", value=validator.function_name)

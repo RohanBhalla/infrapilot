@@ -62,6 +62,13 @@ def test_session_routes_need_cognito_and_health_does_not(built):
         "POST /sessions": "JWT",
         "GET /sessions/{session_id}": "JWT",
         "POST /sessions/{session_id}/messages": "JWT",
+        "POST /requests": "JWT",
+        "GET /requests": "JWT",
+        "GET /requests/{request_id}": "JWT",
+        "POST /requests/{request_id}/approve": "JWT",
+        "POST /requests/{request_id}/reject": "JWT",
+        "POST /requests/{request_id}/teardown": "JWT",
+        "GET /requests/{request_id}/logs": "JWT",
     }
 
 
@@ -128,3 +135,16 @@ def test_every_lambda_has_a_description(built):
     functions = t.find_resources("AWS::Lambda::Function")
     assert len(functions) == 4  # chat, validator, auto-delete helper, website upload helper
     assert all(f["Properties"].get("Description", "").startswith("InfraPilot") for f in functions.values())
+
+
+def test_requests_table_has_a_history_index_and_the_lambda_knows_the_boundary(built):
+    _, t = built
+    t.has_resource_properties("AWS::DynamoDB::Table", {
+        "KeySchema": [{"AttributeName": "id", "KeyType": "HASH"}],
+        "GlobalSecondaryIndexes": [Match.object_like({"IndexName": "by_user", "KeySchema": [
+            {"AttributeName": "user_id", "KeyType": "HASH"}, {"AttributeName": "created_at", "KeyType": "RANGE"}]})],
+    })
+    t.has_resource_properties("AWS::Lambda::Function", {"Environment": {"Variables": Match.object_like({
+        "REQUESTS_TABLE": Match.any_value(),
+        "SANDBOX_BOUNDARY_ARN": {"Fn::Join": ["", ["arn:", {"Ref": "AWS::Partition"},
+                                                   ":iam::123456789012:policy/InfraPilotSandboxBoundary"]]}})}})

@@ -8,10 +8,13 @@ from __future__ import annotations
 
 import os
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
+from .artifacts import InMemoryPlanStore
+from .deploy_requests import DeployRequest, InMemoryRequestStore
+from .deploys import DeployRequestIn, DeployService, DryRunDeployer, Logs, RejectIn
 from .schemas import MessageIn, MessageOut, Session, SessionCreated
 from .service import ChatError, ChatService, build_answers, build_assistant
 from .sessions import InMemorySessionStore, SessionStore
@@ -26,11 +29,13 @@ def create_app(service=None, store: SessionStore | None = None, assistant=None) 
     origins = os.environ.get("INFRAPILOT_CORS_ORIGINS", "http://localhost:5173").split(",")
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
 
+    plans = InMemoryPlanStore()
     chat = ChatService(store or InMemorySessionStore(),
                        (lambda: service) if service else build_answers,
-                       (lambda llm: assistant) if assistant else build_assistant)
+                       (lambda llm: assistant) if assistant else build_assistant, plans=plans)
+    deploys = DeployService(InMemoryRequestStore(), plans, DryRunDeployer())
 
-    def call(fn, *args):
+    def call(fn, *args):  # also used for DeployService, whose errors are ChatErrors too
         try:
             return fn(LOCAL_USER, *args)
         except ChatError as exc:
@@ -58,5 +63,34 @@ def create_app(service=None, store: SessionStore | None = None, assistant=None) 
     @app.post("/sessions/{session_id}/messages")
     def post_message(session_id: str, body: MessageIn) -> MessageOut:
         return call(chat.post_message, session_id, body)
+
+    # Deploy requests: locally nothing is deployed (DryRunDeployer), so every deploy "succeeds".
+    @app.post("/requests", status_code=201)
+    def create_request(body: DeployRequestIn) -> DeployRequest:
+        return call(deploys.create, body.session_id, body.message_id)
+
+    @app.get("/requests")
+    def list_requests() -> list[DeployRequest]:
+        return call(deploys.history)
+
+    @app.get("/requests/{request_id}")
+    def read_request(request_id: str) -> DeployRequest:
+        return call(deploys.get, request_id)
+
+    @app.post("/requests/{request_id}/approve")
+    def approve_request(request_id: str) -> DeployRequest:
+        return call(deploys.approve, request_id)
+
+    @app.post("/requests/{request_id}/reject")
+    def reject_request(request_id: str, body: RejectIn | None = None) -> DeployRequest:
+        return call(deploys.reject, request_id, body.feedback if body else None)
+
+    @app.post("/requests/{request_id}/teardown")
+    def teardown_request(request_id: str) -> DeployRequest:
+        return call(deploys.teardown, request_id)
+
+    @app.get("/requests/{request_id}/logs")
+    def request_logs(request_id: str, next: str | None = Query(None, max_length=200)) -> Logs:
+        return call(deploys.logs, request_id, next)
 
     return app

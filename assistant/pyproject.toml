@@ -3,7 +3,7 @@ name = "infrapilot-assistant"
 version = "0.1.0"
 description = "InfraPilot intent classification, clarification (slot filling) and file generators"
 requires-python = ">=3.12"
-dependencies = ["infrapilot-rag", "pydantic>=2.7"]
+dependencies = ["infrapilot-rag", "pydantic>=2.7", "pyyaml>=6"]  # pyyaml: sandbox bundles
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pyyaml>=6", "actionlint-py>=1.7", "cfn-lint>=1.57"]  # linters: generator tests

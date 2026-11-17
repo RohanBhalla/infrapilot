@@ -17,6 +17,12 @@ from aws_cdk import CfnOutput, Stack, aws_iam as iam
 from constructs import Construct
 
 PREFIX = "ip-sbx-"
+# A fixed name, so the chat stack can name the boundary without a cross-stack export.
+BOUNDARY_NAME = "InfraPilotSandboxBoundary"
+
+
+def boundary_arn(stack: Stack) -> str:
+    return f"arn:{stack.partition}:iam::{stack.account}:policy/{BOUNDARY_NAME}"
 
 
 class SandboxStack(Stack):
@@ -27,6 +33,7 @@ class SandboxStack(Stack):
 
         self.boundary = iam.ManagedPolicy(
             self, "Boundary",
+            managed_policy_name=BOUNDARY_NAME,
             description="InfraPilot sandbox: the most any role created by an ip-sbx-* stack can do",
             statements=[
                 iam.PolicyStatement(actions=["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],

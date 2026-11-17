@@ -5,10 +5,12 @@ workflow (C12) can review and deploy it later without reading it back out of the
 
     plans/<user>/<session id>/<message id>.json
 
-The bucket deletes plans after 30 days, like the session table. Locally nothing is saved.
+The bucket deletes plans after 30 days, like the session table. Locally they are kept in memory.
 """
 
 from __future__ import annotations
+
+import threading
 
 from infrapilot_assistant.plan import Plan
 
@@ -30,3 +32,29 @@ class S3PlanStore:
         self.client.put_object(Bucket=self.bucket, Key=key, Body=plan.model_dump_json().encode(),
                                ContentType="application/json")
         return key
+
+    def load(self, key: str) -> Plan | None:
+        try:
+            body = self.client.get_object(Bucket=self.bucket, Key=key)["Body"].read()
+        except self.client.exceptions.NoSuchKey:
+            return None
+        return Plan.model_validate_json(body)
+
+
+class InMemoryPlanStore:
+    """Local development: plans live as long as the process, like the sessions."""
+
+    def __init__(self):
+        self._plans: dict[str, str] = {}
+        self._lock = threading.Lock()
+
+    def save(self, user: str, session_id: str, message_id: str, plan: Plan) -> str:
+        key = plan_key(user, session_id, message_id)
+        with self._lock:
+            self._plans[key] = plan.model_dump_json()
+        return key
+
+    def load(self, key: str) -> Plan | None:
+        with self._lock:
+            data = self._plans.get(key)
+        return Plan.model_validate_json(data) if data else None

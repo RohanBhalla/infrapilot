@@ -74,3 +74,31 @@ def test_invalid_body_is_422(handler):
     _, created = call(handler, "POST", "/sessions")
     for body in ({"content": ""}, {"content": "q", "filters": {"url": "x"}}, {}):
         assert call(handler, "POST", f"/sessions/{created['id']}/messages", body=body)[0] == 422
+
+
+def test_request_routes(monkeypatch, handler):
+    from infrapilot_api import lambda_handler as lh
+    from infrapilot_api.artifacts import InMemoryPlanStore
+    from infrapilot_api.deploy_requests import InMemoryRequestStore
+    from infrapilot_api.deploys import DeployService, DryRunDeployer
+
+    from test_deploys import lambda_plan
+
+    assert call(handler, "GET", "/requests")[0] == 503  # REQUESTS_TABLE not set
+    plans = InMemoryPlanStore()
+    plans.save("alice", "s1", "m1", lambda_plan())
+    monkeypatch.setattr(lh, "deploys", DeployService(InMemoryRequestStore(), plans, DryRunDeployer()))
+
+    status, req = call(handler, "POST", "/requests", body={"session_id": "s1", "message_id": "m1"})
+    assert status == 201 and req["status"] == "pending"
+    assert call(handler, "GET", f"/requests/{req['id']}", user="bob")[0] == 404
+    assert call(handler, "POST", f"/requests/{req['id']}/reject")[1]["status"] == "rejected"  # no body
+    assert call(handler, "POST", "/requests", body={"session_id": "s1"})[0] == 422
+
+    rid = call(handler, "POST", "/requests", body={"session_id": "s1", "message_id": "m1"})[1]["id"]
+    assert call(handler, "POST", f"/requests/{rid}/approve")[1]["status"] == "deployed"
+    status, logs = call(handler, "GET", f"/requests/{rid}/logs")
+    assert status == 200 and len(logs["events"]) == 2
+    assert call(handler, "POST", f"/requests/{rid}/teardown")[1]["status"] == "torn_down"
+    status, history = call(handler, "GET", "/requests")
+    assert status == 200 and [h["status"] for h in history] == ["torn_down", "rejected"]

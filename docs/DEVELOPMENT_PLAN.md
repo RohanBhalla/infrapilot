@@ -398,6 +398,8 @@ Each step needs the ones before it, except step 8. The generators (C10), validat
 
 **Status (2026-11-10): steps 0–2 done**, see [decision 004](decisions/004-sandbox-deploys.md). Change from the steps below: CloudFormation targets don't use CodeBuild. Step Functions calls CloudFormation directly with the `InfraPilotSandbox` service role, and the live log is the stack's events; CodeBuild comes back only for the ECS target (image build). `InfraPilotSandbox` (service role + permissions boundary) is deployed, and `infrapilot_assistant.sandbox.prepare` turns a plan into a sandbox bundle. Live test through the service role: static site (created in ~3 min, served the sample page, deleted in ~3 min), Lambda with a function URL, HTTP API, schedule and S3 trigger, and an ECR repository all deployed and deleted cleanly; a role without the boundary and a bucket outside `ip-sbx-*` were refused. Next: steps 3–4.
 
+**Status (2026-11-17): step 3 done (local), see [decision 005](decisions/005-deploy-requests.md).** Change: approval starts the deploy workflow instead of the workflow waiting on a task token; the `requests` record is the waiting state. The `requests` table (with a `by_user` history index), the seven `/requests` routes and the one-sandbox-per-user lock are built and tested; locally a dry-run deployer stands in for AWS. Next: step 4 (the Step Functions deploy workflow), then deploy steps 3 and 4 together.
+
 **0. Decisions first (both pairs)**
 - Account: deploys go into the team account as a temporary demo sandbox, not the user's own account.
 - Code: sandboxes run our `samples/` apps and placeholder code, not the user's code.
