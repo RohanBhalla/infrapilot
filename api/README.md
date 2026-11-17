@@ -37,8 +37,10 @@ Needs the same setup as `infrapilot-ask`: AWS credentials (question embeddings) 
 Deploy requests follow [decision 005](../docs/decisions/005-deploy-requests.md): `pending →
 deploying → deployed / failed → tearing_down → torn_down` (or `rejected`), one active sandbox per
 user. Locally nothing is deployed: approve succeeds at once with made-up outputs (`DryRunDeployer`).
-On AWS the records are in the `requests` DynamoDB table; until the request workflow is deployed,
-approve marks the request failed ("didn't start") and logs and teardown answer 503.
+On AWS the records are in the `requests` DynamoDB table, and approve and teardown start the
+sandbox workflows (`aws_deployer.py`, `infra/infrapilot_infra/deploy_workflow.py`). They report each
+outcome back through the sandbox ops Lambda (`sandbox_handler.py`), and the live log is the stack's
+CloudFormation events.
 
 ```bash
 SID=$(curl -s -X POST localhost:8000/sessions | python3 -c "import sys,json;print(json.load(sys.stdin)['id'])")
