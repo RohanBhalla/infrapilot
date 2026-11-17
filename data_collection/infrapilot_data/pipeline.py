@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import os
 import shutil
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -22,6 +23,7 @@ from .http import PoliteClient
 from .models import Chunk, FetchResult, NormalizedDoc, RawDoc, SourceSpec, VersionFact, utcnow
 from .normalize import normalize, quality_issue, strip_boilerplate
 from .text import slugify
+from .storage import AwsPageCache
 
 log = logging.getLogger(__name__)
 P = SETTINGS.paths
@@ -35,6 +37,68 @@ def _write_json(path: Path, data) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, default=str, ensure_ascii=False))
 
+
+def document_content_hash(doc: RawDoc) -> str:
+    """Calculate a stable hash of a document's content."""
+    return hashlib.sha256(doc.body.encode("utf-8")).hexdigest()
+
+
+def compare_document_hashes(
+    source_id: str,
+    docs: list[RawDoc],
+) -> dict:
+    """Compare fetched document hashes with the previous manifest."""
+
+    manifest_path = P.reports / "content_hashes.json"
+    manifest = _read_json(manifest_path, {})
+
+    previous = manifest.get(source_id, {})
+    current = {}
+
+    unchanged = []
+    changed = []
+    new = []
+
+    for doc in docs:
+        doc_hash = document_content_hash(doc)
+        current[doc.url] = doc_hash
+
+        if doc.url not in previous:
+            new.append(doc.url)
+        elif previous[doc.url] == doc_hash:
+            unchanged.append(doc.url)
+        else:
+            changed.append(doc.url)
+
+    removed = [
+        url for url in previous
+        if url not in current
+    ]
+
+    return {
+        "new": new,
+        "changed": changed,
+        "unchanged": unchanged,
+        "removed": removed,
+        "current_hashes": current,
+    }
+
+
+def persist_document_hashes(
+    source_id: str,
+    current_hashes: dict[str, str],
+) -> None:
+    """Persist observed hashes without deleting previously known URLs."""
+
+    manifest_path = P.reports / "content_hashes.json"
+    manifest = _read_json(manifest_path, {})
+
+    previous = manifest.get(source_id, {})
+    previous.update(current_hashes)
+
+    manifest[source_id] = dict(sorted(previous.items()))
+
+    _write_json(manifest_path, manifest)
 
 # ---- fetch ---------------------------------------------------------------------
 
@@ -82,25 +146,107 @@ def save_fetch(spec: SourceSpec, result: FetchResult) -> None:
     _write_json(log_path, dict(sorted(fetch_log.items(), key=lambda kv: int(kv[0]))))
 
 
-def run_fetch(specs: list[SourceSpec], max_pages: int | None = None, workers: int = 6,
-              use_cache: bool = True) -> dict[str, FetchResult]:
-    client = PoliteClient(use_cache=use_cache)
-    ctx = FetchContext(client=client, max_pages_override=max_pages)
+
+def run_fetch(
+    specs: list[SourceSpec],
+    max_pages: int | None = None,
+    workers: int = 6,
+    use_cache: bool = True,
+) -> dict[str, FetchResult]:
+
+    # AWS caching is opt-in. Local caching remains the default.
+    aws_cache = None
+
+    aws_cache_enabled = (
+        os.environ.get("INFRAPILOT_AWS_CACHE", "false").lower() == "true"
+    )
+
+    if aws_cache_enabled:
+        table_name = os.environ.get("INFRAPILOT_DDB_TABLE")
+        bucket_name = os.environ.get("INFRAPILOT_S3_BUCKET")
+        region = os.environ.get("AWS_REGION", SETTINGS.embedding.region)
+
+        if not table_name or not bucket_name:
+            raise ValueError(
+                "AWS caching requires INFRAPILOT_DDB_TABLE "
+                "and INFRAPILOT_S3_BUCKET"
+            )
+
+        aws_cache = AwsPageCache(
+            table_name=table_name,
+            bucket_name=bucket_name,
+            region=region,
+        )
+
+        log.info("Using AWS-backed HTTP cache")
+
+    else:
+        log.info("Using local HTTP cache")
+
+    client = PoliteClient(
+        use_cache=use_cache,
+        aws_cache=aws_cache,
+    )
+
+    ctx = FetchContext(
+        client=client,
+        max_pages_override=max_pages,
+    )
+
     results: dict[str, FetchResult] = {}
+
     try:
         with ThreadPoolExecutor(max_workers=workers) as pool:
-            futures = {pool.submit(fetch_source, s, ctx): s for s in specs}
+            futures = {
+                pool.submit(fetch_source, s, ctx): s
+                for s in specs
+            }
+
+            
             for fut in as_completed(futures):
                 spec = futures[fut]
                 result = fut.result()
+
+                comparison = compare_document_hashes(
+                    spec.id,
+                    result.docs,
+                )
+
                 save_fetch(spec, result)
+
+                if result.docs and not result.errors:
+                    persist_document_hashes(
+                        spec.id,
+                        comparison["current_hashes"],
+                    )
+
                 results[spec.id] = result
-                log.info("[%s] %-45s docs=%-4d versions=%-2d errors=%d skipped=%d", spec.id,
-                         spec.name[:45], len(result.docs), len(result.versions),
-                         len(result.errors), len(result.skipped_urls))
+
+                log.info(
+                    "[%s] content changes: new=%d changed=%d unchanged=%d removed=%d",
+                    spec.id,
+                    len(comparison["new"]),
+                    len(comparison["changed"]),
+                    len(comparison["unchanged"]),
+                    len(comparison["removed"]),
+                )
+
+                log.info(
+                    "[%s] %-45s docs=%-4d versions=%-2d errors=%d skipped=%d",
+                    spec.id,
+                    spec.name[:45],
+                    len(result.docs),
+                    len(result.versions),
+                    len(result.errors),
+                    len(result.skipped_urls),
+                )
+
+
     finally:
         client.close()
+
     return results
+
 
 
 # ---- process -------------------------------------------------------------------

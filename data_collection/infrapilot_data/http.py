@@ -42,11 +42,14 @@ class Response:
 
 
 class PoliteClient:
-    def __init__(self, cache_dir: Path | None = None, settings=SETTINGS, use_cache: bool = True):
+    def __init__(self, cache_dir: Path | None = None, settings=SETTINGS, use_cache: bool = True, aws_cache=None,):
         self.settings = settings
         self.cache_dir = cache_dir or settings.paths.http_cache
         self.use_cache = use_cache
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.aws_cache = aws_cache
+        # Only create a local directory when using local caching.
+        if self.aws_cache is None:
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
         self._client = httpx.Client(
             headers={"User-Agent": USER_AGENT},
             timeout=settings.timeout,
@@ -132,7 +135,10 @@ class PoliteClient:
         req_headers = dict(headers or {})
         if host == "api.github.com" and self.settings.github_token:
             req_headers.setdefault("Authorization", f"Bearer {self.settings.github_token}")
-        cached = self._load_cache(url)
+        if self.use_cache and self.aws_cache is not None:
+            cached = self.aws_cache.get(url)
+        else:
+            cached = self._load_cache(url)
         if cached:
             if cached.get("etag"):
                 req_headers["If-None-Match"] = cached["etag"]
@@ -156,8 +162,17 @@ class PoliteClient:
                 log.warning("HTTP %s for %s, retrying in %.0fs", resp.status_code, url, wait)
                 time.sleep(min(wait, 60))
                 continue
-            if resp.status_code == 200:
-                self._save_cache(url, resp)
+            if resp.status_code == 200: # Updates how responses are saved(from local to AWS)
+                if self.aws_cache is not None:
+                    self.aws_cache.save(
+                        url=url,
+                        text=resp.text,
+                        content_type=resp.headers.get("content-type", ""),
+                        etag=resp.headers.get("etag"),
+                        last_modified=resp.headers.get("last-modified"),
+                    )
+                else:
+                    self._save_cache(url, resp)
             return Response(
                 str(resp.url), resp.status_code, resp.text, resp.headers.get("content-type", "")
             )
