@@ -6,7 +6,8 @@ API Gateway checks the token and adds the CORS headers, so neither happens here.
 Environment: SESSIONS_TABLE, OPENAI_KEY_PARAM (SSM SecureString name), INFRAPILOT_BACKEND=kb,
 INFRAPILOT_KB_ID, INFRAPILOT_DATA_DIR (bundled versions.json), ARTIFACTS_BUCKET (saved plans),
 INFRAPILOT_VALIDATOR_FUNCTION (the Lambda that runs the linters on generated files),
-REQUESTS_TABLE (deploy requests), SANDBOX_BOUNDARY_ARN (InfraPilotSandbox's permissions boundary).
+REQUESTS_TABLE (deploy requests), SANDBOX_BOUNDARY_ARN (InfraPilotSandbox's permissions boundary),
+DEPLOY_STATE_MACHINE and TEARDOWN_STATE_MACHINE (the sandbox workflows).
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from aws_lambda_powertools.utilities import parameters
 from pydantic import ValidationError
 
 from .artifacts import S3PlanStore
+from .aws_deployer import StepFunctionsDeployer
 from .deploy_requests import DynamoRequestStore
 from .deploys import DeployRequestIn, DeployService, RejectIn
 from .dynamo import DynamoSessionStore
@@ -57,7 +59,9 @@ class _NoDeployer:
         raise Unavailable("sandbox deploys aren't set up yet")
 
 
-deploys = DeployService(DynamoRequestStore(os.environ["REQUESTS_TABLE"]), plans, _NoDeployer(),
+deployer = StepFunctionsDeployer(os.environ["DEPLOY_STATE_MACHINE"], os.environ["TEARDOWN_STATE_MACHINE"], bucket) \
+    if os.environ.get("DEPLOY_STATE_MACHINE") and bucket else _NoDeployer()
+deploys = DeployService(DynamoRequestStore(os.environ["REQUESTS_TABLE"]), plans, deployer,
                         os.environ.get("SANDBOX_BOUNDARY_ARN", "")) if os.environ.get("REQUESTS_TABLE") else None
 
 

@@ -65,6 +65,7 @@ class Outcome(BaseModel):
     status: str  # deployed | failed | torn_down
     outputs: dict[str, str] = Field(default_factory=dict)
     error: str | None = None
+    stack_gone: bool = False  # a failed deploy whose stack CloudFormation already deleted
 
 
 class Deployer(Protocol):
@@ -188,15 +189,16 @@ class DeployService:
         return self.record(req.id, outcome) if outcome else req
 
     def record(self, request_id: str, outcome: Outcome) -> DeployRequest:
-        """An outcome from the deployer. Releases the user's lock once the stack is gone."""
-        allowed = {"deploying"} if outcome.status in ("deployed", "failed") else {"tearing_down", *ACTIVE}
+        """An outcome from the deployer. Releases the user's lock once the stack is gone.
+        `failed` from `tearing_down` means the delete failed: the stack is still there."""
+        allowed = {"deployed": {"deploying"}, "failed": {"deploying", "tearing_down"}}.get(outcome.status, ACTIVE)
         fields = {"status": outcome.status}
         if outcome.outputs:
             fields["outputs"] = outcome.outputs
         if outcome.error:
             fields["error"] = outcome.error
         req = self.requests.transition(request_id, allowed, **fields)
-        if req.status == "torn_down":
+        if req.status == "torn_down" or outcome.stack_gone:
             self.requests.release(req.user_id, req.id)
         log.info("deploy outcome", extra={"request_id": req.id, "status": req.status})
         return req

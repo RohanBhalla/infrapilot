@@ -33,6 +33,7 @@ from aws_cdk import (
 from constructs import Construct
 
 from .chat_bundle import chat_code
+from .deploy_workflow import DeployWorkflow
 from .helpers import describe_cdk_helpers
 from .sandbox_stack import boundary_arn
 
@@ -145,6 +146,9 @@ class ChatStack(Stack):
 
         # One function for all routes: fewer cold starts than one per route. ARM is ~20% cheaper,
         # and 512 MB is plenty since it mostly waits on OpenAI. 29 s fits API Gateway's 30 s limit.
+        code = chat_code()  # the chat Lambda and the sandbox ops Lambda share one bundle
+        workflow = DeployWorkflow(self, "Sandbox", code=code, requests=requests, artifacts=artifacts)
+
         chat_fn = lambda_.Function(
             self, "ChatFunction",
             description="InfraPilot chat API: sessions, intent classification, cited answers from the "
@@ -152,7 +156,7 @@ class ChatStack(Stack):
             runtime=lambda_.Runtime.PYTHON_3_12,
             architecture=lambda_.Architecture.ARM_64,
             handler="infrapilot_api.lambda_handler.lambda_handler",
-            code=chat_code(),
+            code=code,
             memory_size=512,
             timeout=Duration.seconds(29),
             environment={
@@ -170,6 +174,8 @@ class ChatStack(Stack):
                 "INFRAPILOT_VALIDATOR_FUNCTION": validator.function_name,
                 "REQUESTS_TABLE": requests.table_name,
                 "SANDBOX_BOUNDARY_ARN": boundary_arn(self),
+                "DEPLOY_STATE_MACHINE": workflow.deploy.state_machine_arn,
+                "TEARDOWN_STATE_MACHINE": workflow.teardown.state_machine_arn,
                 "POWERTOOLS_SERVICE_NAME": "infrapilot-chat",
             },
             log_group=logs.LogGroup(self, "ChatLogs", retention=logs.RetentionDays.TWO_WEEKS,
@@ -179,6 +185,12 @@ class ChatStack(Stack):
                        "dynamodb:BatchWriteItem")
         artifacts.grant_put(chat_fn, "plans/*")
         artifacts.grant_read(chat_fn, "plans/*")
+        artifacts.grant_put(chat_fn, "requests/*")  # the bundle each deploy was made from
+        workflow.deploy.grant_start_execution(chat_fn)
+        workflow.teardown.grant_start_execution(chat_fn)
+        chat_fn.add_to_role_policy(iam.PolicyStatement(  # the live log
+            actions=["cloudformation:DescribeStackEvents"],
+            resources=[f"arn:{self.partition}:cloudformation:{self.region}:{self.account}:stack/ip-sbx-*/*"]))
         # Transactions (approving takes the user's lock) are checked as their PutItem/UpdateItem.
         requests.grant(chat_fn, "dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem",
                        "dynamodb:DeleteItem", "dynamodb:Query")

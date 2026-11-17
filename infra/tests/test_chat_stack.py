@@ -127,13 +127,13 @@ def test_artifacts_bucket_is_private_and_expires_plans(built):
     statements = [s for p in t.find_resources("AWS::IAM::Policy").values()
                   for s in p["Properties"]["PolicyDocument"]["Statement"]]
     put = [s for s in statements if "s3:PutObject" in str(s["Action"]) and "Artifacts" in str(s["Resource"])]
-    assert put and all("plans/*" in str(s["Resource"]) for s in put)
+    assert put and all("/plans/*" in str(s["Resource"]) or "/requests/*" in str(s["Resource"]) for s in put)
 
 
 def test_every_lambda_has_a_description(built):
     _, t = built
     functions = t.find_resources("AWS::Lambda::Function")
-    assert len(functions) == 4  # chat, validator, auto-delete helper, website upload helper
+    assert len(functions) == 5  # chat, validator, sandbox ops, auto-delete helper, website upload helper
     assert all(f["Properties"].get("Description", "").startswith("InfraPilot") for f in functions.values())
 
 
@@ -148,3 +148,26 @@ def test_requests_table_has_a_history_index_and_the_lambda_knows_the_boundary(bu
         "REQUESTS_TABLE": Match.any_value(),
         "SANDBOX_BOUNDARY_ARN": {"Fn::Join": ["", ["arn:", {"Ref": "AWS::Partition"},
                                                    ":iam::123456789012:policy/InfraPilotSandboxBoundary"]]}})}})
+
+
+def test_sandbox_workflows_create_stacks_only_as_the_sandbox_role(built):
+    import json
+
+    _, t = built
+    machines = t.find_resources("AWS::StepFunctions::StateMachine")
+    assert len(machines) == 2
+    definitions = [json.dumps(m["Properties"]["DefinitionString"]) for m in machines.values()]
+    create = next(d for d in definitions if "createStack" in d)
+    for expected in ("OnFailure", "DELETE", "CAPABILITY_IAM", "role/InfraPilotSandboxCloudFormation", "ephemeral"):
+        assert expected in create
+    assert any("deleteStack" in d for d in definitions)
+
+    statements = [s for p in t.find_resources("AWS::IAM::Policy").values()
+                  for s in p["Properties"]["PolicyDocument"]["Statement"]]
+    passes = [s for s in statements if "iam:PassRole" in str(s["Action"])]
+    assert len(passes) == 2 and all("role/InfraPilotSandboxCloudFormation" in str(s["Resource"]) for s in passes)
+    stacks = [s for s in statements if "cloudformation:" in str(s["Action"])]
+    assert stacks and all("stack/ip-sbx-*/*" in str(s["Resource"]) for s in stacks)
+    t.has_resource_properties("AWS::Lambda::Function", {
+        "Handler": "infrapilot_api.sandbox_handler.handler",
+        "Environment": {"Variables": Match.object_like({"REQUESTS_TABLE": Match.any_value()})}})

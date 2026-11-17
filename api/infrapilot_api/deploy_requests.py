@@ -44,6 +44,8 @@ class DeployRequest(BaseModel):
     intent: str
     summary: str
     stack_name: str
+    stack_id: str | None = Field(None, description="Set once CloudFormation creates the stack; its events stay "
+                                                   "readable by id after it's deleted")
     status: Status = "pending"
     created_at: datetime = Field(default_factory=utcnow)
     updated_at: datetime = Field(default_factory=utcnow)

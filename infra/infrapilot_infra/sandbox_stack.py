@@ -17,12 +17,17 @@ from aws_cdk import CfnOutput, Stack, aws_iam as iam
 from constructs import Construct
 
 PREFIX = "ip-sbx-"
-# A fixed name, so the chat stack can name the boundary without a cross-stack export.
+# Fixed names, so the chat stack can refer to them without cross-stack exports.
 BOUNDARY_NAME = "InfraPilotSandboxBoundary"
+SERVICE_ROLE_NAME = "InfraPilotSandboxCloudFormation"
 
 
 def boundary_arn(stack: Stack) -> str:
     return f"arn:{stack.partition}:iam::{stack.account}:policy/{BOUNDARY_NAME}"
+
+
+def service_role_arn(stack: Stack) -> str:
+    return f"arn:{stack.partition}:iam::{stack.account}:role/{SERVICE_ROLE_NAME}"
 
 
 class SandboxStack(Stack):
@@ -53,6 +58,7 @@ class SandboxStack(Stack):
 
         self.service_role = iam.Role(
             self, "CloudFormationRole",
+            role_name=SERVICE_ROLE_NAME,
             description="InfraPilot sandbox: CloudFormation creates and deletes ip-sbx-* stacks as this role",
             assumed_by=iam.ServicePrincipal("cloudformation.amazonaws.com", conditions={
                 "StringEquals": {"aws:SourceAccount": a}}),
