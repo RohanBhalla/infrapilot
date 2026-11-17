@@ -15,6 +15,7 @@ from aws_cdk import (
     aws_iam as iam,
     aws_s3 as s3,
     aws_s3vectors as s3vectors,
+    aws_dynamodb as dynamodb,
 )
 from constructs import Construct
 
