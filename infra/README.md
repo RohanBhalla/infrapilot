@@ -9,6 +9,7 @@ removed with another. Nothing is created by hand in the console.
 |---|---|
 | `InfraPilotChat` | The chat app: S3 + CloudFront website, Cognito login, API Gateway HTTP API with a Cognito JWT authorizer, the chat Lambda (`api/infrapilot_api/lambda_handler.py`: the assistant, searching `InfraPilotKnowledge`), the DynamoDB session table, the validator Lambda (container image with actionlint, hadolint, cfn-lint and checkov, for generated files) and the artifacts bucket (generated plans, deleted after 30 days) |
 | `InfraPilotKnowledge` | Document search: S3 docs bucket, S3 Vectors index, Bedrock Knowledge Base (Titan Text Embeddings V2, no re-chunking: it uses the chunks from `data_collection`) |
+| `InfraPilotSandbox` | Limits for sandbox deploys ([decision 004](../docs/decisions/004-sandbox-deploys.md)): the CloudFormation service role that every `ip-sbx-*` stack runs as (allowed resource types only, `ip-sbx-*` names, never resources tagged `lifecycle=persistent`) and the permissions boundary every role in a sandbox must carry. Free; nothing runs on its own |
 
 All resources are tagged `project=infrapilot`. The stack is pay-per-use and costs close to $0
 when idle. The API is throttled to 10 requests/s (burst 20), and Lambda logs are kept for 14 days.

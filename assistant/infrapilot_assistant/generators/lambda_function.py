@@ -115,7 +115,8 @@ def _schedule(raw, notes: list[str]) -> str:
 
 # The upload bucket's name is fixed up front (account id + part of the stack id) so the role and the
 # invoke permission can name it before the bucket exists; that avoids a circular dependency.
-BUCKET_NAME = ('!Join ["-", [uploads, !Ref AWS::AccountId, '
+UPLOAD_BUCKET_PREFIX = "uploads"  # the sandbox swaps this for its stack name (sandbox.py)
+BUCKET_NAME = (f'!Join ["-", [{UPLOAD_BUCKET_PREFIX}, !Ref AWS::AccountId, '
                '!Select [0, !Split ["-", !Select [2, !Split ["/", !Ref AWS::StackId]]]]]]')
 
 

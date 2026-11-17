@@ -157,6 +157,22 @@ INFRAPILOT_VALIDATOR_URL=http://localhost:9000/2015-03-31/functions/function/inv
   ../data_collection/.venv/bin/pytest -q tests/test_validate.py
 ```
 
+## Sandbox bundles (C13)
+
+`sandbox.prepare(plan, request_id, boundary_arn)` turns a validated plan into what the request
+workflow deploys as the stack `ip-sbx-<request id>` in the team account
+([decision 004](../docs/decisions/004-sandbox-deploys.md)):
+
+- the CloudFormation template as JSON, with the sandbox permissions boundary on every IAM role;
+- the Lambda upload bucket renamed into the `ip-sbx-` prefix (every other resource is already
+  named after the stack);
+- for static sites, a sample `index.html` to upload to the `BucketName` output.
+
+Every resource type must be in `sandbox.RESOURCE_TYPES`, which matches what the
+`InfraPilotSandbox` service role may create. Plans it can't run are refused with a reason for the
+user (`NotDeployable`): a failed check, a custom domain (needs a certificate), ECS (VPC and ECS
+aren't allowed yet), or a workflow-only plan with no template.
+
 ## Eval
 
 `eval/intent/utterances.jsonl` has 120 labeled messages (single-turn, multi-turn with saved state,
@@ -179,6 +195,7 @@ cd assistant && ../data_collection/.venv/bin/pytest -q
 
 The generator tests build every combination: 36 GitHub Actions workflows (language x package
 manager x deploy target), 48 static site plans (framework x SPA x domain x CI) and 20 Lambda plans
-(trigger x runtime x CI) and 16 Dockerfile plans (language x ECR x ECS). They parse each
+(trigger x runtime x CI) and 16 Dockerfile plans (language x ECR x ECS). The sandbox tests
+prepare every deployable plan and check the boundary, names and allowed types. They parse each
 file and run actionlint and cfn-lint (`pip install -e "assistant[dev]"` installs both). Checkov
 runs only against the validator image (see Validation).
