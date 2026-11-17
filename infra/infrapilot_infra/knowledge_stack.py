@@ -27,7 +27,18 @@ PREFIX = "kb_export/"
 class KnowledgeStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
-
+        # Stores the last fetched state of each documentation URL.
+        ingest_state = dynamodb.Table(
+            self,
+            "IngestStateTable",
+            table_name="ingest_state",
+            partition_key=dynamodb.Attribute(
+                name="url",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=RemovalPolicy.RETAIN,
+        )
         # The chunks can be rebuilt from data_collection, so the bucket is not kept on destroy.
         docs = s3.Bucket(
             self, "DocsBucket",
