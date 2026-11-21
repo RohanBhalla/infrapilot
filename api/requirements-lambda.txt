@@ -3,3 +3,4 @@
 aws-lambda-powertools==3.37.0
 openai==3.29.0
 pydantic==2.14.0
+pyyaml==6.0.3

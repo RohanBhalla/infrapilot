@@ -26,6 +26,21 @@ Needs the same setup as `infrapilot-ask`: AWS credentials (question embeddings) 
 | POST | `/sessions` | Start a conversation; returns its `id` |
 | GET | `/sessions/{id}` | Conversation history |
 | POST | `/sessions/{id}/messages` | Send `{"content": "...", "filters": {"category": "..."}}`; returns the reply with citations |
+| POST | `/requests` | Ask to deploy the plan in a chat reply: `{"session_id": "...", "message_id": "..."}`. 422 with the reason if the sandbox can't run it |
+| GET | `/requests` | The user's deploy history, newest first |
+| GET | `/requests/{id}` | Status, stack outputs (site URL, function URL), `teardown_at` |
+| POST | `/requests/{id}/approve` | Deploy it. 409 if it isn't pending or the user already has a sandbox |
+| POST | `/requests/{id}/reject` | Optional `{"feedback": "..."}` |
+| GET | `/requests/{id}/logs?next=` | Stack events, oldest first; pass `next` back to get only newer ones |
+| POST | `/requests/{id}/teardown` | Delete the sandbox |
+
+Deploy requests follow [decision 005](../docs/decisions/005-deploy-requests.md): `pending →
+deploying → deployed / failed → tearing_down → torn_down` (or `rejected`), one active sandbox per
+user. Locally nothing is deployed: approve succeeds at once with made-up outputs (`DryRunDeployer`).
+On AWS the records are in the `requests` DynamoDB table, and approve and teardown start the
+sandbox workflows (`aws_deployer.py`, `infra/infrapilot_infra/deploy_workflow.py`). They report each
+outcome back through the sandbox ops Lambda (`sandbox_handler.py`), and the live log is the stack's
+CloudFormation events.
 
 ```bash
 SID=$(curl -s -X POST localhost:8000/sessions | python3 -c "import sys,json;print(json.load(sys.stdin)['id'])")
@@ -51,7 +66,7 @@ The OpenAPI spec is at `/openapi.json`; the frontend can be built against it.
 - **Sessions** belong to a user and nobody else can read them. Locally they're kept in memory and
   lost on restart. On AWS, `DynamoSessionStore` keeps one partition per user (`PK=USER#<sub>`), the
   session's task state in a `META` item, one item per message, and a 30-day TTL.
-- **Errors:** 401 no login (AWS only), 404 unknown session, 422 invalid request (unknown fields are rejected), 400 bad
+- **Errors:** 401 no login (AWS only), 404 unknown session or request, 409 request in the wrong state, 422 plan the sandbox can't run, 422 invalid request (unknown fields are rejected), 400 bad
   filter, 502 model or search failure (nothing is saved), 503 service not configured.
 - **CORS** allows `http://localhost:5173` (Vite dev server); set `INFRAPILOT_CORS_ORIGINS`.
 - `INFRAPILOT_BACKEND=kb` uses the Bedrock Knowledge Base retriever instead of local LanceDB (Phase 2).
