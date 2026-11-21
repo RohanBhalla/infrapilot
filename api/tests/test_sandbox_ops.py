@@ -26,8 +26,12 @@ class FakeCfn:
     class exceptions:
         ClientError = ClientError
 
-    def __init__(self, stacks=None, events=(), resources=()):
+    def __init__(self, stacks=None, events=(), resources=(), summaries=()):
         self.stacks, self.events, self.resources = stacks or {}, list(events), list(resources)
+        self.summaries, self.deleted = list(summaries), []  # list_stacks, delete_stack
+
+    def delete_stack(self, StackName, RoleARN):
+        self.deleted.append((StackName, RoleARN))
 
     def describe_stacks(self, StackName):
         if StackName not in self.stacks:
@@ -47,7 +51,9 @@ class FakeCfn:
         cfn = self
 
         class P:
-            def paginate(self, StackName):
+            def paginate(self, StackName=None):
+                if name == "list_stacks":
+                    return [{"StackSummaries": cfn.summaries}]
                 if StackName not in cfn.stacks:
                     raise missing(StackName)
                 return [{"StackResourceSummaries": cfn.resources}]

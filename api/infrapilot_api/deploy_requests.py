@@ -71,6 +71,8 @@ class RequestStore(Protocol):
     def transition(self, request_id: str, allowed: set[str], **fields) -> DeployRequest: ...
     def claim(self, user: str, request_id: str, **fields) -> DeployRequest: ...
     def release(self, user: str, request_id: str) -> None: ...
+    def locks(self) -> list[tuple[str, str]]:
+        """Every (user, request id) lock: the janitor checks none is left behind."""
 
 
 class InMemoryRequestStore:
@@ -120,6 +122,10 @@ class InMemoryRequestStore:
         with self._lock:
             if self._active.get(user) == request_id:
                 del self._active[user]
+
+    def locks(self) -> list[tuple[str, str]]:
+        with self._lock:
+            return list(self._active.items())
 
 
 class DynamoRequestStore:
@@ -236,3 +242,15 @@ class DynamoRequestStore:
         except ClientError as exc:
             if exc.response["Error"]["Code"] != "ConditionalCheckFailedException":
                 raise
+
+    def locks(self) -> list[tuple[str, str]]:
+        """A scan, but only the janitor calls it, once an hour, and the table is small."""
+        from boto3.dynamodb.conditions import Attr
+
+        out, kwargs = [], {"FilterExpression": Attr("id").begins_with("ACTIVE#"), "ConsistentRead": True}
+        while True:
+            page = self.table.scan(**kwargs)
+            out += [(i["id"].removeprefix("ACTIVE#"), i["request_id"]) for i in page.get("Items", [])]
+            if "LastEvaluatedKey" not in page:
+                return out
+            kwargs["ExclusiveStartKey"] = page["LastEvaluatedKey"]
