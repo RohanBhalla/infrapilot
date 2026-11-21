@@ -7,13 +7,16 @@ ops Lambda (api/infrapilot_api/sandbox_handler.py) for status checks and to reco
     Deploy:   CreateStack (sandbox role, OnFailure=DELETE) → Started → [Wait 15 s → Status]* →
               CREATE_COMPLETE: Deployed (upload sample page, record outputs) | *_IN_PROGRESS: wait | else: Failed
     Teardown: Empty buckets → DeleteStack → [Wait 15 s → Status]* → GONE: TornDown | else: TeardownFailed
+    Janitor:  every hour, tear down sandboxes past their 4 hours (api/infrapilot_api/janitor.py)
 
 Cost: a deploy takes ~15–40 state transitions; 4,000 a month are free, then $0.025 per 1,000.
+The janitor is ~730 Lambda runs a month and an EventBridge rule, both inside the free tier.
 """
 
 from __future__ import annotations
 
-from aws_cdk import Duration, RemovalPolicy, Stack, aws_iam as iam, aws_lambda as lambda_, aws_logs as logs
+from aws_cdk import Duration, RemovalPolicy, Stack, aws_events as events, aws_events_targets as targets
+from aws_cdk import aws_iam as iam, aws_lambda as lambda_, aws_logs as logs
 from aws_cdk import aws_stepfunctions as sfn, aws_stepfunctions_tasks as tasks
 from constructs import Construct
 
@@ -153,3 +156,35 @@ class DeployWorkflow(Construct):
 
         self.deploy = machine("Deploy", deploy)
         self.teardown = machine("Teardown", teardown)
+
+        # Janitor -----------------------------------------------------------------------------
+        self.janitor = lambda_.Function(
+            self, "JanitorFunction",
+            description="InfraPilot sandbox janitor: every hour, tears down ip-sbx-* sandboxes past their 4 hours, "
+                        "deletes stray ones and releases stuck one-sandbox locks.",
+            runtime=lambda_.Runtime.PYTHON_3_12,
+            architecture=lambda_.Architecture.ARM_64,
+            handler="infrapilot_api.janitor.handler",
+            code=code,
+            memory_size=256,
+            timeout=Duration.minutes(5),
+            environment={"REQUESTS_TABLE": requests.table_name, "TEARDOWN_STATE_MACHINE": self.teardown.state_machine_arn,
+                         "SANDBOX_ROLE_ARN": role_arn, "POWERTOOLS_SERVICE_NAME": "infrapilot-janitor"},
+            log_group=logs.LogGroup(self, "JanitorLogs", retention=logs.RetentionDays.TWO_WEEKS,
+                                    removal_policy=RemovalPolicy.DESTROY),
+        )
+        requests.grant(self.janitor, "dynamodb:GetItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem", "dynamodb:Scan")
+        self.teardown.grant_start_execution(self.janitor)
+        self.janitor.add_to_role_policy(iam.PolicyStatement(  # ListStacks can't be limited to some stacks
+            actions=["cloudformation:ListStacks"], resources=["*"]))
+        self.janitor.add_to_role_policy(iam.PolicyStatement(
+            actions=["cloudformation:ListStackResources", "cloudformation:DeleteStack"], resources=[stacks_arn]))
+        self.janitor.add_to_role_policy(iam.PolicyStatement(  # stray stacks are deleted as the sandbox role
+            actions=["iam:PassRole"], resources=[role_arn],
+            conditions={"StringEquals": {"iam:PassedToService": "cloudformation.amazonaws.com"}}))
+        self.janitor.add_to_role_policy(iam.PolicyStatement(
+            actions=["s3:DeleteObject", "s3:DeleteObjectVersion", "s3:ListBucket", "s3:ListBucketVersions"],
+            resources=[f"arn:{p}:s3:::{PREFIX}*", f"arn:{p}:s3:::{PREFIX}*/*"]))
+        events.Rule(self, "Hourly", description="InfraPilot: run the sandbox janitor every hour",
+                    schedule=events.Schedule.rate(Duration.hours(1)),
+                    targets=[targets.LambdaFunction(self.janitor, retry_attempts=0)])
