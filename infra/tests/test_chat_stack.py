@@ -133,7 +133,7 @@ def test_artifacts_bucket_is_private_and_expires_plans(built):
 def test_every_lambda_has_a_description(built):
     _, t = built
     functions = t.find_resources("AWS::Lambda::Function")
-    assert len(functions) == 5  # chat, validator, sandbox ops, auto-delete helper, website upload helper
+    assert len(functions) == 6  # chat, validator, sandbox ops, janitor, auto-delete helper, website upload helper
     assert all(f["Properties"].get("Description", "").startswith("InfraPilot") for f in functions.values())
 
 
@@ -165,9 +165,22 @@ def test_sandbox_workflows_create_stacks_only_as_the_sandbox_role(built):
     statements = [s for p in t.find_resources("AWS::IAM::Policy").values()
                   for s in p["Properties"]["PolicyDocument"]["Statement"]]
     passes = [s for s in statements if "iam:PassRole" in str(s["Action"])]
-    assert len(passes) == 2 and all("role/InfraPilotSandboxCloudFormation" in str(s["Resource"]) for s in passes)
-    stacks = [s for s in statements if "cloudformation:" in str(s["Action"])]
+    assert len(passes) == 3 and all("role/InfraPilotSandboxCloudFormation" in str(s["Resource"]) for s in passes)
+    stacks = [s for s in statements if "cloudformation:" in str(s["Action"]) and s["Action"] != "cloudformation:ListStacks"]
     assert stacks and all("stack/ip-sbx-*/*" in str(s["Resource"]) for s in stacks)
     t.has_resource_properties("AWS::Lambda::Function", {
         "Handler": "infrapilot_api.sandbox_handler.handler",
         "Environment": {"Variables": Match.object_like({"REQUESTS_TABLE": Match.any_value()})}})
+
+
+def test_janitor_runs_every_hour_and_can_only_start_teardowns(built):
+    _, t = built
+    t.has_resource_properties("AWS::Events::Rule", {"ScheduleExpression": "rate(1 hour)", "State": "ENABLED"})
+    t.has_resource_properties("AWS::Lambda::Function", {
+        "Handler": "infrapilot_api.janitor.handler",
+        "Environment": {"Variables": Match.object_like({"TEARDOWN_STATE_MACHINE": Match.any_value(),
+                                                         "SANDBOX_ROLE_ARN": Match.any_value()})}})
+    statements = [s for p in t.find_resources("AWS::IAM::Policy").values()
+                  for s in p["Properties"]["PolicyDocument"]["Statement"]]
+    starts = [s for s in statements if s["Action"] == "states:StartExecution"]
+    assert starts and all("Deploy" in str(s["Resource"]) or "Teardown" in str(s["Resource"]) for s in starts)
