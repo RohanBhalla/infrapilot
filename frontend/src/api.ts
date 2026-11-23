@@ -52,6 +52,21 @@ export type ReplyType =
   | "ready"
   | "out_of_scope";
 
+export type Validation = {
+  tool: string;
+  status: "pass" | "fail" | "skipped";
+  findings: string[];
+};
+
+export type Plan = {
+  intent: string;
+  summary: string;
+  setup: string[];
+  notes: string[];
+  validations: Validation[];
+  estimated_cost_note?: string | null;
+};
+
 export type MessageReply = {
   session_id: string;
   type: ReplyType;
@@ -61,6 +76,7 @@ export type MessageReply = {
   params: Record<string, unknown>;
   questions: Question[];
   standalone_question: string;
+  plan?: Plan | null;
   model: string | null;
   latency_ms: number;
   cost_usd: number;
@@ -129,6 +145,73 @@ export async function sendMessage(
     },
   );
 }
+
+// Deploy requests ---------------------------------------------------------------------------
+
+export type RequestStatus =
+  | "pending"
+  | "rejected"
+  | "deploying"
+  | "deployed"
+  | "failed"
+  | "tearing_down"
+  | "torn_down";
+
+export type DeployRequest = {
+  id: string;
+  session_id: string;
+  message_id: string;
+  intent: string;
+  summary: string;
+  stack_name: string;
+  status: RequestStatus;
+  created_at: string;
+  updated_at: string;
+  deploy_started_at?: string | null;
+  teardown_at?: string | null;
+  outputs: Record<string, string>;
+  error?: string | null;
+  feedback?: string | null;
+};
+
+export type StackEvent = {
+  id: string;
+  at: string;
+  resource: string;
+  status: string;
+  reason?: string | null;
+};
+
+export type Logs = { events: StackEvent[]; next: string | null };
+
+/** Statuses that still have (or are about to have) a sandbox: the user can have one at a time. */
+export const ACTIVE_STATUSES: RequestStatus[] = ["deploying", "deployed", "failed", "tearing_down"];
+
+/** Statuses that change on their own, so the UI keeps checking. */
+export const MOVING_STATUSES: RequestStatus[] = ["deploying", "tearing_down"];
+
+function post<T>(path: string, body?: unknown): Promise<T> {
+  return request<T>(path, {
+    method: "POST",
+    headers: body === undefined ? undefined : { "Content-Type": "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+}
+
+const req = (id: string) => `/requests/${encodeURIComponent(id)}`;
+
+export const deploys = {
+  create: (sessionId: string, messageId: string) =>
+    post<DeployRequest>("/requests", { session_id: sessionId, message_id: messageId }),
+  list: () => request<DeployRequest[]>("/requests"),
+  get: (id: string) => request<DeployRequest>(req(id)),
+  approve: (id: string) => post<DeployRequest>(`${req(id)}/approve`),
+  reject: (id: string, feedback?: string) =>
+    post<DeployRequest>(`${req(id)}/reject`, feedback ? { feedback } : {}),
+  teardown: (id: string) => post<DeployRequest>(`${req(id)}/teardown`),
+  logs: (id: string, next?: string | null) =>
+    request<Logs>(`${req(id)}/logs${next ? `?next=${encodeURIComponent(next)}` : ""}`),
+};
 
 export function apiUrl(): string {
   return apiBase() || "not configured";

@@ -445,6 +445,7 @@ Each step needs the ones before it, except step 8. The generators (C10), validat
 - Live log panel, polling every 2 s while deploying.
 - Result: output links (site URL, function URL), **Tear down** button, countdown to automatic deletion.
 - History page.
+- **Status (2026-11-23): built** (`frontend/src/deploy.tsx`). Replies with a CloudFormation template get "Try it in a sandbox"; the card shows the cost note and checks, Approve, and Reject with feedback (sent to the chat so it redoes the plan); a live log while it deploys; links, Tear down and a countdown when it's live; and a Deploys page with the history. Tried in the browser against the local API (dry run).
 
 **7. Deploy targets, one at a time (both pairs)**
 1. Static site: the first end-to-end run.

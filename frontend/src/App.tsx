@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import type { FormEvent } from "react";
 import { Hub } from "aws-amplify/utils";
 import { authConfigured, beginSignIn, beginSignOut, currentUser } from "./auth";
@@ -6,10 +7,12 @@ import {
   ApiError,
   apiUrl,
   createSession,
+  deploys,
   getSession,
   sendMessage,
 } from "./api";
-import type { ChatMessage, GeneratedFile, MessageReply } from "./api";
+import type { ChatMessage, DeployRequest, GeneratedFile, MessageReply, Plan } from "./api";
+import { DeployPanel, History, hasTemplate } from "./deploy";
 
 const SESSION_KEY = "infrapilot.sessionId";
 
@@ -41,7 +44,7 @@ function FileBlock({ file }: { file: GeneratedFile }) {
   );
 }
 
-function ChatBubble({ message, reply }: { message: ChatMessage; reply?: MessageReply }) {
+function ChatBubble({ message, reply, children }: { message: ChatMessage; reply?: MessageReply; children?: ReactNode }) {
   const isUser = message.role === "user";
 
   return (
@@ -80,6 +83,7 @@ function ChatBubble({ message, reply }: { message: ChatMessage; reply?: MessageR
           )}
         </div>
         {!isUser && message.files?.map((file) => <FileBlock file={file} key={file.path} />)}
+        {children}
         {!isUser && message.citations.length > 0 && (
           <div className="citations" aria-label="Sources">
             {message.citations.map((citation) => (
@@ -113,6 +117,30 @@ export default function App() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const transcriptRef = useRef<HTMLElement>(null);
+  const [view, setView] = useState<"chat" | "deploys">("chat");
+  const [plans, setPlans] = useState<Record<string, Plan>>({});
+  const [requests, setRequests] = useState<DeployRequest[]>([]);
+  const [requestsLoading, setRequestsLoading] = useState(false);
+  const [requestsError, setRequestsError] = useState<string | null>(null);
+
+  const upsertRequest = useCallback((updated: DeployRequest) => {
+    setRequests((current) => {
+      const rest = current.filter((r) => r.id !== updated.id);
+      return [updated, ...rest].sort((a, b) => b.created_at.localeCompare(a.created_at));
+    });
+  }, []);
+
+  const loadRequests = useCallback(async () => {
+    setRequestsLoading(true);
+    try {
+      setRequests(await deploys.list());
+      setRequestsError(null);
+    } catch (err) {
+      setRequestsError(err instanceof Error ? err.message : "Couldn't load your deploys.");
+    } finally {
+      setRequestsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -184,6 +212,11 @@ export default function App() {
     };
   }, []);
 
+  // Each reply's deploy (if any) comes from the user's history, so it survives a page reload.
+  useEffect(() => {
+    if (user) void loadRequests();
+  }, [user, loadRequests]);
+
   useEffect(() => {
     transcriptRef.current?.scrollTo({
       top: transcriptRef.current.scrollHeight,
@@ -193,8 +226,11 @@ export default function App() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const content = draft.trim();
-    if (!content || !sessionId || sending) return;
+    if (await send(draft.trim())) setDraft("");
+  }
+
+  async function send(content: string): Promise<boolean> {
+    if (!content || !sessionId || sending) return false;
 
     setSending(true);
     setError(null);
@@ -209,12 +245,19 @@ export default function App() {
       };
       setMessages((current) => [...current, userMessage, reply.message]);
       setLatestReply(reply);
-      setDraft("");
+      if (reply.plan) setPlans((current) => ({ ...current, [reply.message.id]: reply.plan as Plan }));
+      return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Your message could not be sent.");
+      return false;
     } finally {
       setSending(false);
     }
+  }
+
+  function redoPlan(feedback: string) {
+    setView("chat");
+    void send(`Please change the plan: ${feedback}`);
   }
 
   async function handleSignIn() {
@@ -232,6 +275,9 @@ export default function App() {
       window.sessionStorage.removeItem(SESSION_KEY);
       setSessionId(null);
       setMessages([]);
+      setRequests([]);
+      setPlans({});
+      setView("chat");
       setUser(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not sign out.");
@@ -251,6 +297,19 @@ export default function App() {
         <div className="topbar-actions">
           {signedIn ? (
             <>
+              <nav className="view-switch" aria-label="Views">
+                <button type="button" aria-pressed={view === "chat"} onClick={() => setView("chat")}>Chat</button>
+                <button
+                  type="button"
+                  aria-pressed={view === "deploys"}
+                  onClick={() => {
+                    setView("deploys");
+                    void loadRequests();
+                  }}
+                >
+                  Deploys
+                </button>
+              </nav>
               <span className="topbar-label">{user?.username}</span>
               <button className="auth-button" type="button" onClick={() => void handleSignOut()}>
                 Sign out
@@ -269,6 +328,21 @@ export default function App() {
         </div>
       </header>
 
+      {view === "deploys" && signedIn ? (
+        <section className="chat-panel" aria-label="Deploys">
+          <div className="chat-heading">
+            <div>
+              <p className="eyebrow">SANDBOX DEPLOYS</p>
+              <h1>Your deploys</h1>
+              <p className="subtitle">Every plan you tried in a sandbox. Sandboxes are deleted after 4 hours.</p>
+            </div>
+          </div>
+          <section className="transcript">
+            <History requests={requests} loading={requestsLoading && !requests.length} error={requestsError}
+                     onChange={upsertRequest} />
+          </section>
+        </section>
+      ) : (
       <section className="chat-panel" aria-label="Chat">
         <div className="chat-heading">
           <div>
@@ -320,7 +394,18 @@ export default function App() {
                 key={message.id}
                 message={message}
                 reply={message.role === "assistant" && index === messages.length - 1 ? latestReply ?? undefined : undefined}
-              />
+              >
+                {sessionId && message.role === "assistant" && hasTemplate(message) && (
+                  <DeployPanel
+                    sessionId={sessionId}
+                    message={message}
+                    plan={plans[message.id]}
+                    request={requests.find((r) => r.message_id === message.id && r.session_id === sessionId)}
+                    onChange={upsertRequest}
+                    onFeedback={redoPlan}
+                  />
+                )}
+              </ChatBubble>
             ))
           )}
           {sending && (
@@ -368,6 +453,7 @@ export default function App() {
           </p>
         </div>
       </section>
+      )}
 
       <footer className="page-footer">
         <span>InfraPilot</span>
