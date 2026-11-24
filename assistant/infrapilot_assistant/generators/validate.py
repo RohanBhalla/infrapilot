@@ -184,7 +184,16 @@ def run(files: list[PlanFile]) -> list[Validation]:
     return run_remote(files, function) if function else run_local(files)
 
 
+# A tiny template for the keep-warm ping: cfn-lint and checkov (the slow ones) load everything they
+# need, so a user's first plan after a quiet spell is checked in seconds, not cut off cold.
+WARM_FILES = [PlanFile(path="warm.yaml", language="yaml", content=(
+    'AWSTemplateFormatVersion: "2010-09-09"\nResources:\n  Topic:\n    Type: AWS::SNS::Topic\n'))]
+
+
 def lambda_handler(event, context):
-    """The validator Lambda: {"files": [PlanFile, ...]} -> {"validations": [Validation, ...]}."""
+    """The validator Lambda: {"files": [PlanFile, ...]} -> {"validations": [Validation, ...]}.
+    {"warm": true} (an EventBridge rule, every 5 minutes) only keeps it warm."""
+    if event.get("warm"):
+        return {"warm": [v.status for v in run_local(WARM_FILES)]}
     files = [PlanFile.model_validate(f) for f in event.get("files", [])][:20]
     return {"validations": [v.model_dump() for v in run_local(files)]}

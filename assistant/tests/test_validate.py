@@ -81,6 +81,13 @@ def test_handler_returns_plain_json():
     assert out == {"validations": []}
 
 
+def test_the_keep_warm_ping_runs_the_slow_linters_on_a_tiny_template(monkeypatch):
+    seen = []
+    monkeypatch.setattr(validate, "run_local", lambda files: seen.extend(files) or [])
+    assert validate.lambda_handler({"warm": True}, None) == {"warm": []}
+    assert [f.path for f in seen] == ["warm.yaml"] and validate._is_cloudformation(seen[0])
+
+
 @pytest.mark.skipif(not os.environ.get("INFRAPILOT_VALIDATOR_URL"), reason="validator image not running")
 @pytest.mark.parametrize("language,pm,deploy", CASES)
 def test_every_workflow_passes_every_linter_in_the_image(language, pm, deploy):

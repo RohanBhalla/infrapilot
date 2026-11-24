@@ -14,6 +14,12 @@ removed with another. Nothing is created by hand in the console.
 All resources are tagged `project=infrapilot`. The stack is pay-per-use and costs close to $0
 when idle. The API is throttled to 10 requests/s (burst 20), and Lambda logs are kept for 14 days.
 
+The validator Lambda is pinged every 5 minutes by an EventBridge rule (with a tiny template, so
+cfn-lint and checkov stay loaded). A cold validator can take longer than the chat waits, and the
+checks then show as "skipped". The pings are about 8,640 short runs a month, inside the free tier.
+Keeping one copy always on (provisioned concurrency) would cost ~$17/month at 2 GB and needs a
+higher Lambda concurrency limit than the team account's 10, so it isn't used.
+
 The validator image (~1.4 GB) is stored in the CDK bootstrap ECR repository, about $0.10/GB-month.
 Each deploy that changes `assistant/` pushes a new image and the old ones stay; run
 `npx aws-cdk@2 gc --unstable=gc --type=ecr` now and then to delete unused ones.

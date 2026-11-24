@@ -104,7 +104,9 @@ function LiveLog({ requestId, live }: { requestId: string; live: boolean }) {
 }
 
 function Outputs({ outputs }: { outputs: Record<string, string> }) {
-  const entries = Object.entries(outputs);
+  // Links (site URL, function URL) first: they're what the user came for.
+  const isLink = (value: string) => /^https?:\/\//.test(value);
+  const entries = Object.entries(outputs).sort(([, a], [, b]) => Number(isLink(b)) - Number(isLink(a)));
   if (!entries.length) return null;
   return (
     <dl className="deploy-outputs">
@@ -112,7 +114,7 @@ function Outputs({ outputs }: { outputs: Record<string, string> }) {
         <div key={key}>
           <dt>{key.replace(/([a-z])([A-Z])/g, "$1 $2")}</dt>
           <dd>
-            {/^https?:\/\//.test(value) ? (
+            {isLink(value) ? (
               <a href={value} target="_blank" rel="noreferrer">
                 {value} <span aria-hidden="true">↗</span>
               </a>
