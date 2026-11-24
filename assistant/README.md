@@ -16,6 +16,7 @@ message ──► classifier (1 structured model call) ──► dialog rules (p
 | `classifier.py` | One OpenAI call with structured output (JSON schema). Returns intent, confidence, extracted details and the message rewritten as a standalone question (used for search, replacing the old follow-up rewrite). |
 | `dialog.py` | Decides the reply. Questions go to RAG; tasks ask for missing **required** details in one round and state the defaults; low confidence on a new task asks for confirmation; all details known means **ready**. |
 | `state.py` | `DialogState` (saved with the chat session) and `Turn` (one reply). |
+| `repo.py` | Reads a linked **public GitHub repo** for context ([decision 006](../docs/decisions/006-user-code.md)): the top-level file list plus a few small files (package.json, pyproject.toml, go.mod, Dockerfile, ...). Plain rules turn them into details (language, package manager, version, framework, build folder, port) that fill what the user didn't say. Nothing from the repo runs or goes to the model. |
 
 Rules enforced in code, not left to the model:
 - Values are type-checked and must be allowed options; placeholders like "unknown" are rejected.
@@ -23,6 +24,9 @@ Rules enforced in code, not left to the model:
 - A question mid-task is answered without losing the task; a new task starts fresh; confirming means
   repeating the same task; declining drops it.
 - If the classifier call fails, the message is treated as a plain question.
+- Details found in a linked repo never override the user's own words, and the reply says what was
+  found ("From github.com/acme/web I found: framework: react; source dir: dist."). A private or
+  missing repo, or a slow GitHub, just means the usual questions.
 
 Cost: about **$0.0014 per message** (gpt-5.4-mini), ~1.2 s median. When a task is ready, the
 Chat API runs its generator (below) and returns the files with the reply.

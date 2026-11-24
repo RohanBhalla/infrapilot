@@ -164,6 +164,8 @@ def build_answers():
 def build_assistant(llm):
     from infrapilot_assistant.classifier import Classifier
     from infrapilot_assistant.dialog import Assistant
+    from infrapilot_assistant.repo import GitHubReader
     from infrapilot_rag.versions import VersionRegistry
 
-    return Assistant(Classifier(llm), VersionRegistry().facts)
+    # Public repos only; GITHUB_TOKEN (optional) raises GitHub's limit of 60 listings an hour.
+    return Assistant(Classifier(llm), VersionRegistry().facts, GitHubReader(os.environ.get("GITHUB_TOKEN")))

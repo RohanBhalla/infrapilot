@@ -14,6 +14,9 @@ class DialogState(BaseModel):
     confirmed: bool = False
     defaults_shown: bool = False
     status: Literal["idle", "collecting", "ready", "cancelled"] = "idle"
+    # The last GitHub repo the user linked: {"repo", "facts", "notes", "error"} (repo.py). Kept
+    # when the task changes, so "now containerize it" still knows the repo.
+    repo: dict[str, Any] | None = None
 
 
 class Question(BaseModel):
