@@ -184,3 +184,10 @@ def test_janitor_runs_every_hour_and_can_only_start_teardowns(built):
                   for s in p["Properties"]["PolicyDocument"]["Statement"]]
     starts = [s for s in statements if s["Action"] == "states:StartExecution"]
     assert starts and all("Deploy" in str(s["Resource"]) or "Teardown" in str(s["Resource"]) for s in starts)
+
+
+def test_validator_is_kept_warm_every_five_minutes(built):
+    _, t = built
+    t.has_resource_properties("AWS::Events::Rule", {
+        "ScheduleExpression": "rate(5 minutes)",
+        "Targets": [Match.object_like({"Input": '{"warm":true}'})]})

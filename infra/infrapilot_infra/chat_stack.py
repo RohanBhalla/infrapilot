@@ -24,6 +24,8 @@ from aws_cdk import (
     aws_cognito as cognito,
     aws_ecr_assets as ecr_assets,
     aws_dynamodb as dynamodb,
+    aws_events as events,
+    aws_events_targets as targets,
     aws_iam as iam,
     aws_lambda as lambda_,
     aws_logs as logs,
@@ -143,6 +145,14 @@ class ChatStack(Stack):
             log_group=logs.LogGroup(self, "ValidatorLogs", retention=logs.RetentionDays.TWO_WEEKS,
                                     removal_policy=RemovalPolicy.DESTROY),
         )
+        # Keep it warm: a cold start (~5 s, plus checkov loading) can pass the chat's 12 s wait, and the
+        # checks then show as "skipped". A ping every 5 minutes runs the linters on a tiny template:
+        # ~8,640 short runs a month, inside the free tier. One copy always on (provisioned concurrency)
+        # would be steadier but costs ~$17/month and needs a higher Lambda limit than this account has.
+        events.Rule(self, "KeepValidatorWarm", description="InfraPilot: keep the validator Lambda warm",
+                    schedule=events.Schedule.rate(Duration.minutes(5)),
+                    targets=[targets.LambdaFunction(validator, event=events.RuleTargetInput.from_object(
+                        {"warm": True}), retry_attempts=0)])
 
         # One function for all routes: fewer cold starts than one per route. ARM is ~20% cheaper,
         # and 512 MB is plenty since it mostly waits on OpenAI. 29 s fits API Gateway's 30 s limit.
