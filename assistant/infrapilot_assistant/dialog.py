@@ -10,6 +10,7 @@ import re
 
 from .classifier import Classification
 from .intents import ALIASES, INTENTS, LABELS, Intent, Slot, resolve_default
+from .repo import REPO_SLOTS, find_repo
 from .state import DialogState, Question, Turn
 
 log = logging.getLogger(__name__)
@@ -55,6 +56,8 @@ def _apply(intent: Intent, state: DialogState, extracted: dict[str, str], messag
         if slot is None:
             continue
         value = parse_value(slot, raw)
+        if isinstance(value, str) and "github.com" in value.lower() and name != "error_text":
+            continue  # the model copied the repo link into a detail; the repo facts fill it instead
         if value is not None and slot.consent and name not in state.asked and not COST_WORDS.search(message):
             continue  # consent (yes or no) must come from the user, not the model
         if value is not None:
@@ -62,6 +65,33 @@ def _apply(intent: Intent, state: DialogState, extracted: dict[str, str], messag
     # The model sometimes drops a language the user named, which would quietly give a Node function.
     if intent.name == "deploy_lambda" and "runtime" not in state.params and (m := LANGUAGE_WORDS.search(message)):
         state.params["runtime"] = " ".join(filter(None, m.groups())).lower()
+
+
+def _apply_repo(intent: Intent, state: DialogState) -> list[tuple[str, object]]:
+    """Fill details the user hasn't given from the linked repo. The user's own words always win."""
+    facts = (state.repo or {}).get("facts") or {}
+    filled = []
+    for name, fact in REPO_SLOTS.get(intent.name, {}).items():
+        slot = intent.slot(name)
+        if slot and name not in state.params and fact in facts:
+            value = parse_value(slot, str(facts[fact]))
+            if value is not None:
+                state.params[name] = value
+                filled.append((name, value))
+    return filled
+
+
+def _repo_intro(repo: dict | None, filled: list[tuple[str, object]]) -> str:
+    """What we found in a repo the user just linked, shown above the reply."""
+    if not repo:
+        return ""
+    if repo.get("error"):
+        return f"I couldn't read {repo['repo']} ({repo['error']}), so I'll ask instead.\n\n"
+    if not filled:
+        return f"I read {repo['repo']}, but it didn't answer the details below.\n\n"
+    lines = [f"From {repo['repo']} I found: " + "; ".join(f"{k.replace('_', ' ')}: {_fmt(v)}" for k, v in filled)
+             + "."] + [f"- {n}" for n in repo.get("notes") or []]
+    return "\n".join(lines) + "\n\n"
 
 
 def _missing(intent: Intent, state: DialogState) -> list[Slot]:
@@ -79,17 +109,23 @@ def _resolved(intent: Intent, params: dict, versions) -> dict:
 
 
 def _reset(state: DialogState, **fields) -> None:
+    repo = state.repo
     for k, v in DialogState(**fields):
         setattr(state, k, v)
+    state.repo = repo
 
 
 def _fmt(value) -> str:
     return "yes" if value is True else "no" if value is False else str(value)
 
 
-def step(message: str, state: DialogState, classification: Classification, versions=None) -> Turn:
-    """One turn. `state` is updated in place and also returned on the Turn."""
+def step(message: str, state: DialogState, classification: Classification, versions=None,
+         repo: dict | None = None) -> Turn:
+    """One turn. `state` is updated in place and also returned on the Turn. `repo` is a GitHub
+    repo read for this message (repo.py); it's kept on the state for later turns."""
     c = classification
+    if repo is not None:
+        state.repo = repo
     intent = INTENTS[c.intent]
     base = {"intent": c.intent, "confidence": c.confidence, "standalone_question": c.standalone_question,
             "cost_usd": c.cost_usd}
@@ -120,11 +156,13 @@ def step(message: str, state: DialogState, classification: Classification, versi
     if state.awaiting_confirmation:
         state.awaiting_confirmation, state.confirmed = False, True  # same intent again means "yes"
     _apply(intent, state, c.params, message)
+    filled = _apply_repo(intent, state)
+    intro = _repo_intro(repo, filled) if repo else ""  # said once, when the repo is first read
 
     if c.confidence < CONFIRM_BELOW and not (state.confirmed or continuing):
         state.awaiting_confirmation, state.status = True, "collecting"
         return Turn(type="confirmation", state=state, params=dict(state.params),
-                    message=f"Just to check: do you want me to set up {LABELS[intent.name]}?", **base)
+                    message=intro + f"Just to check: do you want me to set up {LABELS[intent.name]}?", **base)
 
     if intent.name == "eks_cluster" and state.params.get("cost_ack") is False:
         state.status = "cancelled"
@@ -144,7 +182,7 @@ def step(message: str, state: DialogState, classification: Classification, versi
             if shown:
                 lines.append("\nUnless you say otherwise I'll use: " + "; ".join(shown) + ".")
             state.defaults_shown = True
-        return Turn(type="clarification", state=state, params=dict(state.params), message="\n".join(lines),
+        return Turn(type="clarification", state=state, params=dict(state.params), message=intro + "\n".join(lines),
                     questions=[Question(slot=s.name, question=s.question, options=list(s.options))
                                for s in missing], **base)
 
@@ -152,20 +190,25 @@ def step(message: str, state: DialogState, classification: Classification, versi
     params = _resolved(intent, state.params, versions)
     summary = "\n".join(f"- {k.replace('_', ' ')}: {_fmt(v)}" for k, v in params.items())
     return Turn(type="ready", state=state, params=params, **base,
-                message=f"Here's what I'll set up for {LABELS[intent.name]}:\n{summary}\n\n"
+                message=intro + f"Here's what I'll set up for {LABELS[intent.name]}:\n{summary}\n\n"
                         "Tell me if you want to change anything.")
 
 
 class Assistant:
     """Classifier + dialog, the unit the Chat API calls."""
 
-    def __init__(self, classifier, versions=None):
-        self.classifier, self.versions = classifier, versions
+    def __init__(self, classifier, versions=None, repos=None):
+        self.classifier, self.versions, self.repos = classifier, versions, repos  # repos: GitHubReader
 
     def handle(self, message: str, state: DialogState, history=()) -> Turn:
+        repo = None
+        ref = find_repo(message) if self.repos else None
+        last = state.repo or {}
+        if ref and (last.get("repo") != ref.label or last.get("error")):  # read once, unless it failed
+            repo = self.repos.read(ref)
         try:
             c = self.classifier.classify(message, state, history)
         except Exception as exc:  # classifier down: still answer it as a plain question
             log.warning("classifier failed (%s); treating the message as a question", exc)
             c = Classification("qa", 0.0, message)
-        return step(message, state, c, self.versions)
+        return step(message, state, c, self.versions, repo)

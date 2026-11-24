@@ -68,7 +68,9 @@ def test_a_teardown_stuck_for_an_hour_is_started_again(jan):
     store.transition(req.id, {"deployed"}, status="tearing_down")
     h._clients["cloudformation"] = FakeCfn(summaries=[summary(req.stack_name, "DELETE_FAILED")])
     assert janitor.sweep(NOW)["retried"] == []
-    assert janitor.sweep(NOW + timedelta(hours=1, minutes=1))["retried"] == [req.id]
+    # From now, not NOW: the transition above was stamped when this test ran, which in a long
+    # test run can be minutes after NOW was set.
+    assert janitor.sweep(utcnow() + timedelta(hours=1, minutes=1))["retried"] == [req.id]
     assert sfn.started[0]["stack"] == req.stack_name
 
 
