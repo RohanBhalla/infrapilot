@@ -8,8 +8,8 @@ Last updated: 2026-11-24
 
 ## Now: users' own sites ([decision 006](decisions/006-user-code.md))
 
-- [x] Decision 006: accept a public repo link (read for context) and a static site zip, never run users' code
-- [x] Read a linked public GitHub repo to fill in the chat's questions (`assistant/infrapilot_assistant/repo.py`)
+- [x] Decision 006: accept a public repo link (read for context) and a static site zip, never run users' code (#20)
+- [x] Read a linked public GitHub repo to fill in the chat's questions (`assistant/infrapilot_assistant/repo.py`) (#20)
 - [ ] Deploy the repo reading to AWS and try it from the website with a real repo
 - [ ] Static site zip upload
   - [ ] `POST /requests/{id}/upload`: a short-lived S3 upload link (`uploads/<user>/<request>.zip`, deleted after 1 day)
