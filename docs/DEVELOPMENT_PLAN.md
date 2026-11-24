@@ -447,7 +447,7 @@ Each step needs the ones before it, except step 8. The generators (C10), validat
 - History page.
 - **Status (2026-11-23): built** (`frontend/src/deploy.tsx`). Replies with a CloudFormation template get "Try it in a sandbox"; the card shows the cost note and checks, Approve, and Reject with feedback (sent to the chat so it redoes the plan); a live log while it deploys; links, Tear down and a countdown when it's live; and a Deploys page with the history. Tried in the browser against the local API (dry run).
 
-**Users' own code ([decision 006](decisions/006-user-code.md), 2026-11-24).** Users can link a public GitHub repo, which is read for context only (it fills in the chat's questions, like the build folder), and, next, upload a built static site as a zip. Users' code is never run in the team account (no uploaded Lambda code, no building from a repo). **Status: repo reading built** (`assistant/infrapilot_assistant/repo.py`); zip upload is next. The running list of what's left is in [`TODO.md`](TODO.md).
+**Users' own code ([decision 006](decisions/006-user-code.md), 2026-11-24).** Users can link a public GitHub repo, which is read for context only (it fills in the chat's questions, like the build folder), and, next, upload a built static site as a zip. Users' code is never run in the team account (no uploaded Lambda code, no building from a repo). **Status: repo reading built and deployed** (`assistant/infrapilot_assistant/repo.py`). **Zip upload built** (`api/infrapilot_api/site_zip.py`, `POST /requests/{id}/upload` and `/upload/check`, an upload box on the deploy card for static sites). The running list of what's left is in [`TODO.md`](TODO.md).
 
 **7. Deploy targets, one at a time (both pairs)**
 1. Static site: the first end-to-end run.

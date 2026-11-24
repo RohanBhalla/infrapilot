@@ -3,7 +3,8 @@ AWS call (infra/infrapilot_infra/deploy_workflow.py). Each event is `{"action": 
 
 - `status` {stack}: the stack's status, or GONE once it's deleted
 - `started` {request_id, stack_id}: remember the stack id (its events stay readable after delete)
-- `deployed` {request_id, stack}: upload the bundle's sample files, record the stack outputs
+- `deployed` {request_id, stack}: upload the bundle's sample files, or the user's checked site zip
+  (decision 006), and record the stack outputs
 - `failed` {request_id, stack, error?}: record why (the first failed resource), and whether
   CloudFormation already deleted the stack
 - `empty` {stack}: delete every object in the stack's buckets, so DeleteStack can remove them
@@ -14,13 +15,14 @@ Environment: REQUESTS_TABLE, ARTIFACTS_BUCKET.
 
 from __future__ import annotations
 
-import mimetypes
 import os
+from concurrent.futures import ThreadPoolExecutor
 
 from aws_lambda_powertools import Logger
 
 from infrapilot_assistant.sandbox import STACK_PREFIX, Bundle
 
+from . import site_zip
 from .aws_deployer import bundle_key
 from .deploy_requests import DynamoRequestStore
 from .deploys import DeployService, Outcome
@@ -70,13 +72,21 @@ def deployed(event) -> dict:
     outputs = {o["OutputKey"]: o["OutputValue"] for o in s.get("Outputs", [])}
     body = client("s3").get_object(Bucket=os.environ["ARTIFACTS_BUCKET"], Key=bundle_key(event["request_id"]))
     bundle = Bundle.model_validate_json(body["Body"].read())
-    if bundle.uploads and bundle.upload_to:
+    if (bundle.uploads or bundle.site_zip) and bundle.upload_to:
         bucket = outputs[bundle.upload_to]
         if not bucket.startswith(STACK_PREFIX):  # the boundary would refuse it anyway
             raise ValueError(f"upload bucket {bucket!r} isn't a sandbox bucket")
-        for key, content in bundle.uploads.items():
-            client("s3").put_object(Bucket=bucket, Key=key, Body=content.encode(),
-                                    ContentType=mimetypes.guess_type(key)[0] or "application/octet-stream")
+        files = {k: v.encode() for k, v in bundle.uploads.items()}
+        if bundle.site_zip:
+            # Checked again here: the upload link could have been used again after the first check.
+            data = client("s3").get_object(Bucket=os.environ["ARTIFACTS_BUCKET"], Key=bundle.site_zip)["Body"]
+            files = site_zip.check(data.read(site_zip.MAX_ZIP_BYTES + 1)).files
+        s3 = client("s3")
+
+        def put(item):
+            s3.put_object(Bucket=bucket, Key=item[0], Body=item[1], ContentType=site_zip.content_type(item[0]))
+        with ThreadPoolExecutor(16) as pool:  # a site can have up to 1,000 files
+            list(pool.map(put, files.items()))
     _service().record(event["request_id"], Outcome(status="deployed", outputs=outputs))
     return {"outputs": outputs}
 

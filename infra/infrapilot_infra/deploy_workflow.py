@@ -35,14 +35,15 @@ class DeployWorkflow(Construct):
 
         self.ops = lambda_.Function(
             self, "OpsFunction",
-            description="InfraPilot sandbox ops: checks ip-sbx-* stack status, uploads the sample page, empties "
+            description="InfraPilot sandbox ops: checks ip-sbx-* stack status, uploads the sample page or the "
+                        "user's checked site, empties "
                         "sandbox buckets before delete and records each deploy's outcome.",
             runtime=lambda_.Runtime.PYTHON_3_12,
             architecture=lambda_.Architecture.ARM_64,
             handler="infrapilot_api.sandbox_handler.handler",
             code=code,
-            memory_size=256,
-            timeout=Duration.seconds(60),
+            memory_size=512,  # a user's site: up to 20 MB zipped, 50 MB unzipped (decision 006)
+            timeout=Duration.minutes(2),
             environment={"REQUESTS_TABLE": requests.table_name, "ARTIFACTS_BUCKET": artifacts.bucket_name,
                          "POWERTOOLS_SERVICE_NAME": "infrapilot-sandbox"},
             log_group=logs.LogGroup(self, "OpsLogs", retention=logs.RetentionDays.TWO_WEEKS,
@@ -50,6 +51,7 @@ class DeployWorkflow(Construct):
         )
         requests.grant(self.ops, "dynamodb:GetItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem")
         artifacts.grant_read(self.ops, "requests/*")
+        artifacts.grant_read(self.ops, "uploads/*")  # users' site zips
         self.ops.add_to_role_policy(iam.PolicyStatement(
             actions=["cloudformation:DescribeStacks", "cloudformation:DescribeStackEvents",
                      "cloudformation:ListStackResources"], resources=[stacks_arn]))
