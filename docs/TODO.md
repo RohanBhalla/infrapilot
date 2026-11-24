@@ -11,7 +11,7 @@ Last updated: 2026-11-24
 - [x] Decision 006: accept a public repo link (read for context) and a static site zip, never run users' code (#20)
 - [x] Read a linked public GitHub repo to fill in the chat's questions (`assistant/infrapilot_assistant/repo.py`) (#20)
 - [x] Deploy the repo reading to AWS and try it with a real repo (2026-11-24: a React repo filled in `build`, a Python repo the language and version)
-- [ ] Static site zip upload (built, PR pending; not deployed)
+- [ ] Static site zip upload (built in #21; not deployed)
   - [x] `POST /requests/{id}/upload`: a short-lived S3 upload link (`uploads/<request>/site.zip`, deleted after 1 day)
   - [x] Checks before deploy: ≤ 20 MB zipped, ≤ 50 MB unzipped, ≤ 1,000 files, web file types only, an `index.html`, no `..` or absolute paths, no links
   - [x] The sandbox ops Lambda copies the checked files into the site bucket instead of the sample page
