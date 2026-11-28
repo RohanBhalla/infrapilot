@@ -29,7 +29,7 @@ Last updated: 2026-11-27
 - [x] Lambda sandbox with a function URL through the API (2026-11-27): deployed, URL returned the placeholder, torn down
 - [ ] Lambda sandbox with the other triggers (API Gateway, schedule, S3) from the website
 - [x] Dockerfile + ECR-only plan in the sandbox (2026-11-27): repository created and deleted
-- [ ] Keep every checker part warm: the ping only loaded the CloudFormation checks, so a plan with a Dockerfile took ~15 s and its checks showed "skipped" (fix: the ping now includes a Dockerfile and a workflow)
+- [ ] Keep every checker part warm: the ping only loaded the CloudFormation checks, so a plan with a Dockerfile took ~15 s and its checks showed "skipped" (fixed in #22: the ping now includes a Dockerfile and a workflow; deploy after merge)
 - [ ] Container plans always include a GitHub Actions workflow, even when the user says no; add a `ci_deploy` choice like the other generators
 
 ## Later: deploy plan (Features 4.2 and 4.3)
