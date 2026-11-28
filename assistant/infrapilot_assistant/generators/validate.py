@@ -186,8 +186,15 @@ def run(files: list[PlanFile]) -> list[Validation]:
 
 # A tiny template for the keep-warm ping: cfn-lint and checkov (the slow ones) load everything they
 # need, so a user's first plan after a quiet spell is checked in seconds, not cut off cold.
-WARM_FILES = [PlanFile(path="warm.yaml", language="yaml", content=(
-    'AWSTemplateFormatVersion: "2010-09-09"\nResources:\n  Topic:\n    Type: AWS::SNS::Topic\n'))]
+# One tiny file per kind, so every linter (and each checkov framework, which loads on first use)
+# stays loaded: with only a template, the first plan with a Dockerfile took ~15 s instead of ~4 s.
+WARM_FILES = [
+    PlanFile(path="warm.yaml", language="yaml", content=(
+        'AWSTemplateFormatVersion: "2010-09-09"\nResources:\n  Topic:\n    Type: AWS::SNS::Topic\n')),
+    PlanFile(path="Dockerfile", language="dockerfile", content="FROM scratch\n"),
+    PlanFile(path=".github/workflows/warm.yml", language="yaml", content=(
+        "on: push\njobs:\n  warm:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo warm\n")),
+]
 
 
 def lambda_handler(event, context):

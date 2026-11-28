@@ -81,11 +81,13 @@ def test_handler_returns_plain_json():
     assert out == {"validations": []}
 
 
-def test_the_keep_warm_ping_runs_the_slow_linters_on_a_tiny_template(monkeypatch):
+def test_the_keep_warm_ping_runs_every_linter_on_tiny_files(monkeypatch):
     seen = []
     monkeypatch.setattr(validate, "run_local", lambda files: seen.extend(files) or [])
     assert validate.lambda_handler({"warm": True}, None) == {"warm": []}
-    assert [f.path for f in seen] == ["warm.yaml"] and validate._is_cloudformation(seen[0])
+    assert validate._applicable(seen) == ["actionlint", "hadolint", "cfn-lint", "checkov"]
+    frameworks = {name for name, wants in validate.CHECKOV_FRAMEWORKS.items() if any(wants(f) for f in seen)}
+    assert frameworks == set(validate.CHECKOV_FRAMEWORKS)
 
 
 @pytest.mark.skipif(not os.environ.get("INFRAPILOT_VALIDATOR_URL"), reason="validator image not running")
