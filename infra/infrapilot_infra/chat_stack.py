@@ -109,7 +109,12 @@ class ChatStack(Stack):
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             enforce_ssl=True,
             encryption=s3.BucketEncryption.S3_MANAGED,
-            lifecycle_rules=[s3.LifecycleRule(expiration=Duration.days(30))],
+            # Users' site zips (decision 006) are only needed until the deploy, so they go after a day.
+            lifecycle_rules=[s3.LifecycleRule(expiration=Duration.days(30)),
+                             s3.LifecycleRule(prefix="uploads/", expiration=Duration.days(1))],
+            # The browser sends a site zip straight here with a presigned POST from the chat Lambda.
+            cors=[s3.CorsRule(allowed_methods=[s3.HttpMethods.POST], allowed_origins=[site_url, LOCAL_DEV],
+                              allowed_headers=["*"], max_age=3600)],
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,
         )
@@ -196,6 +201,9 @@ class ChatStack(Stack):
         artifacts.grant_put(chat_fn, "plans/*")
         artifacts.grant_read(chat_fn, "plans/*")
         artifacts.grant_put(chat_fn, "requests/*")  # the bundle each deploy was made from
+        # Signs the browser's upload link for a user's site zip, then checks the zip (decision 006).
+        artifacts.grant_put(chat_fn, "uploads/*")
+        artifacts.grant_read(chat_fn, "uploads/*")
         workflow.deploy.grant_start_execution(chat_fn)
         workflow.teardown.grant_start_execution(chat_fn)
         chat_fn.add_to_role_policy(iam.PolicyStatement(  # the live log
@@ -239,6 +247,8 @@ class ChatStack(Stack):
                              ("/requests/{request_id}", apigw.HttpMethod.GET),
                              ("/requests/{request_id}/approve", apigw.HttpMethod.POST),
                              ("/requests/{request_id}/reject", apigw.HttpMethod.POST),
+                             ("/requests/{request_id}/upload", apigw.HttpMethod.POST),
+                             ("/requests/{request_id}/upload/check", apigw.HttpMethod.POST),
                              ("/requests/{request_id}/teardown", apigw.HttpMethod.POST),
                              ("/requests/{request_id}/logs", apigw.HttpMethod.GET)]:
             api.add_routes(path=path, methods=[method], integration=integration, authorizer=cognito_auth)

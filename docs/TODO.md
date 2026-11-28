@@ -10,17 +10,18 @@ Last updated: 2026-11-24
 
 - [x] Decision 006: accept a public repo link (read for context) and a static site zip, never run users' code (#20)
 - [x] Read a linked public GitHub repo to fill in the chat's questions (`assistant/infrapilot_assistant/repo.py`) (#20)
-- [ ] Deploy the repo reading to AWS and try it from the website with a real repo
-- [ ] Static site zip upload
-  - [ ] `POST /requests/{id}/upload`: a short-lived S3 upload link (`uploads/<user>/<request>.zip`, deleted after 1 day)
-  - [ ] Checks before deploy: ≤ 20 MB zipped, ≤ 50 MB unzipped, ≤ 1,000 files, web file types only, an `index.html`, no `..` or absolute paths, no links
-  - [ ] The sandbox ops Lambda copies the checked files into the site bucket instead of the sample page
-  - [ ] Upload button on the deploy card (before Approve), with the reason shown when a zip is refused
-  - [ ] Tests, then an AWS run: upload a real `dist/` and open the site
+- [x] Deploy the repo reading to AWS and try it with a real repo (2026-11-24: a React repo filled in `build`, a Python repo the language and version)
+- [ ] Static site zip upload (built in #21; not deployed)
+  - [x] `POST /requests/{id}/upload`: a short-lived S3 upload link (`uploads/<request>/site.zip`, deleted after 1 day)
+  - [x] Checks before deploy: ≤ 20 MB zipped, ≤ 50 MB unzipped, ≤ 1,000 files, web file types only, an `index.html`, no `..` or absolute paths, no links
+  - [x] The sandbox ops Lambda copies the checked files into the site bucket instead of the sample page
+  - [x] Upload button on the deploy card (before Approve), with the reason shown when a zip is refused
+  - [x] Tests
+  - [ ] AWS run: upload a real `dist/` from the website and open the site
 
 ## Waiting on AWS deploy
 
-- [ ] Deploy PR #19 (keep the file checker warm) and check a new plan's checks show "passed", not "skipped"
+- [x] Deploy PR #19 (keep the file checker warm): a new plan's checks show "passed" (2026-11-24). Right after a deploy the checker needs ~45 s to warm up
 
 ## Not yet tried on AWS
 

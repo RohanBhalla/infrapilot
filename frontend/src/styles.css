@@ -776,8 +776,24 @@ h1 {
   color: #a34d42;
 }
 
-.deploy-feedback {
+.deploy-feedback,
+.deploy-upload {
   margin-top: 10px;
+}
+
+.deploy-upload label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.deploy-upload p {
+  margin: 2px 0 6px;
+}
+
+.deploy-upload input[type="file"] {
+  max-width: 100%;
+  font-size: 11.5px;
 }
 
 .deploy-feedback label {

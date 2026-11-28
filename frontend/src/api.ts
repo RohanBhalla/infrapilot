@@ -172,7 +172,13 @@ export type DeployRequest = {
   outputs: Record<string, string>;
   error?: string | null;
   feedback?: string | null;
+  /** The user's own site (a checked zip), if they uploaded one; otherwise a sample page is used. */
+  site_files?: number | null;
+  site_bytes?: number | null;
 };
+
+/** Where to send a site zip: a form POST straight to S3 on AWS, a PUT to the local API in dev. */
+export type UploadLink = { method: "POST" | "PUT"; url: string; fields: Record<string, string>; max_bytes: number };
 
 export type StackEvent = {
   id: string;
@@ -209,6 +215,30 @@ export const deploys = {
   reject: (id: string, feedback?: string) =>
     post<DeployRequest>(`${req(id)}/reject`, feedback ? { feedback } : {}),
   teardown: (id: string) => post<DeployRequest>(`${req(id)}/teardown`),
+  /** Upload a built static site (zip) for a pending request, then have the API check it. */
+  uploadSite: async (id: string, file: File): Promise<DeployRequest> => {
+    const link = await post<UploadLink>(`${req(id)}/upload`);
+    if (file.size > link.max_bytes) {
+      throw new Error(`The zip is larger than ${Math.round(link.max_bytes / 2 ** 20)} MB.`);
+    }
+    let response: Response;
+    try {
+      if (link.method === "PUT") {
+        // Local API: no sign-in there.
+        response = await fetch(`${apiBase()}${link.url}`, { method: "PUT", body: file });
+      } else {
+        // Straight to S3 with the presigned fields. No Authorization header: the fields are the permission.
+        const form = new FormData();
+        Object.entries(link.fields).forEach(([k, v]) => form.append(k, v));
+        form.append("file", file); // must be last
+        response = await fetch(link.url, { method: "POST", body: form });
+      }
+    } catch {
+      throw new Error("The upload didn't reach the server. Try again.");
+    }
+    if (!response.ok) throw new Error(`The upload failed (${response.status}). Try again.`);
+    return post<DeployRequest>(`${req(id)}/upload/check`);
+  },
   logs: (id: string, next?: string | null) =>
     request<Logs>(`${req(id)}/logs${next ? `?next=${encodeURIComponent(next)}` : ""}`),
 };

@@ -66,6 +66,9 @@ class Bundle(BaseModel):
     # Files uploaded after the stack is created, to the bucket named by the `upload_to` output.
     uploads: dict[str, str] = Field(default_factory=dict)
     upload_to: str | None = None
+    # The user's own site (decision 006): a checked zip in the artifacts bucket, copied to the
+    # `upload_to` bucket instead of `uploads`.
+    site_zip: str | None = None
 
     def template_body(self) -> str:
         return json.dumps(self.template, separators=(",", ":"))

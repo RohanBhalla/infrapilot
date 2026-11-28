@@ -67,6 +67,8 @@ def test_session_routes_need_cognito_and_health_does_not(built):
         "GET /requests/{request_id}": "JWT",
         "POST /requests/{request_id}/approve": "JWT",
         "POST /requests/{request_id}/reject": "JWT",
+        "POST /requests/{request_id}/upload": "JWT",
+        "POST /requests/{request_id}/upload/check": "JWT",
         "POST /requests/{request_id}/teardown": "JWT",
         "GET /requests/{request_id}/logs": "JWT",
     }
@@ -122,12 +124,17 @@ def test_validator_is_an_arm_container_the_chat_lambda_can_call(built):
 def test_artifacts_bucket_is_private_and_expires_plans(built):
     _, t = built
     t.has_resource_properties("AWS::S3::Bucket", {
-        "LifecycleConfiguration": {"Rules": [Match.object_like({"ExpirationInDays": 30, "Status": "Enabled"})]},
+        "LifecycleConfiguration": {"Rules": [
+            Match.object_like({"ExpirationInDays": 30, "Status": "Enabled"}),
+            Match.object_like({"ExpirationInDays": 1, "Prefix": "uploads/", "Status": "Enabled"})]},
+        # Browsers may only POST (users' site zips, through a presigned link), from our own site.
+        "CorsConfiguration": {"CorsRules": [Match.object_like({"AllowedMethods": ["POST"]})]},
         "PublicAccessBlockConfiguration": Match.object_like({"BlockPublicPolicy": True})})
     statements = [s for p in t.find_resources("AWS::IAM::Policy").values()
                   for s in p["Properties"]["PolicyDocument"]["Statement"]]
     put = [s for s in statements if "s3:PutObject" in str(s["Action"]) and "Artifacts" in str(s["Resource"])]
-    assert put and all("/plans/*" in str(s["Resource"]) or "/requests/*" in str(s["Resource"]) for s in put)
+    assert put and all(any(f"/{prefix}/*" in str(s["Resource"]) for prefix in ("plans", "requests", "uploads"))
+                       for s in put)
 
 
 def test_every_lambda_has_a_description(built):

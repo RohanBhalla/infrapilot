@@ -21,7 +21,7 @@ from aws_lambda_powertools.logging.utils import copy_config_to_registered_logger
 from aws_lambda_powertools.utilities import parameters
 from pydantic import ValidationError
 
-from .artifacts import S3PlanStore
+from .artifacts import S3PlanStore, S3SiteUploads
 from .aws_deployer import StepFunctionsDeployer
 from .deploy_requests import DynamoRequestStore
 from .deploys import DeployRequestIn, DeployService, RejectIn
@@ -62,7 +62,8 @@ class _NoDeployer:
 deployer = StepFunctionsDeployer(os.environ["DEPLOY_STATE_MACHINE"], os.environ["TEARDOWN_STATE_MACHINE"], bucket) \
     if os.environ.get("DEPLOY_STATE_MACHINE") and bucket else _NoDeployer()
 deploys = DeployService(DynamoRequestStore(os.environ["REQUESTS_TABLE"]), plans, deployer,
-                        os.environ.get("SANDBOX_BOUNDARY_ARN", "")) if os.environ.get("REQUESTS_TABLE") else None
+                        os.environ.get("SANDBOX_BOUNDARY_ARN", ""), S3SiteUploads(bucket) if bucket else None) \
+    if os.environ.get("REQUESTS_TABLE") else None
 
 
 def _deploys() -> DeployService:
@@ -134,6 +135,16 @@ def read_request(request_id: str):
 @app.post("/requests/<request_id>/approve")
 def approve_request(request_id: str):
     return _json(200, _deploys().approve(_user(), request_id))
+
+
+@app.post("/requests/<request_id>/upload")
+def upload_link(request_id: str):
+    return _json(200, _deploys().upload_link(_user(), request_id))
+
+
+@app.post("/requests/<request_id>/upload/check")
+def check_upload(request_id: str):
+    return _json(200, _deploys().check_upload(_user(), request_id))
 
 
 @app.post("/requests/<request_id>/reject")

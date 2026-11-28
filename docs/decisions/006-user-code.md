@@ -19,10 +19,13 @@ We accept two things from users, and nothing that runs in our account:
    - Public repos only (private repos need a GitHub sign-in). Each file is capped at 200 KB and
      each request at 4 s. If GitHub is slow or limits us, the chat asks the questions as before.
    - Each repo is read once per chat session.
-2. **A built static site, uploaded as a zip** (next step, not built yet). The deploy card gets
-   an upload button. The zip goes to S3 through a short-lived upload link and is checked
-   (size, file count, web file types only, an `index.html`, no paths outside the folder) before
-   the sandbox copies it into the site bucket instead of the sample page. HTML, CSS and
+2. **A built static site, uploaded as a zip** (`api/infrapilot_api/site_zip.py`). The deploy card gets
+   an upload button. The zip goes straight to S3 through a 15-minute presigned POST (S3 refuses
+   anything over 20 MB) and is checked: at most 50 MB unzipped and 1,000 files, web file types
+   only, an `index.html` at the top (or in its one folder, like `dist/`), no links and no paths
+   outside the folder. It's checked again in the sandbox ops Lambda before it's copied into the
+   site bucket instead of the sample page, since the upload link could be used again in between.
+   Uploads are deleted after a day. HTML, CSS and
    JavaScript run in the visitor's browser, not in our account.
 
 We **don't** run users' code: no uploaded Lambda code and no building from a repo

@@ -17,7 +17,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from infrapilot_assistant import sandbox
 from infrapilot_assistant.sandbox import Bundle, NotDeployable
 
-from .artifacts import plan_key
+from . import site_zip
+from .artifacts import plan_key, site_key
 from .deploy_requests import ACTIVE, Conflict, DeployRequest, RequestStore, new_request_id
 from .schemas import utcnow
 from .service import ChatError, NotFound
@@ -46,6 +47,14 @@ class DeployRequestIn(BaseModel):
 class RejectIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
     feedback: str | None = Field(None, max_length=2000, description="What to change in the plan")
+
+
+class UploadLink(BaseModel):
+    """Where the browser sends the zip: a form POST with `fields` (S3), or a PUT of the file (local)."""
+    method: str
+    url: str
+    fields: dict[str, str] = Field(default_factory=dict)
+    max_bytes: int
 
 
 class StackEvent(BaseModel):
@@ -98,8 +107,10 @@ class DryRunDeployer:
 
 
 class DeployService:
-    def __init__(self, requests: RequestStore, plans, deployer: Deployer, boundary_arn: str = LOCAL_BOUNDARY):
+    def __init__(self, requests: RequestStore, plans, deployer: Deployer, boundary_arn: str = LOCAL_BOUNDARY,
+                 uploads=None):
         self.requests, self.plans, self.deployer, self.boundary_arn = requests, plans, deployer, boundary_arn
+        self.uploads = uploads  # S3SiteUploads on AWS, InMemorySiteUploads locally (artifacts.py)
 
     # Reading -------------------------------------------------------------------------------
 
@@ -144,12 +155,45 @@ class DeployService:
         log.info("deploy requested", extra={"request_id": req.id, "intent": req.intent})
         return req
 
+    # The user's own site (decision 006) --------------------------------------------------------
+
+    def _pending_site(self, user: str, request_id: str) -> DeployRequest:
+        req = self.get(user, request_id)
+        if self.uploads is None:
+            raise NotFound("uploads aren't available here")
+        if req.intent != "deploy_static_site":
+            raise NotDeployableError("Only a static site can use your own files.")
+        if req.status != "pending":
+            raise ConflictError(f"Files can only be added before the deploy starts (it's {req.status}).")
+        return req
+
+    def upload_link(self, user: str, request_id: str) -> UploadLink:
+        req = self._pending_site(user, request_id)
+        return UploadLink(**self.uploads.link(req.id, site_zip.MAX_ZIP_BYTES))
+
+    def check_upload(self, user: str, request_id: str) -> DeployRequest:
+        """Check the zip the browser just uploaded; the request remembers it only if it passes."""
+        req = self._pending_site(user, request_id)
+        data = self.uploads.read(req.id, site_zip.MAX_ZIP_BYTES)
+        if data is None:
+            raise NotFound("No upload found. Upload the zip again.")
+        try:
+            site = site_zip.check(data)
+        except site_zip.SiteRefused as exc:
+            self.requests.transition(req.id, {"pending"}, site_files=None, site_bytes=None)
+            raise NotDeployableError(str(exc)) from exc
+        return self.requests.transition(req.id, {"pending"}, site_files=len(site.files), site_bytes=site.size)
+
     def approve(self, user: str, request_id: str) -> DeployRequest:
         req = self.get(user, request_id)
         plan = self.plans.load(req.plan_key)
         if plan is None:  # plans expire after 30 days
             raise NotFound("this plan has expired; ask for it again")
         bundle = self._bundle(plan, req.id)
+        if req.site_files:
+            if not (self.uploads and self.uploads.exists(req.id)):  # uploads are deleted after a day
+                raise NotFound("Your uploaded site has expired. Upload the zip again.")
+            bundle.site_zip, bundle.uploads = site_key(req.id), {}
         now = utcnow()
         try:
             req = self.requests.claim(user, req.id, status="deploying", deploy_started_at=now,

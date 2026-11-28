@@ -54,6 +54,8 @@ class DeployRequest(BaseModel):
     outputs: dict[str, str] = Field(default_factory=dict, description="Stack outputs (site URL, function URL)")
     error: str | None = None
     feedback: str | None = Field(None, description="Why the plan was rejected")
+    site_files: int | None = Field(None, description="The user's own site (a checked zip): number of files")
+    site_bytes: int | None = Field(None, description="... and its size unzipped")
 
 
 class Conflict(Exception):

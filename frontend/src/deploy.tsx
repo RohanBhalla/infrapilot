@@ -28,6 +28,57 @@ function message(err: unknown, fallback: string): string {
   return err instanceof Error ? err.message : fallback;
 }
 
+function size(bytes: number): string {
+  return bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 2 ** 20).toFixed(1)} MB`;
+}
+
+/** Optional for a static site: the user's built site (a zip of dist/ or build/) instead of the sample page. */
+function SiteUpload({ request, busy, onChange }: { request: DeployRequest; busy: boolean; onChange: (r: DeployRequest) => void }) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const input = useRef<HTMLInputElement>(null);
+
+  async function upload(file: File | undefined) {
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      onChange(await deploys.uploadSite(request.id, file));
+    } catch (err) {
+      setError(message(err, "The upload didn't work. Try again."));
+      try {
+        onChange(await deploys.get(request.id)); // a refused zip clears the earlier one
+      } catch {
+        // Keep what's shown.
+      }
+    } finally {
+      setUploading(false);
+      if (input.current) input.current.value = "";
+    }
+  }
+
+  return (
+    <div className="deploy-upload">
+      <label htmlFor={`site-${request.id}`}>Your site (optional)</label>
+      <p className="deploy-muted">
+        {request.site_files
+          ? `Deploying your site: ${request.site_files} files, ${size(request.site_bytes ?? 0)}.`
+          : "Without a zip, a sample page is deployed. Zip your built site (the dist/ or build/ folder, with index.html), up to 20 MB."}
+      </p>
+      <input
+        ref={input}
+        id={`site-${request.id}`}
+        type="file"
+        accept=".zip,application/zip"
+        disabled={busy || uploading}
+        onChange={(e) => void upload(e.target.files?.[0])}
+      />
+      {uploading && <span className="deploy-muted"> Uploading and checking…</span>}
+      {error && <p className="deploy-inline-error" role="alert">{error}</p>}
+    </div>
+  );
+}
+
 export function StatusBadge({ status }: { status: RequestStatus }) {
   return <span className={`deploy-status deploy-status-${status}`}>{STATUS_LABEL[status]}</span>;
 }
@@ -198,8 +249,8 @@ export function RequestCard({ request, plan, onChange, onFeedback }: CardProps) 
       {status === "pending" && (
         <>
           <p>
-            This creates the template's resources in InfraPilot's sandbox AWS account, uploads a sample page or
-            function, and deletes everything automatically after 4 hours. You can have one sandbox at a time.
+            This creates the template's resources in InfraPilot's sandbox AWS account, uploads your site or a
+            sample page or function, and deletes everything automatically after 4 hours. You can have one sandbox at a time.
           </p>
           {plan?.estimated_cost_note && <p className="deploy-cost">{plan.estimated_cost_note}</p>}
           {plan && plan.validations.length > 0 && (
@@ -210,6 +261,9 @@ export function RequestCard({ request, plan, onChange, onFeedback }: CardProps) 
                 </li>
               ))}
             </ul>
+          )}
+          {request.intent === "deploy_static_site" && (
+            <SiteUpload request={request} busy={busy} onChange={onChange} />
           )}
           {rejecting ? (
             <div className="deploy-feedback">

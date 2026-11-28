@@ -58,3 +58,66 @@ class InMemoryPlanStore:
         with self._lock:
             data = self._plans.get(key)
         return Plan.model_validate_json(data) if data else None
+
+
+# A user's built static site (decision 006), uploaded straight from the browser for one pending
+# request. The bucket deletes uploads after a day; the sandbox only needs the zip at deploy time.
+UPLOAD_SECONDS = 15 * 60
+
+
+def site_key(request_id: str) -> str:
+    return f"uploads/{request_id}/site.zip"
+
+
+class S3SiteUploads:
+    def __init__(self, bucket: str, client=None):
+        if client is None:
+            import boto3
+
+            client = boto3.client("s3")
+        self.bucket, self.client = bucket, client
+
+    def link(self, request_id: str, max_bytes: int) -> dict:
+        """A presigned POST: S3 itself refuses a file over `max_bytes`, and the link expires in 15 min."""
+        post = self.client.generate_presigned_post(
+            Bucket=self.bucket, Key=site_key(request_id),
+            Conditions=[["content-length-range", 1, max_bytes]], ExpiresIn=UPLOAD_SECONDS)
+        return {"method": "POST", "url": post["url"], "fields": post["fields"], "max_bytes": max_bytes}
+
+    def read(self, request_id: str, max_bytes: int) -> bytes | None:
+        try:
+            obj = self.client.get_object(Bucket=self.bucket, Key=site_key(request_id))
+        except self.client.exceptions.NoSuchKey:
+            return None
+        return obj["Body"].read(max_bytes + 1)  # one byte more, so a too-large file is still caught
+
+    def exists(self, request_id: str) -> bool:
+        try:
+            self.client.head_object(Bucket=self.bucket, Key=site_key(request_id))
+        except self.client.exceptions.ClientError:
+            return False
+        return True
+
+
+class InMemorySiteUploads:
+    """Local development: the browser PUTs the zip to the local API (`PUT /requests/{id}/site`)."""
+
+    def __init__(self):
+        self._files: dict[str, bytes] = {}
+        self._lock = threading.Lock()
+
+    def link(self, request_id: str, max_bytes: int) -> dict:
+        return {"method": "PUT", "url": f"/requests/{request_id}/site", "fields": {}, "max_bytes": max_bytes}
+
+    def put(self, request_id: str, data: bytes) -> None:
+        with self._lock:
+            self._files[request_id] = data
+
+    def read(self, request_id: str, max_bytes: int) -> bytes | None:
+        with self._lock:
+            data = self._files.get(request_id)
+        return data[:max_bytes + 1] if data is not None else None
+
+    def exists(self, request_id: str) -> bool:
+        with self._lock:
+            return request_id in self._files
