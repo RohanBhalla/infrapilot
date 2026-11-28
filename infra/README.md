@@ -69,7 +69,8 @@ Then add a test user in the Cognito console (**User pools → Users → Create u
 is off, so only users the team creates can sign in.
 
 For local frontend development against the deployed API, copy the outputs into
-`frontend/.env.local` (see `frontend/.env.example`). `http://localhost:5173` is already allowed
+`frontend/.env.development.local` (see `frontend/.env.example`; not `.env.local`, which Vite also
+reads when building for deploy). `http://localhost:5173` is already allowed
 for Cognito sign-in and CORS.
 
 ## Load the documents into the Knowledge Base

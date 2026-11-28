@@ -102,6 +102,22 @@ def test_website_upload_includes_config(built):
     t.resource_count_is("Custom::CDKBucketDeployment", 1)
 
 
+
+def test_config_sets_the_sites_own_sign_in_redirect(tmp_path, monkeypatch):
+    """So a localhost redirect from a dev env file baked into the build can't win (2026-11-27)."""
+    from aws_cdk import aws_s3_deployment as s3deploy
+
+    seen, real = {}, s3deploy.Source.json_data
+    monkeypatch.setattr(s3deploy.Source, "json_data", lambda key, data, *a, **k: seen.update({key: data}) or real(key, data, *a, **k))
+    dist = tmp_path / "dist"
+    dist.mkdir()
+    (dist / "index.html").write_text("<html></html>")
+    synth(dist)
+    config = seen["config.json"]
+    assert config["redirectUrl"] == config["signOutUrl"]
+    assert config["redirectUrl"].startswith("https://") and config["redirectUrl"].endswith("/")
+
+
 def test_missing_build_skips_upload_with_a_warning(tmp_path):
     stack, t = synth(tmp_path / "missing")
     t.resource_count_is("Custom::CDKBucketDeployment", 0)
