@@ -260,6 +260,9 @@ class ChatStack(Stack):
             "clientId": client.user_pool_client_id,
             "domain": domain.base_url(),
             "apiUrl": api.api_endpoint,
+            # Set here so a local env file baked into the build can't send sign-in back to localhost.
+            "redirectUrl": f"{site_url}/",
+            "signOutUrl": f"{site_url}/",
         }
         if dist.is_dir():
             s3deploy.BucketDeployment(

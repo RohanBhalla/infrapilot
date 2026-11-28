@@ -59,9 +59,10 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:5173>. Without a `.env.local`, the app calls the local FastAPI app at
+Open <http://localhost:5173>. Without a `.env.development.local`, the app calls the local FastAPI app at
 `http://127.0.0.1:8000`; Cognito sign-in needs the `VITE_COGNITO_*` values from the stack outputs
-(copy `.env.example` to `.env.local`, which is git-ignored).
+(copy `.env.example` to `.env.development.local`, which is git-ignored). Don't use `.env.local`:
+Vite reads it in production builds too, so a deploy would send sign-in back to localhost.
 
 `VITE_` values and `config.json` are public. Never put a client secret, password, AWS access key,
 or other private credential in them. The Cognito app client is a public client with no secret.
@@ -94,7 +95,8 @@ Locally, without `VITE_API_URL`, the app talks to the FastAPI app (`infrapilot-a
 |---|---|
 | CloudFront domain did not open the app | Set the CloudFront default root object to `index.html`. |
 | Cognito login showed username/password but not email | Configure the appropriate user-pool sign-in options and hosted-login scopes (for example, `openid`, `email`, and `profile` as needed). |
-| Cognito configuration was missing in the frontend | Set the `VITE_COGNITO_*` values in `.env.local`, rebuild, and upload the complete new `dist/` output. |
+| Cognito configuration was missing in the frontend | Set the `VITE_COGNITO_*` values in `.env.development.local`, rebuild, and upload the complete new `dist/` output. |
+| Sign-in on the deployed site said "redirect is coming from a different origin" (2026-11-27) | A `.env.local` with `VITE_COGNITO_REDIRECT_URL=http://localhost:5173` was baked into the production build. Local settings now go in `.env.development.local` (dev only), and `config.json` sets the deployed site's redirect URLs. |
 | Blank page or JavaScript error after login | Inspect the browser console and requested asset URLs. Verify the uploaded `index.html` references files present in S3, then invalidate CloudFront if it is serving stale HTML/assets. |
 | Chat showed “The chat API is not configured yet” | Set `VITE_API_URL` to the API Gateway invoke URL and rebuild/redeploy the frontend. |
 | Message API returned HTTP 500 | Check Lambda CloudWatch logs and environment variables. A leading space in `TABLE_NAME` caused DynamoDB's table-name validation to fail; use the exact table name with no surrounding whitespace. |
